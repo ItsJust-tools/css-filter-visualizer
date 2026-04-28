@@ -71,7 +71,21 @@ export function Toolbar({ children }: { children?: ReactNode }) {
   return (
     <header className="tool-shell-toolbar" role="toolbar" aria-label={t('toolToolbar')}>
       <div className="toolbar-left">
-        {actions.onBrandClick ? (
+        {actions.isBrandEditing ? (
+          <input
+            type="text"
+            className="toolbar-brand-input"
+            value={actions.brandValue ?? brandText}
+            onChange={(e) => actions.onBrandChange?.(e.target.value)}
+            onBlur={() => actions.onBrandCommit?.()}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') actions.onBrandCommit?.();
+              if (e.key === 'Escape') actions.onBrandCancel?.();
+            }}
+            aria-label={t('rename')}
+            autoFocus
+          />
+        ) : actions.onBrandClick ? (
           <button
             type="button"
             className="toolbar-brand toolbar-brand-button"

@@ -20,6 +20,16 @@ export interface ToolbarActions {
   supportedFormats?: ExportFormat[];
   /** Handle clicks on the toolbar brand label. */
   onBrandClick?: () => void;
+  /** Current value for inline brand editing. */
+  brandValue?: string;
+  /** Whether inline brand editing is active. */
+  isBrandEditing?: boolean;
+  /** Update the inline brand value. */
+  onBrandChange?: (value: string) => void;
+  /** Commit inline brand editing. */
+  onBrandCommit?: () => void;
+  /** Cancel inline brand editing. */
+  onBrandCancel?: () => void;
 }
 
 export interface ShellContextValue {

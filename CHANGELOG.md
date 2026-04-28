@@ -56,19 +56,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Dead Component**: `tool-shell-export-dropdown.tsx` removed (unused, `ImportExport` component is used instead).
 - **Duplicate `formatLabels`**: Centralized in `packages/core/src/types/export.ts`.
 
-## [0.1.0] - 2026-04-24
-
-### Added
-
-- Initial release of the itsjust template.
-- Next.js 16 with App Router and Turbopack.
-- `@itsjust/core` monorepo package with shared hooks, components, and engines.
-- `useToolState` with undo/redo, auto-save, and dirty state tracking.
-- `useExport` with client-side export to PNG, JPEG, WebP, PDF, JSON.
-- `useImport` with `.itsjust.json` share format support.
-- `useShare` with download, Web Share API, and clipboard support.
-- `ToolShell` component with toolbar, sidebar, canvas, and status bar.
-- ThemeProvider with light/dark/system modes.
-- Keyboard shortcuts overlay.
-- Toast notifications.
-- Vitest unit tests and Playwright E2E tests.

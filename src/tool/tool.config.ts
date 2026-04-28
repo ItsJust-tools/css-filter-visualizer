@@ -1,10 +1,11 @@
 import type { ToolConfig } from '@itsjust/core';
+import packageJson from '../../package.json';
 
 const toolConfig = {
   id: 'template-tool',
   name: 'My Tool',
   description: 'A minimal tool template — customize it to build your own tool',
-  version: '0.1.0',
+  version: packageJson.version,
   // Core ships with JSON export only.
   // To add image/PDF export, enable the format here and register
   // the lazy-loaded exporter in src/tool/tool-definition.ts.

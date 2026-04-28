@@ -15,18 +15,29 @@ export default function ToolClient() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const tool = useTool(myTool, canvasRef);
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(toolConfig.features.sidebar);
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [renameDraft, setRenameDraft] = useState(tool.state.data.title);
   const title = tool.state.data.title.trim() || toolConfig.name;
 
   useEffect(() => {
     document.title = title;
   }, [title]);
 
-  const handleRename = useCallback(() => {
-    const nextTitle = window.prompt('Neuen Namen eingeben:', tool.state.data.title);
-    if (nextTitle === null) return;
-    const normalizedTitle = nextTitle.trim() || toolConfig.name;
+  const startRename = useCallback(() => {
+    setRenameDraft(tool.state.data.title);
+    setIsRenaming(true);
+  }, [tool.state.data.title]);
+
+  const commitRename = useCallback(() => {
+    const normalizedTitle = renameDraft.trim() || toolConfig.name;
     tool.state.setData((prev) => ({ ...prev, title: normalizedTitle }));
-  }, [tool.state]);
+    setIsRenaming(false);
+  }, [renameDraft, tool.state]);
+
+  const cancelRename = useCallback(() => {
+    setRenameDraft(tool.state.data.title);
+    setIsRenaming(false);
+  }, [tool.state.data.title]);
 
   const shellConfig = useMemo(
     () => ({
@@ -71,6 +82,7 @@ export default function ToolClient() {
         ) : 'Ready'}
       </span>
       <span>{tool.state.data.title}</span>
+      <span>v{toolConfig.version}</span>
     </>
   );
 
@@ -85,7 +97,15 @@ export default function ToolClient() {
   return (
     <ToolShellCompat
       config={shellConfig}
-      actions={{ ...tool.toolbarActions, onBrandClick: handleRename }}
+      actions={{
+        ...tool.toolbarActions,
+        onBrandClick: startRename,
+        isBrandEditing: isRenaming,
+        brandValue: renameDraft,
+        onBrandChange: setRenameDraft,
+        onBrandCommit: commitRename,
+        onBrandCancel: cancelRename,
+      }}
       sidebarOpen={sidebarOpen}
       onSidebarChange={setSidebarOpen}
       toolbar={toolbarContent}
