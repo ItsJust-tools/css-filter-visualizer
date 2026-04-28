@@ -23,7 +23,6 @@ export default function ToolClient() {
             onExport={tool.handleExport}
             onImport={tool.importFromFile}
             isImporting={tool.isImporting}
-            isExporting={tool.isExporting}
           />
         </>
       }
@@ -40,9 +39,7 @@ export default function ToolClient() {
       statusBar={
         <>
         <span className={tool.state.isDirty ? 'status-unsaved' : 'status-saved'}>
-          {tool.state.isSaving ? (
-            <><span className="status-saving-dot" />Saving...</>
-          ) : tool.state.isDirty ? (
+          {tool.state.isDirty ? (
             <><span className="status-saving-dot" />Unsaved</>
           ) : tool.state.lastSaved ? (
             <>Saved {tool.state.lastSaved}</>
