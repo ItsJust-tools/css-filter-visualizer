@@ -29,7 +29,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         this.props.fallback ?? (
           <div className="flex flex-1 items-center justify-center p-8 text-center">
             <div>
-              <p className="text-lg font-semibold text-[var(--foreground)]">Something went wrong.</p>
+              <p className="text-lg font-semibold text-[var(--foreground)]">
+                Something went wrong.
+              </p>
               <p className="mt-2 text-sm text-[var(--muted)]">
                 Please refresh the page to continue.
               </p>

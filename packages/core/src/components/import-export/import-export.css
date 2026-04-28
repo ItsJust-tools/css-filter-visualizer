@@ -56,7 +56,9 @@
   color: var(--foreground);
   cursor: pointer;
   font-size: 0.8125rem;
-  transition: background-color 0.1s, color 0.1s;
+  transition:
+    background-color 0.1s,
+    color 0.1s;
 }
 
 .dropdown-item:hover,

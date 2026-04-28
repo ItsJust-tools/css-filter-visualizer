@@ -1,6 +1,14 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, useRef, useEffect, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  type ReactNode,
+} from 'react';
 import { t as tt } from '../../i18n/strings';
 
 interface Toast {
@@ -19,21 +27,48 @@ const ToastContext = createContext<ToastContextValue | null>(null);
 function ToastIcon({ type }: { type: Toast['type'] }) {
   if (type === 'success') {
     return (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M3 8l3.5 3.5L13 5" />
       </svg>
     );
   }
   if (type === 'error') {
     return (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <circle cx="8" cy="8" r="6" />
         <path d="M8 5v3M8 10.5v0" />
       </svg>
     );
   }
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <circle cx="8" cy="8" r="6" />
       <path d="M8 5.5v3M8 10.5v0" />
     </svg>
@@ -64,9 +99,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setToasts((prev) => [...prev, { id, message, type }]);
 
     const t1 = setTimeout(() => {
-      setToasts((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, exiting: true } : t)),
-      );
+      setToasts((prev) => prev.map((t) => (t.id === id ? { ...t, exiting: true } : t)));
       timersRef.current.delete(t1);
     }, 2700);
     timersRef.current.add(t1);
@@ -99,7 +132,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           >
             <ToastIcon type={t.type} />
             <span>{t.message}</span>
-            <button type="button" className="toast-dismiss" onClick={() => dismissToast(t.id)} aria-label={tt('dismissNotification')}>×</button>
+            <button
+              type="button"
+              className="toast-dismiss"
+              onClick={() => dismissToast(t.id)}
+              aria-label={tt('dismissNotification')}
+            >
+              ×
+            </button>
             <div className="toast-progress" />
           </div>
         ))}

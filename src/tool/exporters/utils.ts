@@ -17,21 +17,16 @@ export function throwIfAborted(signal?: AbortSignal): void {
 
 function getCaptureDimensions(element: HTMLElement): { width: number; height: number } {
   const rect = element.getBoundingClientRect();
-  const width = Math.max(
-    Math.ceil(rect.width),
-    element.scrollWidth,
-    element.clientWidth,
-  );
-  const height = Math.max(
-    Math.ceil(rect.height),
-    element.scrollHeight,
-    element.clientHeight,
-  );
+  const width = Math.max(Math.ceil(rect.width), element.scrollWidth, element.clientWidth);
+  const height = Math.max(Math.ceil(rect.height), element.scrollHeight, element.clientHeight);
 
   return { width, height };
 }
 
-export async function loadHtml2canvas(retries = 2, signal?: AbortSignal): Promise<typeof import('html2canvas').default> {
+export async function loadHtml2canvas(
+  retries = 2,
+  signal?: AbortSignal
+): Promise<typeof import('html2canvas').default> {
   throwIfAborted(signal);
   let lastError: unknown;
   for (let i = 0; i <= retries; i++) {
@@ -61,7 +56,10 @@ export async function loadHtml2canvas(retries = 2, signal?: AbortSignal): Promis
   throw lastError ?? new Error('Failed to load html2canvas');
 }
 
-export async function renderCanvas(element: HTMLElement, options: ExportOptions): Promise<HTMLCanvasElement> {
+export async function renderCanvas(
+  element: HTMLElement,
+  options: ExportOptions
+): Promise<HTMLCanvasElement> {
   throwIfAborted(options.signal);
   if (!options.allowSensitiveData) {
     const sensitive = element.querySelector('input[type="password"], [data-sensitive="true"]');
@@ -96,7 +94,7 @@ export function createCanvasExporter(
   format: ExportFormat,
   mimeType: 'image/png' | 'image/jpeg' | 'image/webp',
   defaultExt: 'png' | 'jpg' | 'webp',
-  defaultQuality?: number,
+  defaultQuality?: number
 ): Exporter {
   return {
     format,
@@ -108,7 +106,7 @@ export function createCanvasExporter(
           canvas.toBlob(
             (b) => (b ? resolve(b) : reject(new Error('Failed to create blob'))),
             mimeType,
-            quality,
+            quality
           );
         });
         return {

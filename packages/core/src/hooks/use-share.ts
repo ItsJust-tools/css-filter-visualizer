@@ -23,7 +23,7 @@ export function useShare() {
   const [shareResult, setShareResult] = useState<ShareFileResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const withShareOperation = useCallback(async <T,>(fn: () => Promise<T>): Promise<T> => {
+  const withShareOperation = useCallback(async <T>(fn: () => Promise<T>): Promise<T> => {
     setIsCreating(true);
     setError(null);
     try {
@@ -61,7 +61,10 @@ export function useShare() {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = (filename ?? `${data.toolId}-${Date.now()}.itsjust.json`).replace(/[\/\\:?*"<>|]/g, '_');
+        link.download = (filename ?? `${data.toolId}-${Date.now()}.itsjust.json`).replace(
+          /[\/\\:?*"<>|]/g,
+          '_'
+        );
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
@@ -81,7 +84,7 @@ export function useShare() {
         throw err;
       });
     },
-    [createShareFile, withShareOperation],
+    [createShareFile, withShareOperation]
   );
 
   /**
@@ -123,7 +126,7 @@ export function useShare() {
         return false;
       });
     },
-    [createShareFile, withShareOperation],
+    [createShareFile, withShareOperation]
   );
 
   /**
@@ -151,7 +154,7 @@ export function useShare() {
         return false;
       });
     },
-    [createShareFile, withShareOperation],
+    [createShareFile, withShareOperation]
   );
 
   const clearShare = useCallback(() => {

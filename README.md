@@ -12,12 +12,12 @@ Multi-purpose tools (UML generators, diagram apps, paint programs) are bloated a
 
 ## Compatibility
 
-| Requirement | Version | CI Verified |
-|-------------|---------|-------------|
-| Node.js     | >= 22.0.0 | ✅ |
-| npm         | >= 10.0.0 | ✅ |
-| pnpm        | >= 9.0.0 | ✅ |
-| yarn        | >= 1.22.0 | ✅ |
+| Requirement | Version   | CI Verified |
+| ----------- | --------- | ----------- |
+| Node.js     | >= 22.0.0 | ✅          |
+| npm         | >= 10.0.0 | ✅          |
+| pnpm        | >= 9.0.0  | ✅          |
+| yarn        | >= 1.22.0 | ✅          |
 
 ## Quick Start
 
@@ -115,6 +115,7 @@ Follow these steps in order. Do not skip.
    };
    ```
 3. Replace `src/tool/tool-definition.ts`:
+
    ```ts
    interface ToolState {
      markdown: string;
@@ -137,11 +138,10 @@ Follow these steps in order. Do not skip.
        }
        return { success: true, data: { markdown: record.markdown } };
      },
-     exporters: [
-       { format: 'png', loader: () => import('./exporters/png') },
-     ],
+     exporters: [{ format: 'png', loader: () => import('./exporters/png') }],
    };
    ```
+
 4. Replace components in `src/tool/components/`:
    - `tool-canvas.tsx` — your editor UI (textarea + preview)
    - `tool-toolbar.tsx` — formatting buttons (bold, italic, heading)
@@ -151,12 +151,24 @@ Follow these steps in order. Do not skip.
    <ToolShell
      config={toolConfig}
      actions={tool.toolbarActions}
-     toolbar={<>
-       <ToolToolbar state={tool.state.data} />
-       <ImportExport formats={tool.supportedFormats} onExport={tool.handleExport} onImport={tool.importFromFile} />
-     </>}
+     toolbar={
+       <>
+         <ToolToolbar state={tool.state.data} />
+         <ImportExport
+           formats={tool.supportedFormats}
+           onExport={tool.handleExport}
+           onImport={tool.importFromFile}
+         />
+       </>
+     }
      sidebar={<ToolSidebar state={tool.state.data} />}
-     canvas={<ToolCanvas canvasRef={canvasRef} state={tool.state.data} onChange={(md) => tool.state.setData((prev) => ({ ...prev, markdown: md }))} />}
+     canvas={
+       <ToolCanvas
+         canvasRef={canvasRef}
+         state={tool.state.data}
+         onChange={(md) => tool.state.setData((prev) => ({ ...prev, markdown: md }))}
+       />
+     }
      statusBar={<span>{tool.state.data.markdown.length} chars</span>}
    />
    ```
@@ -176,18 +188,18 @@ Follow these steps in order. Do not skip.
 
 ### Files to Change
 
-| File | What to do |
-|------|-----------|
-| `src/tool/tool.config.ts` | Set id, name, description, features |
-| `src/tool/tool-definition.ts` | Define state shape, serialize, deserialize |
-| `src/tool/types.ts` | TypeScript types for your tool state |
-| `src/tool/template-metadata.ts` | Locale, language, PWA metadata |
-| `src/tool/components/tool-canvas.tsx` | Main tool UI |
-| `src/tool/components/tool-toolbar.tsx` | Toolbar buttons |
-| `src/tool/components/tool-sidebar.tsx` | Sidebar options |
-| `src/app/tool-client.tsx` | Wire everything together |
-| `src/app/page.tsx` | SEO metadata (usually auto-derived) |
-| `public/og.svg` | Open Graph image |
+| File                                   | What to do                                 |
+| -------------------------------------- | ------------------------------------------ |
+| `src/tool/tool.config.ts`              | Set id, name, description, features        |
+| `src/tool/tool-definition.ts`          | Define state shape, serialize, deserialize |
+| `src/tool/types.ts`                    | TypeScript types for your tool state       |
+| `src/tool/template-metadata.ts`        | Locale, language, PWA metadata             |
+| `src/tool/components/tool-canvas.tsx`  | Main tool UI                               |
+| `src/tool/components/tool-toolbar.tsx` | Toolbar buttons                            |
+| `src/tool/components/tool-sidebar.tsx` | Sidebar options                            |
+| `src/app/tool-client.tsx`              | Wire everything together                   |
+| `src/app/page.tsx`                     | SEO metadata (usually auto-derived)        |
+| `public/og.svg`                        | Open Graph image                           |
 
 See [GUIDE.md](./GUIDE.md) for the full walkthrough.
 
@@ -225,24 +237,24 @@ This section is the **canonical source of truth** for data contracts. All docume
 }
 ```
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `$schema` | `string` | Yes | Always `"itsjust-tool"` |
-| `toolId` | `string` | Yes | Tool identifier (matches `toolConfig.id`) |
-| `version` | `string` | Yes | Schema version |
-| `content` | `object` | Yes | Tool-specific state (passed to `deserialize`) |
-| `createdAt` | `string` | Yes | ISO 8601 timestamp |
-| `metadata` | `object` | No | Optional additional metadata |
+| Field       | Type     | Required | Description                                   |
+| ----------- | -------- | -------- | --------------------------------------------- |
+| `$schema`   | `string` | Yes      | Always `"itsjust-tool"`                       |
+| `toolId`    | `string` | Yes      | Tool identifier (matches `toolConfig.id`)     |
+| `version`   | `string` | Yes      | Schema version                                |
+| `content`   | `object` | Yes      | Tool-specific state (passed to `deserialize`) |
+| `createdAt` | `string` | Yes      | ISO 8601 timestamp                            |
+| `metadata`  | `object` | No       | Optional additional metadata                  |
 
 ### Export Formats
 
-| Format | How it works | Requires canvas ref |
-|--------|-------------|---------------------|
-| `json` | `serialize(state)` → `.json` file | No |
-| `png` | `html2canvas` → `.png` blob | Yes |
-| `jpeg` | `html2canvas` → `.jpeg` blob | Yes |
-| `webp` | `html2canvas` → `.webp` blob | Yes |
-| `pdf` | `html2canvas` + `jsPDF` → `.pdf` | Yes |
+| Format | How it works                      | Requires canvas ref |
+| ------ | --------------------------------- | ------------------- |
+| `json` | `serialize(state)` → `.json` file | No                  |
+| `png`  | `html2canvas` → `.png` blob       | Yes                 |
+| `jpeg` | `html2canvas` → `.jpeg` blob      | Yes                 |
+| `webp` | `html2canvas` → `.webp` blob      | Yes                 |
+| `pdf`  | `html2canvas` + `jsPDF` → `.pdf`  | Yes                 |
 
 Exporters are lazy-loaded. Register them in `src/tool/tool-definition.ts`:
 
@@ -264,30 +276,28 @@ type ImportResult =
 `tool.deserialize(data)` receives the parsed `content` object and must return:
 
 ```ts
-type DeserializeResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: string };
+type DeserializeResult<T> = { success: true; data: T } | { success: false; error: string };
 ```
 
 ## Scripts
 
-| Command | Description |
-|----------|-------------|
-| `npm run dev` | Start dev server (Turbopack) |
-| `npm run build` | Build core package + Next.js |
-| `npm test` | Run Vitest unit tests |
-| `npm run test:e2e` | Run Playwright E2E tests |
-| `npm run test:e2e:dev` | Run Playwright with UI for debugging |
-| `npm run lint` | Run ESLint |
-| `npm run format` | Format with Prettier |
-| `node scripts/preflight.mjs` | Validate template readiness |
+| Command                      | Description                          |
+| ---------------------------- | ------------------------------------ |
+| `npm run dev`                | Start dev server (Turbopack)         |
+| `npm run build`              | Build core package + Next.js         |
+| `npm test`                   | Run Vitest unit tests                |
+| `npm run test:e2e`           | Run Playwright E2E tests             |
+| `npm run test:e2e:dev`       | Run Playwright with UI for debugging |
+| `npm run lint`               | Run ESLint                           |
+| `npm run format`             | Format with Prettier                 |
+| `node scripts/preflight.mjs` | Validate template readiness          |
 
 ## Environment Variables
 
 Copy `.env.example` to `.env` and fill in:
 
-| Variable | Description | Required |
-|----------|-------------|----------|
+| Variable          | Description                                      | Required                                 |
+| ----------------- | ------------------------------------------------ | ---------------------------------------- |
 | `NEXT_PUBLIC_URL` | Public URL (e.g. `https://your-tool.vercel.app`) | No (defaults to `http://localhost:3000`) |
 
 > **Note:** All features work 100% client-side without any environment variables.

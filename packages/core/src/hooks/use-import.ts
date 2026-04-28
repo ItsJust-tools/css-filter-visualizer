@@ -122,7 +122,12 @@ function isValidSharePayload(value: unknown): value is {
   return true;
 }
 
-export function useImport({ acceptedFormats, onImport, onImportError, maxFileSize = DEFAULT_MAX_FILE_SIZE }: UseImportOptions = {}) {
+export function useImport({
+  acceptedFormats,
+  onImport,
+  onImportError,
+  maxFileSize = DEFAULT_MAX_FILE_SIZE,
+}: UseImportOptions = {}) {
   const [isImporting, setIsImporting] = useState(false);
   const [lastImport, setLastImport] = useState<ImportResult | null>(null);
 
@@ -237,7 +242,10 @@ export function useImport({ acceptedFormats, onImport, onImportError, maxFileSiz
           return result;
         }
 
-        if (!format || (format !== 'png' && format !== 'jpeg' && format !== 'webp' && format !== 'pdf')) {
+        if (
+          !format ||
+          (format !== 'png' && format !== 'jpeg' && format !== 'webp' && format !== 'pdf')
+        ) {
           return {
             success: false,
             error: `Unsupported binary format: ${format ?? 'unknown'}`,
@@ -286,7 +294,7 @@ export function useImport({ acceptedFormats, onImport, onImportError, maxFileSiz
         return result;
       }
     },
-    [acceptedFormats, onImport, maxFileSize],
+    [acceptedFormats, onImport, maxFileSize]
   );
 
   const importFromFile = useCallback(
@@ -302,7 +310,7 @@ export function useImport({ acceptedFormats, onImport, onImportError, maxFileSiz
         setIsImporting(false);
       }
     },
-    [parseFile, onImportError],
+    [parseFile, onImportError]
   );
 
   const importFromEvent = useCallback(
@@ -317,7 +325,7 @@ export function useImport({ acceptedFormats, onImport, onImportError, maxFileSiz
 
       return importFromFile(file);
     },
-    [importFromFile],
+    [importFromFile]
   );
 
   const clearImport = useCallback(() => {

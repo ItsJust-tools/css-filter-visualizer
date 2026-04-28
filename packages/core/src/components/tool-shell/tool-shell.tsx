@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  lazy,
-  Suspense,
-  useState,
-  useCallback,
-  useEffect,
-  useMemo,
-  type ReactNode,
-} from 'react';
+import { lazy, Suspense, useState, useCallback, useEffect, useMemo, type ReactNode } from 'react';
 import type { ToolConfig, ToolPlugin } from '../../types';
 import { ShellContext, type ToolbarActions } from './tool-shell-context';
 import { Toolbar } from './tool-shell-toolbar';
@@ -26,7 +18,6 @@ export { type ToolbarActions } from './tool-shell-context';
 export { LoadingSkeleton };
 
 const KeyboardShortcutsOverlay = lazy(() => import('../keyboard-shortcuts/keyboard-shortcuts'));
-
 
 /**
  * Props for the main application shell that wraps every itsjust tool.
@@ -99,11 +90,14 @@ export function ToolShell({
     return () => media.removeEventListener('change', update);
   }, []);
 
-  const shellActions = useMemo<ToolbarActions>(() => ({
-    ...actions,
-    onToggleSidebar: toggleSidebar,
-    onShowShortcuts: openShortcuts,
-  }), [actions, toggleSidebar, openShortcuts]);
+  const shellActions = useMemo<ToolbarActions>(
+    () => ({
+      ...actions,
+      onToggleSidebar: toggleSidebar,
+      onShowShortcuts: openShortcuts,
+    }),
+    [actions, toggleSidebar, openShortcuts]
+  );
 
   useKeyboardShortcuts(shellActions, openShortcuts);
 
@@ -115,7 +109,7 @@ export function ToolShell({
 
   const shellContextValue = useMemo(
     () => ({ config, readOnly, sidebarOpen, toggleSidebar, actions: shellActions, isMobile }),
-    [config, readOnly, sidebarOpen, toggleSidebar, shellActions, isMobile],
+    [config, readOnly, sidebarOpen, toggleSidebar, shellActions, isMobile]
   );
 
   const pluginMap = usePlugins(plugins, config.features);
@@ -128,25 +122,41 @@ export function ToolShell({
         </a>
         <Toolbar>
           {toolbarSlot}
-          {pluginMap.toolbar.map((p) => <span key={p.id}><p.Component /></span>)}
+          {pluginMap.toolbar.map((p) => (
+            <span key={p.id}>
+              <p.Component />
+            </span>
+          ))}
         </Toolbar>
         <Body>
           <ErrorBoundary>
             <Sidebar>
               {sidebarSlot}
-              {pluginMap.sidebar.map((p) => <div key={p.id}><p.Component /></div>)}
+              {pluginMap.sidebar.map((p) => (
+                <div key={p.id}>
+                  <p.Component />
+                </div>
+              ))}
             </Sidebar>
           </ErrorBoundary>
           <ErrorBoundary>
             <Canvas>
               {canvasSlot}
-              {pluginMap.canvas.map((p) => <div key={p.id}><p.Component /></div>)}
+              {pluginMap.canvas.map((p) => (
+                <div key={p.id}>
+                  <p.Component />
+                </div>
+              ))}
             </Canvas>
           </ErrorBoundary>
         </Body>
         <StatusBar>
           {statusBarSlot}
-          {pluginMap.statusBar.map((p) => <span key={p.id}><p.Component /></span>)}
+          {pluginMap.statusBar.map((p) => (
+            <span key={p.id}>
+              <p.Component />
+            </span>
+          ))}
         </StatusBar>
         {sidebarOpen && isMobile && (
           <div

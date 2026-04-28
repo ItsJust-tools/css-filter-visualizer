@@ -14,7 +14,11 @@ function modKey(): string {
 }
 
 function TooltipLabel({ text }: { text: string }) {
-  return <span className="toolbar-tooltip" role="tooltip">{text}</span>;
+  return (
+    <span className="toolbar-tooltip" role="tooltip">
+      {text}
+    </span>
+  );
 }
 
 function ThemeToggle() {
@@ -130,7 +134,9 @@ export function Toolbar({ children }: { children?: ReactNode }) {
             {brandContent}
           </button>
         ) : brandUrl ? (
-          <a href={brandUrl} className="toolbar-brand toolbar-brand-link">{brandContent}</a>
+          <a href={brandUrl} className="toolbar-brand toolbar-brand-link">
+            {brandContent}
+          </a>
         ) : (
           <span className="toolbar-brand">{brandContent}</span>
         )}

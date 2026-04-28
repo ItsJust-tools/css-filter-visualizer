@@ -51,7 +51,7 @@ describe('useToolState', () => {
 
   it('tracks dirty state and auto-saves', async () => {
     const { result } = renderHook(() =>
-      useToolState('initial', { key: 'test-dirty', enabled: true, debounceMs: 500 }),
+      useToolState('initial', { key: 'test-dirty', enabled: true, debounceMs: 500 })
     );
 
     expect(result.current.isDirty).toBe(false);
@@ -108,7 +108,7 @@ describe('useToolState', () => {
 
   it('saveNow persists immediately', async () => {
     const { result } = renderHook(() =>
-      useToolState('initial', { key: 'test-save-now', enabled: true }),
+      useToolState('initial', { key: 'test-save-now', enabled: true })
     );
 
     act(() => result.current.setData('manual'));
@@ -125,7 +125,7 @@ describe('useToolState', () => {
 
   it('saveNow clears pending auto-save timer and resets saving state', async () => {
     const { result } = renderHook(() =>
-      useToolState('initial', { key: 'test-save-now-timer', enabled: true, debounceMs: 1000 }),
+      useToolState('initial', { key: 'test-save-now-timer', enabled: true, debounceMs: 1000 })
     );
 
     act(() => result.current.setData('changed'));
@@ -153,7 +153,7 @@ describe('useToolState', () => {
     });
 
     const { result } = renderHook(() =>
-      useToolState('initial', { key: 'test-quota', enabled: true, debounceMs: 500 }),
+      useToolState('initial', { key: 'test-quota', enabled: true, debounceMs: 500 })
     );
 
     act(() => result.current.setData('change'));
@@ -162,9 +162,7 @@ describe('useToolState', () => {
     });
 
     expect(result.current.data).toBe('change');
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Quota exceeded'),
-    );
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Quota exceeded'));
     warnSpy.mockRestore();
   });
 });

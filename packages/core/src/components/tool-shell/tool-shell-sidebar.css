@@ -7,9 +7,10 @@
   flex-direction: column;
   overflow-y: auto;
   position: relative;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.2s ease;
+  transition:
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease;
 }
 
 .tool-shell-sidebar.collapsed {
@@ -78,7 +79,9 @@
   background: transparent;
   color: var(--muted);
   cursor: pointer;
-  transition: background-color 0.12s, color 0.12s;
+  transition:
+    background-color 0.12s,
+    color 0.12s;
 }
 
 .sidebar-header-close:hover {

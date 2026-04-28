@@ -5,9 +5,7 @@ export interface ToolExporterDefinition {
   loader: ExporterLoader;
 }
 
-export type DeserializeResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: string };
+export type DeserializeResult<T> = { success: true; data: T } | { success: false; error: string };
 
 /**
  * Contract that every itsjust tool must implement.

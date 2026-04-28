@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "@itsjust/core/styles.css";
+@import 'tailwindcss';
+@import '@itsjust/core/styles.css';
 
 :root {
   --background: #f1f5f9;
@@ -101,7 +101,12 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family:
+    var(--font-geist-sans),
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
@@ -348,7 +353,9 @@ body {
   font-size: 0.8125rem;
   font-weight: 500;
   font-family: inherit;
-  transition: background-color 0.1s, color 0.1s;
+  transition:
+    background-color 0.1s,
+    color 0.1s;
   border-radius: 2px;
   margin: 0 0.25rem;
 }
@@ -402,7 +409,9 @@ body {
   background: transparent;
   color: var(--muted);
   cursor: pointer;
-  transition: background-color 0.12s, color 0.12s;
+  transition:
+    background-color 0.12s,
+    color 0.12s;
 }
 
 .sidebar-header-close:hover {
@@ -485,7 +494,9 @@ body {
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: background-color 0.15s, box-shadow 0.15s;
+  transition:
+    background-color 0.15s,
+    box-shadow 0.15s;
   font-family: inherit;
 }
 
@@ -506,7 +517,9 @@ body {
   text-decoration: none;
   border: 1px solid var(--border);
   cursor: pointer;
-  transition: border-color 0.15s, background-color 0.15s;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
   font-family: inherit;
 }
 
@@ -572,7 +585,9 @@ body {
   font-weight: 500;
   font-size: 0.875rem;
   text-decoration: none;
-  transition: background-color 0.15s, box-shadow 0.15s;
+  transition:
+    background-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .share-error-card a:hover {

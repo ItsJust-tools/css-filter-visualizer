@@ -96,7 +96,7 @@ describe('useExport', () => {
               },
             }),
         },
-      ]),
+      ])
     );
 
     let exportResult: Awaited<ReturnType<typeof result.current.exportTo>>;

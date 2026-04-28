@@ -9,9 +9,7 @@ function createFile(name: string, content: string, type = 'application/json'): F
 describe('useImport', () => {
   it('imports a valid .itsjust.json file', async () => {
     const onImport = vi.fn();
-    const { result } = renderHook(() =>
-      useImport({ acceptedFormats: ['json'], onImport }),
-    );
+    const { result } = renderHook(() => useImport({ acceptedFormats: ['json'], onImport }));
 
     const file = createFile(
       'test.itsjust.json',
@@ -20,7 +18,7 @@ describe('useImport', () => {
         version: '1.0.0',
         toolId: 'simple-notepad',
         content: { text: 'hello world' },
-      }),
+      })
     );
 
     let importResult: Awaited<ReturnType<typeof result.current.importFromFile>> | undefined;
@@ -57,10 +55,7 @@ describe('useImport', () => {
   it('rejects invalid .itsjust.json format', async () => {
     const { result } = renderHook(() => useImport({ acceptedFormats: ['json'] }));
 
-    const file = createFile(
-      'bad.itsjust.json',
-      JSON.stringify({ notASchema: 'nope' }),
-    );
+    const file = createFile('bad.itsjust.json', JSON.stringify({ notASchema: 'nope' }));
 
     let importResult: Awaited<ReturnType<typeof result.current.importFromFile>> | undefined;
     await act(async () => {

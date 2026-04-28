@@ -12,8 +12,8 @@ function getFocusableElements(container: HTMLElement | null): HTMLElement[] {
   if (!container) return [];
   return Array.from(
     container.querySelectorAll(
-      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
-    ),
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    )
   );
 }
 
@@ -76,13 +76,16 @@ export function Sidebar({ children }: { children?: ReactNode }) {
   const touchStartY = useRef(0);
   const touchStartX = useRef(0);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (!sidebarEnabled || !isMobile || !sidebarOpen) return;
-    const touch = e.touches[0];
-    if (!touch) return;
-    touchStartY.current = touch.clientY;
-    touchStartX.current = touch.clientX;
-  }, [isMobile, sidebarEnabled, sidebarOpen]);
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (!sidebarEnabled || !isMobile || !sidebarOpen) return;
+      const touch = e.touches[0];
+      if (!touch) return;
+      touchStartY.current = touch.clientY;
+      touchStartX.current = touch.clientX;
+    },
+    [isMobile, sidebarEnabled, sidebarOpen]
+  );
 
   const handleTouchEnd = useCallback(
     (e: React.TouchEvent) => {
@@ -96,7 +99,7 @@ export function Sidebar({ children }: { children?: ReactNode }) {
         toggleSidebar();
       }
     },
-    [isMobile, sidebarEnabled, sidebarOpen, toggleSidebar],
+    [isMobile, sidebarEnabled, sidebarOpen, toggleSidebar]
   );
 
   // Focus trap on mobile when sidebar is open
@@ -152,7 +155,9 @@ export function Sidebar({ children }: { children?: ReactNode }) {
       onTouchEnd={handleTouchEnd}
     >
       <div className="sidebar-header">
-        <span id="tool-sidebar-title" className="sidebar-header-title">{t('options')}</span>
+        <span id="tool-sidebar-title" className="sidebar-header-title">
+          {t('options')}
+        </span>
       </div>
       <div className="sidebar-content">{children}</div>
       <div

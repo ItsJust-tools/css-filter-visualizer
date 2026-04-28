@@ -24,11 +24,10 @@
     "dev": "tsup --watch"
   },
   "peerDependencies": {
-    "next": ">=14",
+    "next": "^16.2.4",
     "react": ">=18",
     "react-dom": ">=18"
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/react": "^19",
     "react": "^19",

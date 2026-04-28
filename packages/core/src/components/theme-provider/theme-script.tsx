@@ -27,7 +27,8 @@ export function ThemeScript({ toolTheme }: { toolTheme?: ToolTheme }) {
     })();
   `;
 
-  const toolThemeScript = toolTheme ? `
+  const toolThemeScript = toolTheme
+    ? `
     (function() {
       var t = ${JSON.stringify(toolTheme)};
       var r = document.documentElement;
@@ -35,7 +36,8 @@ export function ThemeScript({ toolTheme }: { toolTheme?: ToolTheme }) {
       if (t.accentHover) r.style.setProperty('--accent-hover', t.accentHover);
       if (t.accentSubtle) r.style.setProperty('--accent-subtle', t.accentSubtle);
     })();
-  ` : '';
+  `
+    : '';
 
   return <script dangerouslySetInnerHTML={{ __html: themeScript + toolThemeScript }} />;
 }

@@ -24,7 +24,11 @@
   position: relative;
   overflow: hidden;
   animation: toast-slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-family:
+    var(--font-geist-sans),
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 .toast-dismiss {
@@ -55,13 +59,29 @@
   animation: toast-progress 3s linear forwards;
 }
 
-.toast-success { background: var(--success); color: #fff; }
-.toast-error { background: var(--error); color: #fff; }
-.toast-info { background: var(--card); color: var(--foreground); border: 1px solid var(--border); }
+.toast-success {
+  background: var(--success);
+  color: #fff;
+}
+.toast-error {
+  background: var(--error);
+  color: #fff;
+}
+.toast-info {
+  background: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
 
-.toast-success .toast-progress { background: rgba(255,255,255,0.3); }
-.toast-error .toast-progress { background: rgba(255,255,255,0.3); }
-.toast-info .toast-progress { background: var(--accent); }
+.toast-success .toast-progress {
+  background: rgba(255, 255, 255, 0.3);
+}
+.toast-error .toast-progress {
+  background: rgba(255, 255, 255, 0.3);
+}
+.toast-info .toast-progress {
+  background: var(--accent);
+}
 
 @keyframes toast-slide-in {
   from {
@@ -86,6 +106,10 @@
 }
 
 @keyframes toast-progress {
-  from { width: 100%; }
-  to { width: 0%; }
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
 }

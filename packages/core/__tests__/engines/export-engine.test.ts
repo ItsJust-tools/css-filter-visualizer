@@ -27,20 +27,18 @@ describe('ExportEngine', () => {
 
   it('returns error for unsupported format', async () => {
     const engine = new ExportEngine();
-    const result = await engine.export(
-      document.createElement('div'),
-      { format: 'xml' } as unknown as ExportOptions,
-    );
+    const result = await engine.export(document.createElement('div'), {
+      format: 'xml',
+    } as unknown as ExportOptions);
     expect(result.success).toBe(false);
     expect(result.error).toContain('No exporter');
   });
 
   it('returns error for format without loader', async () => {
     const engine = new ExportEngine();
-    const result = await engine.export(
-      document.createElement('div'),
-      { format: 'webp' } as ExportOptions,
-    );
+    const result = await engine.export(document.createElement('div'), {
+      format: 'webp',
+    } as ExportOptions);
     expect(result.success).toBe(false);
     expect(result.error).toContain('No exporter');
   });
@@ -58,10 +56,9 @@ describe('ExportEngine', () => {
     };
 
     engine.registerExporter(customExporter);
-    const result = await engine.export(
-      document.createElement('div'),
-      { format: 'json' } as ExportOptions,
-    );
+    const result = await engine.export(document.createElement('div'), {
+      format: 'json',
+    } as ExportOptions);
     expect(result.success).toBe(true);
   });
 
@@ -78,7 +75,7 @@ describe('ExportEngine', () => {
     await engine.exportAndDownload(
       document.createElement('div'),
       { format: 'json', filename: 'test.json' },
-      () => '{"test":true}',
+      () => '{"test":true}'
     );
 
     expect(clickSpy).toHaveBeenCalled();

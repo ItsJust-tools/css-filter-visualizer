@@ -28,7 +28,7 @@ function check() {
     for (const budget of BUDGETS) {
       if (budget.pattern.test(file) && size > budget.maxBytes) {
         console.error(
-          `❌ Budget exceeded: ${file} (${(size / 1024).toFixed(1)}KB) > ${budget.name} limit (${(budget.maxBytes / 1024).toFixed(1)}KB)`,
+          `❌ Budget exceeded: ${file} (${(size / 1024).toFixed(1)}KB) > ${budget.name} limit (${(budget.maxBytes / 1024).toFixed(1)}KB)`
         );
         errors++;
       }

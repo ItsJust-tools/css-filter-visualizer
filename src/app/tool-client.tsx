@@ -1,9 +1,24 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+  type ReactNode,
+} from 'react';
 import { ToolShell, useTool, ImportExport } from '@itsjust/core';
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
-import { toolConfig, templateBaseVersion, myTool, ToolCanvas, ToolToolbar, ToolSidebar } from '@/tool';
+import {
+  toolConfig,
+  templateBaseVersion,
+  myTool,
+  ToolCanvas,
+  ToolToolbar,
+  ToolSidebar,
+} from '@/tool';
 
 export default function ToolClient() {
   const ToolShellCompat = ToolShell as unknown as ComponentType<Record<string, unknown>> & {
@@ -104,7 +119,7 @@ export default function ToolClient() {
         brand: title,
       },
     }),
-    [title],
+    [title]
   );
 
   const toolbarContent = (
@@ -123,25 +138,29 @@ export default function ToolClient() {
 
   const sidebarContent = <ToolSidebar state={tool.state.data} />;
 
-  const canvasContent = (
-    <ToolCanvas
-      canvasRef={canvasRef}
-      state={tool.state.data}
-    />
-  );
+  const canvasContent = <ToolCanvas canvasRef={canvasRef} state={tool.state.data} />;
 
   const statusBarContent = (
     <>
-      <span className={`status-slot status-slot-state ${tool.state.isDirty ? 'status-unsaved' : 'status-saved'}`}>
+      <span
+        className={`status-slot status-slot-state ${tool.state.isDirty ? 'status-unsaved' : 'status-saved'}`}
+      >
         {tool.state.isDirty ? (
-          <><span className="status-saving-dot" />Unsaved</>
+          <>
+            <span className="status-saving-dot" />
+            Unsaved
+          </>
         ) : tool.state.lastSaved ? (
           <>Saved {tool.state.lastSaved}</>
-        ) : 'Ready'}
+        ) : (
+          'Ready'
+        )}
       </span>
       <span className="status-slot status-slot-title">{tool.state.data.title}</span>
       <span className="status-slot status-slot-tool-version">Tool v{toolConfig.version}</span>
-      <span className="status-slot status-slot-template-version">Template v{templateBaseVersion}</span>
+      <span className="status-slot status-slot-template-version">
+        Template v{templateBaseVersion}
+      </span>
     </>
   );
 
@@ -150,7 +169,7 @@ export default function ToolClient() {
     ToolShellCompat.Body &&
     ToolShellCompat.Sidebar &&
     ToolShellCompat.Canvas &&
-    ToolShellCompat.StatusBar,
+    ToolShellCompat.StatusBar
   );
 
   return (
@@ -174,11 +193,17 @@ export default function ToolClient() {
     >
       {hasLegacySections
         ? (() => {
-            const ToolbarSection = ToolShellCompat.Toolbar as ComponentType<{ children?: ReactNode }>;
+            const ToolbarSection = ToolShellCompat.Toolbar as ComponentType<{
+              children?: ReactNode;
+            }>;
             const BodySection = ToolShellCompat.Body as ComponentType<{ children?: ReactNode }>;
-            const SidebarSection = ToolShellCompat.Sidebar as ComponentType<{ children?: ReactNode }>;
+            const SidebarSection = ToolShellCompat.Sidebar as ComponentType<{
+              children?: ReactNode;
+            }>;
             const CanvasSection = ToolShellCompat.Canvas as ComponentType<{ children?: ReactNode }>;
-            const StatusBarSection = ToolShellCompat.StatusBar as ComponentType<{ children?: ReactNode }>;
+            const StatusBarSection = ToolShellCompat.StatusBar as ComponentType<{
+              children?: ReactNode;
+            }>;
             return (
               <>
                 <ToolbarSection>{toolbarContent}</ToolbarSection>

@@ -16,7 +16,7 @@ describe('useStorage', () => {
 
   it('saves and loads data', () => {
     vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(
-      JSON.stringify({ data: { foo: 'bar' }, savedAt: new Date().toISOString(), version: '1.0' }),
+      JSON.stringify({ data: { foo: 'bar' }, savedAt: new Date().toISOString(), version: '1.0' })
     );
 
     const { result } = renderHook(() => useStorage('test'));
@@ -54,7 +54,7 @@ describe('useStorage', () => {
     expect(loaded).toBeNull();
     expect(console.warn).toHaveBeenCalledWith(
       expect.stringContaining('Failed to load'),
-      expect.any(SyntaxError),
+      expect.any(SyntaxError)
     );
   });
 });

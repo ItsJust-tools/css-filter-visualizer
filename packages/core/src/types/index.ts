@@ -1,4 +1,11 @@
-export type { ToolConfig, ToolTheme, FeatureFlags, ExportFormat, ShortcutDef, ShortcutGroup } from './tool-config';
+export type {
+  ToolConfig,
+  ToolTheme,
+  FeatureFlags,
+  ExportFormat,
+  ShortcutDef,
+  ShortcutGroup,
+} from './tool-config';
 export { defaultFeatures } from './tool-config';
 export { formatLabels } from './export';
 export type { ExportOptions, ExportResult, Exporter, ExporterLoader } from './export';

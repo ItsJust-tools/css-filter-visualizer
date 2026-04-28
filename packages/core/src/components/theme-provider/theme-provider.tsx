@@ -51,9 +51,12 @@ function applyContrast(resolved: 'normal' | 'more') {
 function applyToolTheme(toolTheme: ToolTheme, prev?: ToolTheme) {
   if (typeof document === 'undefined') return;
   const root = document.documentElement;
-  if (toolTheme.accent && toolTheme.accent !== prev?.accent) root.style.setProperty('--accent', toolTheme.accent);
-  if (toolTheme.accentHover && toolTheme.accentHover !== prev?.accentHover) root.style.setProperty('--accent-hover', toolTheme.accentHover);
-  if (toolTheme.accentSubtle && toolTheme.accentSubtle !== prev?.accentSubtle) root.style.setProperty('--accent-subtle', toolTheme.accentSubtle);
+  if (toolTheme.accent && toolTheme.accent !== prev?.accent)
+    root.style.setProperty('--accent', toolTheme.accent);
+  if (toolTheme.accentHover && toolTheme.accentHover !== prev?.accentHover)
+    root.style.setProperty('--accent-hover', toolTheme.accentHover);
+  if (toolTheme.accentSubtle && toolTheme.accentSubtle !== prev?.accentSubtle)
+    root.style.setProperty('--accent-subtle', toolTheme.accentSubtle);
 }
 
 function getInitialTheme(): Theme {
@@ -78,7 +81,13 @@ function getInitialContrast(): ContrastMode {
   return 'system';
 }
 
-export function ThemeProvider({ children, toolTheme }: { children: React.ReactNode; toolTheme?: ToolTheme }) {
+export function ThemeProvider({
+  children,
+  toolTheme,
+}: {
+  children: React.ReactNode;
+  toolTheme?: ToolTheme;
+}) {
   const lastToolThemeRef = useRef<ToolTheme | undefined>(undefined);
   const [theme, setThemeState] = useState<Theme>(() => getInitialTheme());
   const [contrast, setContrastState] = useState<ContrastMode>(() => getInitialContrast());
@@ -91,13 +100,10 @@ export function ThemeProvider({ children, toolTheme }: { children: React.ReactNo
     return initial === 'system' ? getSystemContrast() : initial;
   });
 
-  const resolveTheme = useCallback(
-    (t: Theme) => (t === 'system' ? getSystemTheme() : t),
-    [],
-  );
+  const resolveTheme = useCallback((t: Theme) => (t === 'system' ? getSystemTheme() : t), []);
   const resolveContrast = useCallback(
     (c: ContrastMode) => (c === 'system' ? getSystemContrast() : c),
-    [],
+    []
   );
 
   const setTheme = useCallback(
@@ -112,7 +118,7 @@ export function ThemeProvider({ children, toolTheme }: { children: React.ReactNo
         console.warn('[ThemeProvider] Failed to save theme to localStorage:', error);
       }
     },
-    [resolveTheme],
+    [resolveTheme]
   );
 
   const setContrast = useCallback(
@@ -127,7 +133,7 @@ export function ThemeProvider({ children, toolTheme }: { children: React.ReactNo
         console.warn('[ThemeProvider] Failed to save contrast to localStorage:', error);
       }
     },
-    [resolveContrast],
+    [resolveContrast]
   );
 
   // Apply theme on mount and when toolTheme changes
@@ -170,7 +176,9 @@ export function ThemeProvider({ children, toolTheme }: { children: React.ReactNo
   }, [contrast]);
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, contrast, setContrast, resolvedTheme, resolvedContrast }}>
+    <ThemeContext.Provider
+      value={{ theme, setTheme, contrast, setContrast, resolvedTheme, resolvedContrast }}
+    >
       {children}
     </ThemeContext.Provider>
   );

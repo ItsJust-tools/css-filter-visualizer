@@ -71,14 +71,14 @@ This section is the **single source of truth** for all data contracts. All code 
 }
 ```
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `$schema` | `string` | Yes | Always `"itsjust-tool"` |
-| `toolId` | `string` | Yes | Matches `toolConfig.id` |
-| `version` | `string` | Yes | Schema version |
-| `content` | `object` | Yes | Passed to `tool.deserialize()` |
-| `createdAt` | `string` | Yes | ISO 8601 timestamp |
-| `metadata` | `object` | No | Optional extra metadata |
+| Field       | Type     | Required | Description                    |
+| ----------- | -------- | -------- | ------------------------------ |
+| `$schema`   | `string` | Yes      | Always `"itsjust-tool"`        |
+| `toolId`    | `string` | Yes      | Matches `toolConfig.id`        |
+| `version`   | `string` | Yes      | Schema version                 |
+| `content`   | `object` | Yes      | Passed to `tool.deserialize()` |
+| `createdAt` | `string` | Yes      | ISO 8601 timestamp             |
+| `metadata`  | `object` | No       | Optional extra metadata        |
 
 ### Import/Export Verträge
 
@@ -93,9 +93,7 @@ type ImportResult =
 **`DeserializeResult<T>` (Discriminated Union):**
 
 ```ts
-type DeserializeResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: string };
+type DeserializeResult<T> = { success: true; data: T } | { success: false; error: string };
 ```
 
 **`ExportResult`:**
@@ -112,13 +110,13 @@ type ExportResult = {
 
 ### Export Formats
 
-| Format | Requires canvas | Lazy-loaded | File |
-|--------|----------------|-------------|------|
-| `json` | No | No | Built into `@itsjust/core` |
-| `png` | Yes | Yes | `src/tool/exporters/png.ts` |
-| `jpeg` | Yes | Yes | `src/tool/exporters/jpeg.ts` |
-| `webp` | Yes | Yes | `src/tool/exporters/webp.ts` |
-| `pdf` | Yes | Yes | `src/tool/exporters/pdf.ts` |
+| Format | Requires canvas | Lazy-loaded | File                         |
+| ------ | --------------- | ----------- | ---------------------------- |
+| `json` | No              | No          | Built into `@itsjust/core`   |
+| `png`  | Yes             | Yes         | `src/tool/exporters/png.ts`  |
+| `jpeg` | Yes             | Yes         | `src/tool/exporters/jpeg.ts` |
+| `webp` | Yes             | Yes         | `src/tool/exporters/webp.ts` |
+| `pdf`  | Yes             | Yes         | `src/tool/exporters/pdf.ts`  |
 
 Register exporters in `src/tool/tool-definition.ts`:
 
@@ -152,12 +150,17 @@ const { importFromFile } = useImport({
 exportTo('png'); // oder jpeg, webp, pdf, json
 
 // Import via File Input
-<input type="file" accept=".itsjust.json,.json" onChange={(e) => importFromFile(e.target.files[0])} />
+<input
+  type="file"
+  accept=".itsjust.json,.json"
+  onChange={(e) => importFromFile(e.target.files[0])}
+/>;
 
 // Import via Drag & Drop (selber machen)
 ```
 
 **Unterstützte Formate:**
+
 - `.itsjust.json` — Share-Format (wird automatisch erkannt)
 - `.json` — JSON Export/Import
 - `.png`, `.jpeg`, `.webp` — Bild-Export (html2canvas, lazy-loaded)
@@ -235,14 +238,14 @@ NEXT_PUBLIC_URL=https://your-tool.vercel.app
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Dev server (Turbopack) |
-| `npm run build` | Build core + Next.js |
-| `npm test` | Vitest unit tests |
-| `npm run test:e2e` | Playwright E2E |
-| `npm run test:e2e:dev` | Playwright with UI |
-| `npm run lint` | ESLint |
+| Command                      | Description                 |
+| ---------------------------- | --------------------------- |
+| `npm run dev`                | Dev server (Turbopack)      |
+| `npm run build`              | Build core + Next.js        |
+| `npm test`                   | Vitest unit tests           |
+| `npm run test:e2e`           | Playwright E2E              |
+| `npm run test:e2e:dev`       | Playwright with UI          |
+| `npm run lint`               | ESLint                      |
 | `node scripts/preflight.mjs` | Validate template readiness |
 
 ## Important Conventions

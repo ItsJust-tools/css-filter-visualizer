@@ -109,9 +109,12 @@
   cursor: pointer;
   font-size: 0.8125rem;
   line-height: 1.25;
-  transition: border-color 0.15s, background-color 0.15s, color 0.15s,
-              transform 0.1s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s,
+    color 0.15s,
+    transform 0.1s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.15s;
   white-space: nowrap;
   user-select: none;
   font-weight: 500;
@@ -201,7 +204,9 @@
 .theme-toggle-icon svg {
   position: absolute;
   inset: 0;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .theme-toggle-icon svg.fade-in {

@@ -32,7 +32,7 @@ describe('useDragAndDropImport', () => {
   it('imports accepted file by extension', () => {
     const onImport = vi.fn();
     const { result } = renderHook(() =>
-      useDragAndDropImport({ onImport, acceptedFormats: ['json'] }),
+      useDragAndDropImport({ onImport, acceptedFormats: ['json'] })
     );
     const file = new File(['{}'], 'test.json', { type: 'application/json' });
 
@@ -47,9 +47,7 @@ describe('useDragAndDropImport', () => {
 
   it('rejects unsupported file format', () => {
     const onImport = vi.fn();
-    renderHook(() =>
-      useDragAndDropImport({ onImport, acceptedFormats: ['json'] }),
-    );
+    renderHook(() => useDragAndDropImport({ onImport, acceptedFormats: ['json'] }));
     const file = new File(['png'], 'x.png', { type: 'image/png' });
 
     act(() => {

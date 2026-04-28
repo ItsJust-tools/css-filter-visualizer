@@ -14,7 +14,8 @@ export function ToolSidebar({ state }: ToolSidebarProps) {
         <p>{state.title}</p>
       </div>
       <p className="sidebar-hint">
-        This is your tool sidebar. Add controls here in <code>src/tool/components/tool-sidebar.tsx</code>.
+        This is your tool sidebar. Add controls here in{' '}
+        <code>src/tool/components/tool-sidebar.tsx</code>.
       </p>
     </div>
   );

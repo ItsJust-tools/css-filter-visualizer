@@ -80,7 +80,9 @@ describe('useTool', () => {
     const canvasRef = { current: document.createElement('div') };
     const { result } = renderHook(() => useTool(mockTool, canvasRef), renderOptions);
 
-    const file = new File([JSON.stringify({ title: 'Imported' })], 'data.json', { type: 'application/json' });
+    const file = new File([JSON.stringify({ title: 'Imported' })], 'data.json', {
+      type: 'application/json',
+    });
 
     await act(async () => {
       await result.current.importFromFile(file);
@@ -94,7 +96,9 @@ describe('useTool', () => {
     const canvasRef = { current: document.createElement('div') };
     const { result } = renderHook(() => useTool(mockTool, canvasRef), renderOptions);
 
-    const file = new File([JSON.stringify({ invalid: true })], 'data.json', { type: 'application/json' });
+    const file = new File([JSON.stringify({ invalid: true })], 'data.json', {
+      type: 'application/json',
+    });
 
     await act(async () => {
       await result.current.importFromFile(file);

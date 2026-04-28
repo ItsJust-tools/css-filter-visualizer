@@ -13,7 +13,10 @@ export interface AutoSaveOptions {
   maxHistoryEntries?: number;
   version?: string;
   storageManager?: {
-    loadEntry: <T>(key: string, expectedVersion?: string) => { status: 'missing' | 'ok' | 'corrupt'; data: T | null };
+    loadEntry: <T>(
+      key: string,
+      expectedVersion?: string
+    ) => { status: 'missing' | 'ok' | 'corrupt'; data: T | null };
     save: <T>(key: string, data: T, version?: string) => Promise<void>;
   };
   historyStorage?: Pick<Storage, 'getItem' | 'setItem'>;

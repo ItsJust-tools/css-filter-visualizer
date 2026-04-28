@@ -25,7 +25,7 @@ export interface Exporter {
   export: (
     element: HTMLElement,
     options: ExportOptions,
-    stateSerializer?: () => string,
+    stateSerializer?: () => string
   ) => Promise<ExportResult>;
 }
 

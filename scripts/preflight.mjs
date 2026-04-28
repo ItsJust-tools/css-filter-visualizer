@@ -143,7 +143,7 @@ if (toolConfigText) {
     warn("tool.config.ts name is still 'My Tool'");
   }
   if (toolConfigText.includes("description: 'A minimal tool template")) {
-    warn("tool.config.ts description is still template default");
+    warn('tool.config.ts description is still template default');
   }
 } else {
   error('Cannot read src/tool/tool.config.ts');
@@ -258,6 +258,8 @@ if (errors.length === 0 && warnings.length === 0) {
   console.log(`⚠️  Preflight passed with ${warnings.length} warning(s). Review before shipping.`);
   process.exit(0);
 } else {
-  console.log(`❌ Preflight failed with ${errors.length} error(s) and ${warnings.length} warning(s).`);
+  console.log(
+    `❌ Preflight failed with ${errors.length} error(s) and ${warnings.length} warning(s).`
+  );
   process.exit(1);
 }

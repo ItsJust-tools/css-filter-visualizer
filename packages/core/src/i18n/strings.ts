@@ -43,7 +43,7 @@ export const strings = {
 } as const;
 
 export type Locale = keyof typeof strings;
-export type StringKey = keyof typeof strings['en'];
+export type StringKey = keyof (typeof strings)['en'];
 
 /**
  * Retrieve a localized string. Falls back to English.

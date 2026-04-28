@@ -6,7 +6,13 @@ export function StatusBar({ children }: { children?: ReactNode }) {
   if (!config.features.statusBar) return null;
 
   return (
-    <footer className="tool-shell-statusbar" role="status" aria-label="Status" aria-live="polite" aria-atomic="true">
+    <footer
+      className="tool-shell-statusbar"
+      role="status"
+      aria-label="Status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
       {children}
     </footer>
   );

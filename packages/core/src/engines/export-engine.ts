@@ -14,7 +14,8 @@ const ALLOWED_DOWNLOAD_TYPES = new Set([
 function triggerDownload(result: ExportResult): void {
   if (!result.success || !result.data) return;
 
-  const blob = result.data instanceof Blob ? result.data : new Blob([result.data], { type: 'text/plain' });
+  const blob =
+    result.data instanceof Blob ? result.data : new Blob([result.data], { type: 'text/plain' });
   if (!ALLOWED_DOWNLOAD_TYPES.has(blob.type)) {
     console.error(`[triggerDownload] Blocked unsafe blob type: ${blob.type}`);
     return;
@@ -48,7 +49,10 @@ export class ExportEngine {
   private cachedFormats: ExportFormat[] = [];
   private maxExporterCacheSize: number;
 
-  constructor(localLoaders?: Partial<Record<ExportFormat, ExporterLoader>>, maxExporterCacheSize = 6) {
+  constructor(
+    localLoaders?: Partial<Record<ExportFormat, ExporterLoader>>,
+    maxExporterCacheSize = 6
+  ) {
     this.localLoaders = { ...localLoaders };
     this.maxExporterCacheSize = Math.max(1, maxExporterCacheSize);
   }
@@ -95,7 +99,7 @@ export class ExportEngine {
   async export(
     element: HTMLElement,
     options: ExportOptions,
-    stateSerializer?: () => string,
+    stateSerializer?: () => string
   ): Promise<ExportResult> {
     const exporter = await this.loadExporter(options.format);
     if (!exporter) {
@@ -113,7 +117,7 @@ export class ExportEngine {
   async exportAndDownload(
     element: HTMLElement,
     options: ExportOptions,
-    stateSerializer?: () => string,
+    stateSerializer?: () => string
   ): Promise<ExportResult> {
     const result = await this.export(element, options, stateSerializer);
     if (result.success) {
@@ -125,7 +129,7 @@ export class ExportEngine {
 
 export function createExportEngine(
   localLoaders?: Partial<Record<ExportFormat, ExporterLoader>>,
-  maxExporterCacheSize?: number,
+  maxExporterCacheSize?: number
 ): ExportEngine {
   return new ExportEngine(localLoaders, maxExporterCacheSize);
 }

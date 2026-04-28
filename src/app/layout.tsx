@@ -32,16 +32,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang={templateMetadata.htmlLang} className={`${geistSans.variable} h-full antialiased`} suppressHydrationWarning>
+    <html
+      lang={templateMetadata.htmlLang}
+      className={`${geistSans.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
       <head>
         <ThemeScript toolTheme={toolConfig.theme} />
       </head>
       <body className="min-h-full flex flex-col">
-        <a href="#main-content" className="skip-nav">Skip to content</a>
+        <a href="#main-content" className="skip-nav">
+          Skip to content
+        </a>
         <ThemeProvider toolTheme={toolConfig.theme}>
-          <ToastProvider>
-            {children}
-          </ToastProvider>
+          <ToastProvider>{children}</ToastProvider>
         </ThemeProvider>
       </body>
     </html>

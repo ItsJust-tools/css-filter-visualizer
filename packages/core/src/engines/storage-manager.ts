@@ -59,7 +59,7 @@ export class StorageManager {
       const entry: StorageData<unknown> = JSON.parse(raw);
       if (expectedVersion && entry.version !== expectedVersion) {
         console.warn(
-          `[StorageManager] Version mismatch for "${key}": expected ${expectedVersion}, got ${entry.version}`,
+          `[StorageManager] Version mismatch for "${key}": expected ${expectedVersion}, got ${entry.version}`
         );
       }
       if (entry.encoding === 'lz-string') {

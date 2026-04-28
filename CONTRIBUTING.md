@@ -28,6 +28,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore:` — build process or auxiliary tool changes
 
 Example:
+
 ```text
 feat: add svg export support
 
@@ -106,6 +107,7 @@ Visual regression tests use Playwright screenshots. To keep snapshots stable:
 ## Reporting Issues
 
 Use GitHub Issues. Include:
+
 - Steps to reproduce
 - Expected vs actual behavior
 - Browser and OS version

@@ -18,11 +18,7 @@ export function MockThemeProvider({
 }
 
 export function MockToastProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <div data-toast-mock>
-      {children}
-    </div>
-  );
+  return <div data-toast-mock>{children}</div>;
 }
 
 export function MockIntlProvider({

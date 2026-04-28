@@ -123,21 +123,19 @@ export const myTool: Tool<MyState> = {
       },
     };
   },
-  exporters: [
-    { format: 'png', loader: () => import('./exporters/png') },
-  ],
+  exporters: [{ format: 'png', loader: () => import('./exporters/png') }],
 };
 ```
 
-| Field | Purpose |
-|-------|---------|
-| `id` | Storage key prefix, share file identifier |
-| `name` | Human-readable name |
-| `version` | Share file schema version |
-| `config` | `ToolConfig` — features, export formats, theme |
-| `initialState` | State when the tool first loads |
-| `serialize` | Convert state to string for export/share |
-| `deserialize` | Recover state from imported data |
+| Field          | Purpose                                        |
+| -------------- | ---------------------------------------------- |
+| `id`           | Storage key prefix, share file identifier      |
+| `name`         | Human-readable name                            |
+| `version`      | Share file schema version                      |
+| `config`       | `ToolConfig` — features, export formats, theme |
+| `initialState` | State when the tool first loads                |
+| `serialize`    | Convert state to string for export/share       |
+| `deserialize`  | Recover state from imported data               |
 
 ### Why a contract?
 
@@ -185,15 +183,15 @@ Toggle `features` to enable/disable UI sections. If `sidebar: false`, the sideba
 ```ts
 const tool = useTool(myTool, canvasRef);
 
-tool.state.data        // current state
-tool.state.setData(updater)   // update state (debounced history)
-tool.state.undo()      // undo
-tool.state.redo()      // redo
-tool.state.canUndo     // boolean
-tool.state.canRedo     // boolean
-tool.state.isDirty     // unsaved changes?
-tool.state.lastSaved   // Date | null
-tool.state.saveNow()   // force save immediately
+tool.state.data; // current state
+tool.state.setData(updater); // update state (debounced history)
+tool.state.undo(); // undo
+tool.state.redo(); // redo
+tool.state.canUndo; // boolean
+tool.state.canRedo; // boolean
+tool.state.isDirty; // unsaved changes?
+tool.state.lastSaved; // Date | null
+tool.state.saveNow(); // force save immediately
 ```
 
 ### Wiring it up in `tool-client.tsx`
@@ -208,7 +206,11 @@ export default function ToolClient() {
     <ToolShell config={toolConfig} actions={tool.toolbarActions}>
       <ToolShell.Toolbar>
         <ToolToolbar state={tool.state.data} />
-        <ImportExport formats={tool.supportedFormats} onExport={tool.handleExport} onImport={tool.importFromFile} />
+        <ImportExport
+          formats={tool.supportedFormats}
+          onExport={tool.handleExport}
+          onImport={tool.importFromFile}
+        />
       </ToolShell.Toolbar>
       <ToolShell.Body>
         <ToolShell.Sidebar>
@@ -230,6 +232,7 @@ export default function ToolClient() {
 ### Canvas
 
 The canvas is where your tool lives. It receives:
+
 - `canvasRef` — needed for PNG/JPEG/WebP/PDF export (html2canvas captures this element)
 - `state` — current tool state
 - `logic` — tool-specific action creators
@@ -283,13 +286,13 @@ export function ToolSidebar({ state, logic }: ToolSidebarProps) {
 
 ### Supported Formats
 
-| Format | How it works | Requires canvas ref |
-|--------|-------------|---------------------|
-| `json` | `serialize(state)` | No |
-| `png`  | html2canvas + canvas.toBlob | Yes |
-| `jpeg` | html2canvas + canvas.toBlob | Yes |
-| `webp` | html2canvas + canvas.toBlob | Yes |
-| `pdf`  | html2canvas + jsPDF | Yes |
+| Format | How it works                | Requires canvas ref |
+| ------ | --------------------------- | ------------------- |
+| `json` | `serialize(state)`          | No                  |
+| `png`  | html2canvas + canvas.toBlob | Yes                 |
+| `jpeg` | html2canvas + canvas.toBlob | Yes                 |
+| `webp` | html2canvas + canvas.toBlob | Yes                 |
+| `pdf`  | html2canvas + jsPDF         | Yes                 |
 
 Set `exportFormats` in `tool.config.ts` to control which formats appear in the Export dropdown.
 
@@ -325,7 +328,9 @@ The share format is automatically handled by `useTool`. Users can import `.itsju
   "$schema": "itsjust-tool",
   "toolId": "your-tool-id",
   "version": "1.0",
-  "content": { /* your state shape */ },
+  "content": {
+    /* your state shape */
+  },
   "createdAt": "2026-04-22T12:00:00Z",
   "metadata": { "schemaVersion": "1.0" }
 }
@@ -419,15 +424,19 @@ Test your tool logic with Vitest:
 import { describe, it, expect } from 'vitest';
 
 function setPixel(grid: string[][], x: number, y: number, color: string) {
-  return grid.map((row, ry) =>
-    ry === y ? row.map((c, rx) => (rx === x ? color : c)) : row
-  );
+  return grid.map((row, ry) => (ry === y ? row.map((c, rx) => (rx === x ? color : c)) : row));
 }
 
 describe('setPixel', () => {
   it('changes the color at the given coordinate', () => {
-    const grid = [['#fff', '#fff'], ['#fff', '#fff']];
-    expect(setPixel(grid, 0, 1, '#f00')).toEqual([['#fff', '#fff'], ['#f00', '#fff']]);
+    const grid = [
+      ['#fff', '#fff'],
+      ['#fff', '#fff'],
+    ];
+    expect(setPixel(grid, 0, 1, '#f00')).toEqual([
+      ['#fff', '#fff'],
+      ['#f00', '#fff'],
+    ]);
   });
 });
 ```
@@ -480,14 +489,14 @@ When handing this codebase to an LLM (e.g., Claude, GPT), provide these exact in
 
 ### What to Edit
 
-| Target | Rule |
-|--------|------|
-| `src/tool/tool.config.ts` | Always start here. Set id, name, description, features, theme. |
-| `src/tool/tool-definition.ts` | Define state shape, serialize, deserialize, exporters. |
-| `src/tool/components/*.tsx` | Canvas, toolbar, sidebar. Keep them focused. |
-| `src/app/tool-client.tsx` | Wire components. Don't add business logic here. |
-| `src/tool/template-metadata.ts` | Set locale, language, app name. |
-| `public/og.svg` | Replace with tool-specific OG image. |
+| Target                          | Rule                                                           |
+| ------------------------------- | -------------------------------------------------------------- |
+| `src/tool/tool.config.ts`       | Always start here. Set id, name, description, features, theme. |
+| `src/tool/tool-definition.ts`   | Define state shape, serialize, deserialize, exporters.         |
+| `src/tool/components/*.tsx`     | Canvas, toolbar, sidebar. Keep them focused.                   |
+| `src/app/tool-client.tsx`       | Wire components. Don't add business logic here.                |
+| `src/tool/template-metadata.ts` | Set locale, language, app name.                                |
+| `public/og.svg`                 | Replace with tool-specific OG image.                           |
 
 ### Strict Do / Don't
 
@@ -523,13 +532,36 @@ When handing this codebase to an LLM (e.g., Claude, GPT), provide these exact in
 export { ToolShell, ImportExport, ThemeProvider, ToastProvider, KeyboardShortcutsOverlay };
 
 // Hooks
-export { useTool, useToolState, useExport, useImport, useShare, useStorage, useDragAndDropImport, useKeyboardShortcuts, useRelativeTime };
+export {
+  useTool,
+  useToolState,
+  useExport,
+  useImport,
+  useShare,
+  useStorage,
+  useDragAndDropImport,
+  useKeyboardShortcuts,
+  useRelativeTime,
+};
 
 // Engines
 export { ExportEngine, StorageManager, createExportEngine };
 
 // Types
-export type { Tool, ToolConfig, ToolState, ExportFormat, ExportOptions, ExportResult, ImportResult, DeserializeResult, StorageLoadResult, Theme, ToolTheme, ToolPlugin };
+export type {
+  Tool,
+  ToolConfig,
+  ToolState,
+  ExportFormat,
+  ExportOptions,
+  ExportResult,
+  ImportResult,
+  DeserializeResult,
+  StorageLoadResult,
+  Theme,
+  ToolTheme,
+  ToolPlugin,
+};
 
 // Testing
 export { renderTool, createMockToolState } from './testing';

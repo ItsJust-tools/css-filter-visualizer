@@ -59,7 +59,8 @@ test('sidebar toggle button works', async ({ page }) => {
   await closeBackdropIfOpen(page);
   const sidebarToggle = page.locator('.toolbar-btn-sidebar');
   const sidebar = page.locator('.tool-shell-sidebar');
-  const mobile = (await page.viewportSize())?.width !== undefined && (await page.viewportSize())!.width <= 768;
+  const mobile =
+    (await page.viewportSize())?.width !== undefined && (await page.viewportSize())!.width <= 768;
   const isCollapsed = await sidebar.evaluate((el) => el.classList.contains('collapsed'));
   if (isCollapsed) {
     await sidebarToggle.click();
@@ -179,7 +180,12 @@ test('mobile sidebar backdrop closes sidebar', async ({ page }) => {
   const sidebarToggle = page.locator('.toolbar-btn-sidebar');
   const sidebar = page.locator('.tool-shell-sidebar');
 
-  if (await page.locator('.sidebar-backdrop').isVisible().catch(() => false)) {
+  if (
+    await page
+      .locator('.sidebar-backdrop')
+      .isVisible()
+      .catch(() => false)
+  ) {
     await expect(sidebar).toHaveClass(/open/);
   } else {
     await sidebarToggle.click();
@@ -226,10 +232,7 @@ test('export json download triggers', async ({ page }) => {
   await exportButton.click();
 
   const jsonOption = page.getByRole('option', { name: /JSON/ });
-  const [download] = await Promise.all([
-    page.waitForEvent('download'),
-    jsonOption.click(),
-  ]);
+  const [download] = await Promise.all([page.waitForEvent('download'), jsonOption.click()]);
 
   expect(download.suggestedFilename()).toMatch(/\.json$/);
 });

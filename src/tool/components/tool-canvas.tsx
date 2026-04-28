@@ -13,7 +13,5 @@ export function ToolCanvas({ canvasRef }: ToolCanvasProps) {
   const localRef = useRef<HTMLDivElement>(null);
   const ref = canvasRef ?? localRef;
 
-  return (
-    <div ref={ref} className="tool-canvas" role="application" aria-label="Tool canvas" />
-  );
+  return <div ref={ref} className="tool-canvas" role="application" aria-label="Tool canvas" />;
 }

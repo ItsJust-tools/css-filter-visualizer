@@ -73,4 +73,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Deprecated API**: `registerExporterLoader` and `registerToolExporters` removed.
 - **Dead Component**: `tool-shell-export-dropdown.tsx` removed (unused, `ImportExport` component is used instead).
 - **Duplicate `formatLabels`**: Centralized in `packages/core/src/types/export.ts`.
-

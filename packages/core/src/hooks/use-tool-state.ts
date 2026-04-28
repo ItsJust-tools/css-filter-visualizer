@@ -13,9 +13,10 @@ function getStorageNamespace(): string {
   try {
     const existing = localStorage.getItem(NAMESPACE_KEY);
     if (existing) return existing;
-    const created = typeof crypto !== 'undefined' && 'randomUUID' in crypto
-      ? crypto.randomUUID()
-      : `ns-${Date.now()}`;
+    const created =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `ns-${Date.now()}`;
     localStorage.setItem(NAMESPACE_KEY, created);
     return created;
   } catch {
@@ -36,21 +37,17 @@ function getStorageNamespace(): string {
  * state.setData(prev => ({ ...prev, text: 'hello' }));
  * state.undo();
  */
-export function useToolState<T>(
-  initial: T,
-  options: Partial<AutoSaveOptions> = {},
-): ToolState<T> {
-  const opts = useMemo(
-    () => ({ ...defaultAutoSaveOptions, ...options }),
-    [options],
-  );
+export function useToolState<T>(initial: T, options: Partial<AutoSaveOptions> = {}): ToolState<T> {
+  const opts = useMemo(() => ({ ...defaultAutoSaveOptions, ...options }), [options]);
   const storage = useMemo(
-    () => opts.storageManager ?? new StorageManager(`itsjust:${getStorageNamespace()}:${opts.key}`, opts.version ?? '1.0.0'),
-    [opts.key, opts.version, opts.storageManager],
+    () =>
+      opts.storageManager ??
+      new StorageManager(`itsjust:${getStorageNamespace()}:${opts.key}`, opts.version ?? '1.0.0'),
+    [opts.key, opts.version, opts.storageManager]
   );
   const historyStorage = useMemo(
     () => opts.historyStorage ?? (typeof window !== 'undefined' ? localStorage : undefined),
-    [opts.historyStorage],
+    [opts.historyStorage]
   );
   const historyPrefix = opts.historyNamespace ?? getStorageNamespace();
   const [data, setDataInternal] = useState<T>(initial);
@@ -112,7 +109,7 @@ export function useToolState<T>(
       if (!historyStorage) return false;
       historyStorage.setItem(
         HISTORY_KEY(`${historyPrefix}:${opts.key}`),
-        JSON.stringify({ history: historyRef.current, future: futureRef.current }),
+        JSON.stringify({ history: historyRef.current, future: futureRef.current })
       );
       return true;
     } catch (error) {
@@ -155,7 +152,16 @@ export function useToolState<T>(
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [data, opts.enabled, opts.debounceMs, opts.maxWaitMs, opts.key, opts.version, persistHistory, storage]);
+  }, [
+    data,
+    opts.enabled,
+    opts.debounceMs,
+    opts.maxWaitMs,
+    opts.key,
+    opts.version,
+    persistHistory,
+    storage,
+  ]);
 
   // Clear timer when auto-save is disabled
   useEffect(() => {
@@ -189,7 +195,7 @@ export function useToolState<T>(
         return next;
       });
     },
-    [maxHistory],
+    [maxHistory]
   );
 
   const undo = useCallback(() => {

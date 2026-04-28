@@ -19,10 +19,7 @@ const testConfig: ToolConfig = {
   },
 };
 
-export function renderTool(
-  ui: React.ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>,
-) {
+export function renderTool(ui: React.ReactElement, options?: Omit<RenderOptions, 'wrapper'>) {
   return render(ui, {
     wrapper: ({ children }) => (
       <MockThemeProvider theme="light">
@@ -56,7 +53,9 @@ export function createMockToolState<T>(initial: T): MockToolState<T> {
   let historyIndex = 0;
 
   return {
-    get data() { return data; },
+    get data() {
+      return data;
+    },
     setData: (updater: T | ((prev: T) => T)) => {
       const next = isFunctionUpdater(updater) ? updater(data) : updater;
       data = next;
@@ -76,8 +75,12 @@ export function createMockToolState<T>(initial: T): MockToolState<T> {
         data = history[historyIndex]!;
       }
     },
-    get canUndo() { return historyIndex > 0; },
-    get canRedo() { return historyIndex < history.length - 1; },
+    get canUndo() {
+      return historyIndex > 0;
+    },
+    get canRedo() {
+      return historyIndex < history.length - 1;
+    },
     clearHistory: () => {
       history.length = 0;
       history.push(data);

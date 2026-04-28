@@ -24,7 +24,16 @@ export interface ImportExportProps {
 
 function ImportIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M8 3v8M5 8l3 3 3-3" />
       <path d="M3 11v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1" />
     </svg>
@@ -34,7 +43,16 @@ ImportIcon.displayName = 'ImportIcon';
 
 function DownloadIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M8 3v8M5 8l3 3 3-3" />
       <rect x="3" y="11" width="10" height="2" rx="0.5" fill="currentColor" stroke="none" />
     </svg>
@@ -44,7 +62,16 @@ DownloadIcon.displayName = 'DownloadIcon';
 
 function ShareIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M12 5 8 1 4 5" />
       <path d="M8 1v9" />
       <path d="M3 9v3a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9" />
@@ -86,7 +113,11 @@ export function ImportExport({
   useEffect(() => {
     if (!dropdownOpen) return;
     const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && e.target instanceof Node && !dropdownRef.current.contains(e.target)) {
+      if (
+        dropdownRef.current &&
+        e.target instanceof Node &&
+        !dropdownRef.current.contains(e.target)
+      ) {
         setDropdownOpen(false);
       }
     };
@@ -113,7 +144,7 @@ export function ImportExport({
       onImport(file);
       e.target.value = '';
     },
-    [onImport],
+    [onImport]
   );
 
   const handleDropdownKeyDown = useCallback(
@@ -162,21 +193,28 @@ export function ImportExport({
             e.preventDefault();
             typeaheadRef.current += e.key.toLowerCase();
             if (typeaheadTimerRef.current) clearTimeout(typeaheadTimerRef.current);
-            typeaheadTimerRef.current = setTimeout(() => { typeaheadRef.current = ''; }, 500);
+            typeaheadTimerRef.current = setTimeout(() => {
+              typeaheadRef.current = '';
+            }, 500);
 
-            const match = formats.findIndex(
-              (f) => formatLabels[f]?.toLowerCase().startsWith(typeaheadRef.current),
+            const match = formats.findIndex((f) =>
+              formatLabels[f]?.toLowerCase().startsWith(typeaheadRef.current)
             );
             if (match >= 0) setSelected(match);
           }
           break;
       }
     },
-    [dropdownOpen, formats, onExport, selected],
+    [dropdownOpen, formats, onExport, selected]
   );
 
   return (
-    <div className="import-export-group" ref={dropdownRef} role="group" aria-label={t('importExport')}>
+    <div
+      className="import-export-group"
+      ref={dropdownRef}
+      role="group"
+      aria-label={t('importExport')}
+    >
       {/* Hidden file input for import */}
       <input
         ref={inputRef}

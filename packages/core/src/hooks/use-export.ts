@@ -4,7 +4,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ExportFormat, ExportOptions, ToolConfig, ExporterLoader } from '../types';
 import { createExportEngine } from '../engines/export-engine';
 
-function getAvailableFormats(exporters?: Array<{ format: ExportFormat; loader: ExporterLoader }>): ExportFormat[] {
+function getAvailableFormats(
+  exporters?: Array<{ format: ExportFormat; loader: ExporterLoader }>
+): ExportFormat[] {
   const builtin: ExportFormat[] = ['json'];
   const registered = exporters?.map((e) => e.format) ?? [];
   return [...builtin, ...registered];
@@ -27,11 +29,11 @@ export function useExport(
   canvasRef: React.RefObject<HTMLElement | null>,
   config: ToolConfig,
   stateSerializer?: () => string,
-  exporters?: Array<{ format: ExportFormat; loader: ExporterLoader }>,
+  exporters?: Array<{ format: ExportFormat; loader: ExporterLoader }>
 ) {
   const localLoaders = useMemo(
     () => (exporters ? Object.fromEntries(exporters.map((e) => [e.format, e.loader])) : undefined),
-    [exporters],
+    [exporters]
   );
   const engineRef = useRef(createExportEngine(localLoaders));
   const [isExporting, setIsExporting] = useState(false);
@@ -41,11 +43,11 @@ export function useExport(
   const available = useMemo(() => getAvailableFormats(exporters), [exporters]);
   const missing = useMemo(
     () => config.exportFormats.filter((f) => !available.includes(f)),
-    [available, config.exportFormats],
+    [available, config.exportFormats]
   );
   const supportedFormats = useMemo(
     () => config.exportFormats.filter((f) => available.includes(f)),
-    [available, config.exportFormats],
+    [available, config.exportFormats]
   );
 
   useEffect(() => {
@@ -108,7 +110,7 @@ export function useExport(
         return await engineRef.current.exportAndDownload(
           canvasRef.current,
           merged,
-          stateSerializer,
+          stateSerializer
         );
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Export failed';
@@ -126,7 +128,7 @@ export function useExport(
         abortControllerRef.current = null;
       }
     },
-    [canvasRef, stateSerializer],
+    [canvasRef, stateSerializer]
   );
 
   return {

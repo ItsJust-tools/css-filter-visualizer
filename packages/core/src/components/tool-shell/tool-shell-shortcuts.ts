@@ -45,7 +45,6 @@ export function useKeyboardShortcuts(actions: ToolbarActions, onShowShortcuts: (
         }
         return;
       }
-
     }
 
     window.addEventListener('keydown', handler);
@@ -56,7 +55,7 @@ export function useKeyboardShortcuts(actions: ToolbarActions, onShowShortcuts: (
 export function buildDefaultShortcutGroups(config: ToolConfig): ShortcutGroup[] {
   const groups: ShortcutGroup[] = [];
 
-  const general: typeof groups[0]['shortcuts'] = [];
+  const general: (typeof groups)[0]['shortcuts'] = [];
   const mod = modKey();
   if (config.features.undoRedo) {
     general.push({ keys: `${mod}+Z`, label: 'Undo' });
@@ -65,11 +64,11 @@ export function buildDefaultShortcutGroups(config: ToolConfig): ShortcutGroup[] 
   general.push({ keys: `${mod}+S`, label: 'Save', description: 'auto-saves anyway' });
   if (general.length) groups.push({ title: 'General', shortcuts: general });
 
-  const actions: typeof groups[0]['shortcuts'] = [];
+  const actions: (typeof groups)[0]['shortcuts'] = [];
   if (config.features.export) actions.push({ keys: `${mod}+E`, label: 'Export' });
   if (actions.length) groups.push({ title: 'Actions', shortcuts: actions });
 
-  const view: typeof groups[0]['shortcuts'] = [];
+  const view: (typeof groups)[0]['shortcuts'] = [];
   if (config.features.sidebar) view.push({ keys: `${mod}+B`, label: 'Toggle sidebar' });
   if (config.features.darkMode) view.push({ keys: `${mod}+D`, label: 'Toggle dark mode' });
   if (view.length) groups.push({ title: 'View', shortcuts: view });

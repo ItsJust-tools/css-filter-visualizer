@@ -6,10 +6,5 @@ export function JsonLd({ config }: { config: ToolConfig }) {
   // Escape </script> sequences by replacing `<` with `<` so the JSON
   // string cannot break out of the `<script>` tag even if ToolConfig contains HTML.
   const safeJson = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: safeJson }}
-    />
-  );
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJson }} />;
 }

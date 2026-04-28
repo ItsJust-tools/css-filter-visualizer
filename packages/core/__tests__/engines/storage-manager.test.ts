@@ -47,9 +47,7 @@ describe('StorageManager', () => {
     });
 
     await expect(manager.save('overflow', 'x'.repeat(1024))).rejects.toThrow();
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Quota exceeded'),
-    );
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Quota exceeded'));
     warnSpy.mockRestore();
   });
 
@@ -57,9 +55,7 @@ describe('StorageManager', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     await manager.save('key', 'value', '1.0');
     manager.load<string>('key', '2.0');
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Version mismatch'),
-    );
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Version mismatch'));
     warnSpy.mockRestore();
   });
 

@@ -22,7 +22,7 @@ export function KeyboardShortcutsOverlay({ groups, onClose }: KeyboardShortcutsO
 
       if (e.key === 'Tab' && ref.current) {
         const focusable = ref.current.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
@@ -66,7 +66,13 @@ export function KeyboardShortcutsOverlay({ groups, onClose }: KeyboardShortcutsO
   }, []);
 
   return (
-    <div className="shortcuts-overlay" ref={ref} aria-modal="true" role="dialog" aria-label={t('keyboardShortcuts')}>
+    <div
+      className="shortcuts-overlay"
+      ref={ref}
+      aria-modal="true"
+      role="dialog"
+      aria-label={t('keyboardShortcuts')}
+    >
       <div className="shortcuts-card">
         <div className="shortcuts-header">
           <h2 className="shortcuts-title">{t('keyboardShortcuts')}</h2>
@@ -77,7 +83,15 @@ export function KeyboardShortcutsOverlay({ groups, onClose }: KeyboardShortcutsO
             aria-label={t('closeShortcuts')}
             type="button"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            >
               <path d="M3 3l8 8M11 3l-8 8" />
             </svg>
           </button>
@@ -90,7 +104,9 @@ export function KeyboardShortcutsOverlay({ groups, onClose }: KeyboardShortcutsO
                 <div key={si} className="shortcut-row">
                   <span className="shortcut-label">
                     {s.label}
-                    {s.description && <span className="shortcut-description"> &mdash; {s.description}</span>}
+                    {s.description && (
+                      <span className="shortcut-description"> &mdash; {s.description}</span>
+                    )}
                   </span>
                   <span className="shortcut-keys">
                     <kbd className="shortcut-key">{s.keys}</kbd>

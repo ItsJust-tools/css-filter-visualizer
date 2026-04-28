@@ -46,15 +46,21 @@ export interface UseToolResult<TState> {
  */
 export function useTool<TState>(
   tool: Tool<TState>,
-  canvasRef: React.RefObject<HTMLElement | null>,
+  canvasRef: React.RefObject<HTMLElement | null>
 ): UseToolResult<TState> {
   const canonicalId = tool.config.id;
   const canonicalName = tool.config.name;
   const canonicalVersion = tool.config.version;
 
   if (process.env.NODE_ENV !== 'production') {
-    if (tool.id !== canonicalId || tool.name !== canonicalName || tool.version !== canonicalVersion) {
-      console.warn('[useTool] Tool top-level id/name/version differ from config; config values take precedence.');
+    if (
+      tool.id !== canonicalId ||
+      tool.name !== canonicalName ||
+      tool.version !== canonicalVersion
+    ) {
+      console.warn(
+        '[useTool] Tool top-level id/name/version differ from config; config values take precedence.'
+      );
     }
   }
 
@@ -63,7 +69,7 @@ export function useTool<TState>(
     canvasRef,
     tool.config,
     () => tool.serialize(state.data),
-    tool.exporters,
+    tool.exporters
   );
   const { importFromFile, isImporting } = useImport({
     acceptedFormats: tool.config.exportFormats,
@@ -92,7 +98,7 @@ export function useTool<TState>(
         return { success: false, error };
       }
     },
-    [exportTo, toast],
+    [exportTo, toast]
   );
 
   const { canUndo, canRedo, undo, redo, setData } = state;
@@ -115,7 +121,7 @@ export function useTool<TState>(
       onReset: handleReset,
       supportedFormats,
     }),
-    [canUndo, canRedo, undo, redo, handleExport, handleReset, supportedFormats],
+    [canUndo, canRedo, undo, redo, handleExport, handleReset, supportedFormats]
   );
 
   return {

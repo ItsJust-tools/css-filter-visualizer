@@ -18,7 +18,11 @@ const MIME_TO_FORMAT: Record<string, string> = {
   'application/pdf': 'pdf',
 };
 
-export function useDragAndDropImport({ onImport, acceptedFormats, targetRef }: UseDragAndDropImportOptions = {}) {
+export function useDragAndDropImport({
+  onImport,
+  acceptedFormats,
+  targetRef,
+}: UseDragAndDropImportOptions = {}) {
   const [isDragging, setIsDragging] = useState(false);
   const dragCounterRef = useRef(0);
 
@@ -57,21 +61,23 @@ export function useDragAndDropImport({ onImport, acceptedFormats, targetRef }: U
         const loweredName = file.name.toLowerCase();
         const ext = loweredName.endsWith('.itsjust.json')
           ? 'itsjust'
-          : loweredName.split('.').pop()?.toLowerCase() ?? '';
+          : (loweredName.split('.').pop()?.toLowerCase() ?? '');
         const mime = file.type;
         const mimeFormat = MIME_TO_FORMAT[mime.toLowerCase()] ?? '';
-        const isAccepted = acceptedFormats.some(
-          (fmt) => {
-            const normalized = fmt.toLowerCase().replace('.json', '');
-            return ext === normalized || mimeFormat === normalized || mime.toLowerCase().includes(normalized);
-          },
-        );
+        const isAccepted = acceptedFormats.some((fmt) => {
+          const normalized = fmt.toLowerCase().replace('.json', '');
+          return (
+            ext === normalized ||
+            mimeFormat === normalized ||
+            mime.toLowerCase().includes(normalized)
+          );
+        });
         if (!isAccepted) return;
       }
 
       onImport(file);
     },
-    [onImport, acceptedFormats],
+    [onImport, acceptedFormats]
   );
 
   useEffect(() => {
