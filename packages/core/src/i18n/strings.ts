@@ -39,6 +39,7 @@ export const strings = {
     skipToContent: 'Skip to content',
     toolToolbar: 'Tool toolbar',
     importExport: 'Import and Export',
+    rename: 'Rename',
   },
 } as const;
 
