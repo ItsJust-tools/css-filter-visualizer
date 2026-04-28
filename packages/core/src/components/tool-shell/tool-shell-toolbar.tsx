@@ -71,7 +71,16 @@ export function Toolbar({ children }: { children?: ReactNode }) {
   return (
     <header className="tool-shell-toolbar" role="toolbar" aria-label={t('toolToolbar')}>
       <div className="toolbar-left">
-        {brandUrl ? (
+        {actions.onBrandClick ? (
+          <button
+            type="button"
+            className="toolbar-brand toolbar-brand-button"
+            onClick={actions.onBrandClick}
+            aria-label={t('rename')}
+          >
+            {brandContent}
+          </button>
+        ) : brandUrl ? (
           <a href={brandUrl} className="toolbar-brand toolbar-brand-link">{brandContent}</a>
         ) : (
           <span className="toolbar-brand">{brandContent}</span>

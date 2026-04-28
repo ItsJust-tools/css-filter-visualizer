@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, type ComponentType, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { ToolShell, useTool, ImportExport } from '@itsjust/core';
 import { toolConfig, myTool, ToolCanvas, ToolToolbar, ToolSidebar } from '@/tool';
 
@@ -15,6 +15,30 @@ export default function ToolClient() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const tool = useTool(myTool, canvasRef);
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(toolConfig.features.sidebar);
+  const title = tool.state.data.title.trim() || toolConfig.name;
+
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+
+  const handleRename = useCallback(() => {
+    const nextTitle = window.prompt('Neuen Namen eingeben:', tool.state.data.title);
+    if (nextTitle === null) return;
+    const normalizedTitle = nextTitle.trim() || toolConfig.name;
+    tool.state.setData((prev) => ({ ...prev, title: normalizedTitle }));
+  }, [tool.state]);
+
+  const shellConfig = useMemo(
+    () => ({
+      ...toolConfig,
+      name: title,
+      theme: {
+        ...toolConfig.theme,
+        brand: title,
+      },
+    }),
+    [title],
+  );
 
   const toolbarContent = (
     <>
@@ -34,7 +58,6 @@ export default function ToolClient() {
     <ToolCanvas
       canvasRef={canvasRef}
       state={tool.state.data}
-      onTitleChange={(title) => tool.state.setData((prev) => ({ ...prev, title }))}
     />
   );
 
@@ -61,8 +84,8 @@ export default function ToolClient() {
 
   return (
     <ToolShellCompat
-      config={toolConfig}
-      actions={tool.toolbarActions}
+      config={shellConfig}
+      actions={{ ...tool.toolbarActions, onBrandClick: handleRename }}
       sidebarOpen={sidebarOpen}
       onSidebarChange={setSidebarOpen}
       toolbar={toolbarContent}

@@ -18,6 +18,8 @@ export interface ToolbarActions {
   canRedo?: boolean;
   /** Formats currently exportable by the tool. */
   supportedFormats?: ExportFormat[];
+  /** Handle clicks on the toolbar brand label. */
+  onBrandClick?: () => void;
 }
 
 export interface ShellContextValue {
