@@ -59,7 +59,9 @@ describe('exporters', () => {
     input.type = 'password';
     el.appendChild(input);
 
-    await expect(renderCanvas(el, makeOptions())).rejects.toThrowError(/sensitive elements detected/);
+    await expect(renderCanvas(el, makeOptions())).rejects.toThrowError(
+      /sensitive elements detected/
+    );
   });
 
   it('renders canvas via html2canvas with capture dimensions', async () => {
