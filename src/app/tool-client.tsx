@@ -15,38 +15,42 @@ export default function ToolClient() {
       actions={tool.toolbarActions}
       sidebarOpen={sidebarOpen}
       onSidebarChange={setSidebarOpen}
-    >
-      <ToolShell.Toolbar>
-        <ToolToolbar state={tool.state.data} />
-        <ImportExport
-          formats={tool.supportedFormats}
-          onExport={tool.handleExport}
-          onImport={tool.importFromFile}
-          isImporting={tool.isImporting}
-        />
-      </ToolShell.Toolbar>
-      <ToolShell.Body>
-        <ToolShell.Sidebar>
-          <ToolSidebar state={tool.state.data} />
-        </ToolShell.Sidebar>
-        <ToolShell.Canvas>
+      toolbar={
+        <>
+          <ToolToolbar state={tool.state.data} />
+          <ImportExport
+            formats={tool.supportedFormats}
+            onExport={tool.handleExport}
+            onImport={tool.importFromFile}
+            isImporting={tool.isImporting}
+            isExporting={tool.isExporting}
+          />
+        </>
+      }
+      sidebar={<ToolSidebar state={tool.state.data} />}
+      canvas={
+        <>
           <ToolCanvas
             canvasRef={canvasRef}
             state={tool.state.data}
             onTitleChange={(title) => tool.state.setData((prev) => ({ ...prev, title }))}
           />
-        </ToolShell.Canvas>
-      </ToolShell.Body>
-      <ToolShell.StatusBar>
+        </>
+      }
+      statusBar={
+        <>
         <span className={tool.state.isDirty ? 'status-unsaved' : 'status-saved'}>
-          {tool.state.isDirty ? (
+          {tool.state.isSaving ? (
+            <><span className="status-saving-dot" />Saving...</>
+          ) : tool.state.isDirty ? (
             <><span className="status-saving-dot" />Unsaved</>
           ) : tool.state.lastSaved ? (
-            <>Saved {tool.state.lastSaved.toLocaleTimeString()}</>
+            <>Saved {tool.state.lastSaved}</>
           ) : 'Ready'}
         </span>
         <span>{tool.state.data.title}</span>
-      </ToolShell.StatusBar>
-    </ToolShell>
+        </>
+      }
+    />
   );
 }
