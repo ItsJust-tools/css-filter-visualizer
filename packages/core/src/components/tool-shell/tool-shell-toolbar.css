@@ -159,6 +159,11 @@
   letter-spacing: 0.02em;
 }
 
+.shortcuts-toggle-btn {
+  font-weight: 700;
+  min-width: 2rem;
+}
+
 .toolbar-btn:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -236,6 +241,10 @@
   }
 
   .contrast-toggle-btn span {
+    display: inline;
+  }
+
+  .shortcuts-toggle-btn span {
     display: inline;
   }
 

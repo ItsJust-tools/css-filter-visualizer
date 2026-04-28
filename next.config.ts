@@ -3,6 +3,7 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   transpilePackages: ['@itsjust/core'],
   poweredByHeader: false,
+  devIndicators: false,
   output: process.env.BUILD_STANDALONE === 'true' ? 'standalone' : undefined,
 
   // Uncomment for static export (e.g. GitHub Pages, Cloudflare Pages):

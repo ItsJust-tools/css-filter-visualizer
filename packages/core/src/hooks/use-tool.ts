@@ -8,6 +8,7 @@ import { useToolState } from './use-tool-state';
 import { useExport } from './use-export';
 import { useImport } from './use-import';
 import { useToast } from '../components/toast';
+import { t } from '../i18n/strings';
 
 export interface UseToolResult<TState> {
   /** Managed tool state (undo/redo/auto-save) */
@@ -96,6 +97,14 @@ export function useTool<TState>(
 
   const { canUndo, canRedo, undo, redo, setData } = state;
 
+  const handleReset = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      const confirmed = window.confirm(t('resetConfirm'));
+      if (!confirmed) return;
+    }
+    setData(tool.initialState);
+  }, [setData, tool.initialState]);
+
   const toolbarActions: ToolbarActions = useMemo(
     () => ({
       onUndo: canUndo ? () => undo() : undefined,
@@ -103,10 +112,10 @@ export function useTool<TState>(
       canUndo,
       canRedo,
       onExport: handleExport,
-      onReset: () => setData(tool.initialState),
+      onReset: handleReset,
       supportedFormats,
     }),
-    [canUndo, canRedo, undo, redo, setData, handleExport, supportedFormats, tool.initialState],
+    [canUndo, canRedo, undo, redo, handleExport, handleReset, supportedFormats],
   );
 
   return {

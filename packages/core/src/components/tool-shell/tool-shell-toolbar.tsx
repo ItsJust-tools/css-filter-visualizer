@@ -185,6 +185,16 @@ export function Toolbar({ children }: { children?: ReactNode }) {
       <div className="toolbar-right">
         {config.features.darkMode && <ThemeToggle />}
         <ContrastToggle />
+        <button
+          type="button"
+          className="toolbar-btn shortcuts-toggle-btn"
+          onClick={actions.onShowShortcuts}
+          aria-label={t('keyboardShortcuts')}
+          title={t('keyboardShortcuts')}
+        >
+          <span aria-hidden="true">?</span>
+          <TooltipLabel text={`${t('keyboardShortcuts')} (?)`} />
+        </button>
       </div>
     </header>
   );

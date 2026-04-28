@@ -1,16 +1,13 @@
 'use client';
 
-import type { ToolState } from '../types';
+import Link from 'next/link';
 
-interface ToolToolbarProps {
-  state: ToolState;
-}
-
-export function ToolToolbar({ state }: ToolToolbarProps) {
+export function ToolToolbar() {
   return (
     <div className="tool-toolbar-items">
-      <span className="toolbar-title-preview">{state.title}</span>
-      <span className="toolbar-hint">Edit src/tool/ to customize</span>
+      <Link href="/help" className="toolbar-btn toolbar-help-link" aria-label="Open help page">
+        Help
+      </Link>
     </div>
   );
 }

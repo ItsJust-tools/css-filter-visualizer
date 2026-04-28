@@ -81,6 +81,20 @@ Visual regression tests use Playwright screenshots. To keep snapshots stable:
 - Keep components focused — one component, one responsibility.
 - Add `displayName` to all exported components.
 
+## AI-Assisted Contributions
+
+- AI-generated changes must follow project philosophy strictly:
+  - single-purpose UX (no feature bloat),
+  - privacy-first/client-only defaults,
+  - accessibility as a hard requirement.
+- AI-generated changes must not silently mutate template baseline data/contracts to hide upstream template defects.
+- If an AI suggestion conflicts with these principles, contributors must reject or revise it before merge.
+- If an issue is template-level, call it out explicitly and track it as a template update requirement.
+- AI-assisted PRs must include:
+  - tests for behavioral changes,
+  - documentation updates for user-visible changes,
+  - `CHANGELOG.md` updates under `[Unreleased]`.
+
 ## Pull Request Process
 
 1. Create a feature branch from `main`.

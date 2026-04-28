@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-04-28
+
 ### Changed
 
 - Layout now uses the full available canvas area instead of an A4-like centered width, with responsive spacing for desktop and mobile.
@@ -15,6 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added high-contrast accessibility support (manual toggle + system contrast preference handling) and improved status announcements with `aria-live`.
 - Accessibility guidance now explicitly states that accessibility is mandatory across `README.md`, `GUIDE.md`, and `CLAUDE.md`.
 - Import/Export now includes URL-based sharing with compressed state in query params and automatic state hydration when opening a shared link.
+- AI/agent documentation was tightened with mandatory guardrails to enforce single-purpose scope, privacy-first defaults, and accessibility requirements.
+- Reset now requires a confirmation dialog before clearing state, and reset actions remain undoable via the existing undo history.
+- Added a dedicated `/help` page with inline-rendered SVG usage graphics, practical workflow examples, and direct sidebar navigation.
+- Added a visible toolbar button to open the full keyboard shortcuts overlay so all shortcuts are always discoverable (in addition to `?`).
+- Redesigned the help page layout and content for better usability, and moved help access from the sidebar into a visible header toolbar button.
+- Tightened AI contribution rules to require explicit reporting of template-level bugs instead of silently mutating template baseline data/contracts.
+- Updated shortcuts overlay trigger to require Ctrl/Cmd + ? instead of plain ?, preventing accidental popup while typing.
 
 ## [1.0.0] - 2026-04-24
 

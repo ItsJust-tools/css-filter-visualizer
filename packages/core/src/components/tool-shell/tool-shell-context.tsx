@@ -30,6 +30,8 @@ export interface ToolbarActions {
   onBrandCommit?: () => void;
   /** Cancel inline brand editing. */
   onBrandCancel?: () => void;
+  /** Open the keyboard shortcuts overlay. */
+  onShowShortcuts?: () => void;
 }
 
 export interface ShellContextValue {

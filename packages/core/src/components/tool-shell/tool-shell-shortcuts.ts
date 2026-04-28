@@ -16,6 +16,11 @@ export function useKeyboardShortcuts(actions: ToolbarActions, onShowShortcuts: (
       const mod = e.metaKey || e.ctrlKey;
 
       if (mod) {
+        if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+          e.preventDefault();
+          onShowShortcuts();
+          return;
+        }
         switch (e.key) {
           case 'z':
             if (e.shiftKey) {
@@ -41,10 +46,6 @@ export function useKeyboardShortcuts(actions: ToolbarActions, onShowShortcuts: (
         return;
       }
 
-      if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
-        e.preventDefault();
-        onShowShortcuts();
-      }
     }
 
     window.addEventListener('keydown', handler);
@@ -75,7 +76,7 @@ export function buildDefaultShortcutGroups(config: ToolConfig): ShortcutGroup[] 
 
   groups.push({
     title: 'Help',
-    shortcuts: [{ keys: '?', label: 'Show keyboard shortcuts' }],
+    shortcuts: [{ keys: `${mod}+?`, label: 'Show keyboard shortcuts' }],
   });
 
   return groups;

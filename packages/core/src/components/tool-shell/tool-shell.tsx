@@ -89,6 +89,8 @@ export function ToolShell({
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  const openShortcuts = useCallback(() => setShortcutsOpen(true), []);
+
   useEffect(() => {
     const media = window.matchMedia('(max-width: 48rem)');
     const update = () => setIsMobile(media.matches);
@@ -100,9 +102,10 @@ export function ToolShell({
   const shellActions = useMemo<ToolbarActions>(() => ({
     ...actions,
     onToggleSidebar: toggleSidebar,
-  }), [actions, toggleSidebar]);
+    onShowShortcuts: openShortcuts,
+  }), [actions, toggleSidebar, openShortcuts]);
 
-  useKeyboardShortcuts(shellActions, () => setShortcutsOpen(true));
+  useKeyboardShortcuts(shellActions, openShortcuts);
 
   const shortcutGroups = useMemo(() => {
     const defaults = buildDefaultShortcutGroups(config);

@@ -284,6 +284,20 @@ For static export, uncomment `output: 'export'` and `images: { unoptimized: true
 
 ## Agent Workflow Rules
 
+- Non-negotiable philosophy guardrails:
+  - One tool, one purpose. Do not broaden scope into multi-tool suites.
+  - Privacy-first/client-only by default. Do not introduce server processing for user content unless explicitly requested.
+  - Accessibility is mandatory. Do not trade away keyboard support, focus visibility, semantics, or readable contrast.
+  - Keep UX simple. Do not add feature bloat, complex settings trees, or onboarding friction.
+- Decision policy for AI agents:
+  - Prefer the smallest change that solves the request.
+  - Reuse existing patterns in `src/tool/` and `@itsjust/core`; avoid introducing parallel architectures.
+  - If a request conflicts with philosophy, ask for confirmation before implementing the conflicting part.
+  - When uncertain, choose maintainability and clarity over clever abstractions.
+- Template baseline protection (hard rule):
+  - Never silently "fix" or rewrite template defaults/content to hide template-level issues.
+  - If a problem is caused by template baseline data/contracts, explicitly report it as a template bug.
+  - State clearly that the upstream template must be updated, instead of masking the issue in downstream tool code.
 - Always keep `CHANGELOG.md` up to date when behavior, API, UX, dependencies, or version changes.
 - When asked to "commit and push", do the full flow automatically (`git add`, commit, push) without extra confirmation.
 - Never add Co-Authored-By trailers or set yourself as a co-author in commits.

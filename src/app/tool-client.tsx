@@ -109,7 +109,7 @@ export default function ToolClient() {
 
   const toolbarContent = (
     <>
-      <ToolToolbar state={tool.state.data} />
+      <ToolToolbar />
       <ImportExport
         formats={tool.supportedFormats}
         onExport={tool.handleExport}
@@ -132,16 +132,16 @@ export default function ToolClient() {
 
   const statusBarContent = (
     <>
-      <span className={tool.state.isDirty ? 'status-unsaved' : 'status-saved'}>
+      <span className={`status-slot status-slot-state ${tool.state.isDirty ? 'status-unsaved' : 'status-saved'}`}>
         {tool.state.isDirty ? (
           <><span className="status-saving-dot" />Unsaved</>
         ) : tool.state.lastSaved ? (
           <>Saved {tool.state.lastSaved}</>
         ) : 'Ready'}
       </span>
-      <span>{tool.state.data.title}</span>
-      <span>Tool v{toolConfig.version}</span>
-      <span>Template v{templateBaseVersion}</span>
+      <span className="status-slot status-slot-title">{tool.state.data.title}</span>
+      <span className="status-slot status-slot-tool-version">Tool v{toolConfig.version}</span>
+      <span className="status-slot status-slot-template-version">Template v{templateBaseVersion}</span>
     </>
   );
 

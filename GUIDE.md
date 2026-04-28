@@ -494,12 +494,27 @@ When handing this codebase to an LLM (e.g., Claude, GPT), provide these exact in
 - ✅ **Do** use `useTool()` — it handles state, undo, export, import.
 - ✅ **Do** return `{ success: true, data }` or `{ success: false, error }` from `deserialize`.
 - ✅ **Do** keep canvas logic in `src/tool/components/tool-canvas.tsx`.
+- ✅ **Do** preserve project philosophy in every change: single-purpose UX, privacy-first defaults, and mandatory accessibility.
+- ✅ **Do** prefer minimal, reversible changes that fit existing architecture.
+- ✅ **Do** flag template-level bugs as template bugs and recommend updating the template baseline.
 - ❌ **Don't** modify files in `packages/core/` unless fixing a core bug.
 - ❌ **Don't** add server-side API routes. This template is 100% client-side.
 - ❌ **Don't** use `useEffect` for state updates. Use `useCallback` with handlers.
 - ❌ **Don't** read `window` or `localStorage` during render. Use `useEffect` or lazy init.
 - ❌ **Don't** add `any` types. Use `unknown` + type guards.
 - ❌ **Don't** import from `@itsjust/core` internals. Only use the public API.
+- ❌ **Don't** add “nice-to-have” complexity (extra panels, settings, wizards) unless explicitly required.
+- ❌ **Don't** silently alter template baseline data/contracts to paper over a template issue.
+
+### LLM Guardrails (Required)
+
+- Every AI-generated change must pass this gate before merge:
+  - Keeps the tool focused on one primary job.
+  - Does not send user content to servers by default.
+  - Maintains or improves accessibility behavior.
+  - Updates docs/changelog when behavior changes.
+- If a user request conflicts with these rules, the LLM must call out the conflict and ask for explicit approval before proceeding.
+- If a defect originates in the template baseline, the LLM must explicitly say that the template needs an upstream update.
 
 ### Public API of `@itsjust/core`
 
