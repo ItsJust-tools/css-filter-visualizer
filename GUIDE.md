@@ -233,6 +233,7 @@ The canvas is where your tool lives. It receives:
 - `canvasRef` — needed for PNG/JPEG/WebP/PDF export (html2canvas captures this element)
 - `state` — current tool state
 - `logic` — tool-specific action creators
+- The default layout is full-space and responsive, so it fills the available viewport instead of simulating an A4 page
 
 ```tsx
 export function ToolCanvas({ canvasRef, state, logic }: ToolCanvasProps) {
@@ -339,6 +340,7 @@ Share methods are provided by `useShare` from `@itsjust/core`:
 1. **Download .itsjust.json** — `downloadShareFile()`
 2. **Web Share API** — `shareViaWeb()` (opens native share sheet on mobile)
 3. **Copy to Clipboard** — `copyShareToClipboard()`
+4. **Shareable URL** — current tool state is encoded into URL query params and auto-loaded on open
 
 All are 100% client-side. No server required.
 
@@ -379,6 +381,10 @@ Add tool-specific CSS to `src/app/globals.css`:
 ### Dark mode
 
 Dark mode variables are in the `[data-theme='dark']` block in `globals.css`. The framework handles toggling automatically — you don't need to write any dark mode logic.
+
+### Accessibility Requirements
+
+Accessibility is a must-have requirement for all tools built from this template. Every change must preserve keyboard-only operation, visible focus states, semantic landmarks, readable contrast, and screen-reader-friendly labels/status messages.
 
 ---
 
@@ -464,7 +470,7 @@ test('exports json', async ({ page }) => {
 3. Set `NEXT_PUBLIC_URL` (optional, defaults to `http://localhost:3000`)
 4. Done — zero build config needed
 
-For server-based sharing, add `BLOB_READ_WRITE_TOKEN` in Vercel Environment Variables.
+This template is privacy-first by default: no API routes are required for tool interactions, imports, exports, or sharing.
 
 ---
 

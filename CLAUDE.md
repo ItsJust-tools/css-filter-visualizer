@@ -16,7 +16,7 @@ Single-purpose web tool template built with Next.js App Router. Each tool does O
 
 ## Monorepo Structure
 
-```
+```text
 template/
 ├── src/                      # App source code
 │   ├── app/                  # Next.js App Router
@@ -222,6 +222,9 @@ await shareViaWeb({
   content: serialize(),
   metadata: { schemaVersion: '1.0' },
 });
+
+// Share URL mit serialisiertem State
+const shareUrl = `${window.location.origin}${window.location.pathname}?state=<encoded-state>`;
 ```
 
 ## Environment Variables
@@ -246,10 +249,12 @@ NEXT_PUBLIC_URL=https://your-tool.vercel.app
 
 - **No premature abstraction** — 3 similar lines > wrong abstraction
 - **Client-side only** — no server-side processing for tool logic
+- **Privacy-first** — user actions/data stay local in browser memory/storage unless explicitly requested by user
 - **Zero signup** — tools work immediately, no auth required
 - **Print-friendly** — CSS hides UI chrome when printing
 - **Mobile-first** — toolbar icons only on mobile, full labels on desktop
-- **Accessibility** — all buttons have aria-label, keyboard navigation works
+- **Accessibility is mandatory** — all UI must preserve keyboard access, strong visible focus, semantic landmarks, and screen-reader support
+- **Full-space canvas** — tool UI should use available viewport space; avoid fixed A4-like layout constraints
 
 ## Common Pitfalls
 
@@ -276,3 +281,15 @@ Push to GitHub → Connect to Vercel → Set env vars → Done.
 No build config needed — `next.config.ts` handles everything.
 
 For static export, uncomment `output: 'export'` and `images: { unoptimized: true }` in `next.config.ts`.
+
+## Agent Workflow Rules
+
+- Always keep `CHANGELOG.md` up to date when behavior, API, UX, dependencies, or version changes.
+- When asked to "commit and push", do the full flow automatically (`git add`, commit, push) without extra confirmation.
+- Never add Co-Authored-By trailers or set yourself as a co-author in commits.
+- Always verify version consistency before committing:
+  - `package.json` version
+  - `packages/core/package.json` version
+  - `src/tool/tool.config.ts` version source/value
+  - `CHANGELOG.md` release entries
+- If version updates are part of the change, ensure all versioned files are aligned in the same commit.

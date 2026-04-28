@@ -106,8 +106,9 @@ export function Sidebar({ children }: { children?: ReactNode }) {
     if (!sidebar) return;
 
     // Move focus into sidebar when opened
-    const closeBtn = sidebar.querySelector('.sidebar-header-close') as HTMLElement | null;
-    closeBtn?.focus();
+    const focusables = getFocusableElements(sidebar);
+    const firstFocusable = focusables[0];
+    firstFocusable?.focus();
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key !== 'Tab') return;
@@ -152,17 +153,6 @@ export function Sidebar({ children }: { children?: ReactNode }) {
     >
       <div className="sidebar-header">
         <span id="tool-sidebar-title" className="sidebar-header-title">{t('options')}</span>
-        <button
-          type="button"
-          className="sidebar-header-close"
-          onClick={toggleSidebar}
-          aria-label={t('closeSidebar')}
-          title={t('closeSidebar')}
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-            <path d="M3 3l8 8M11 3l-8 8" />
-          </svg>
-        </button>
       </div>
       <div className="sidebar-content">{children}</div>
       <div

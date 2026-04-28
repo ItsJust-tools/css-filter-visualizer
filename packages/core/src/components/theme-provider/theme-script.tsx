@@ -13,6 +13,17 @@ export function ThemeScript({ toolTheme }: { toolTheme?: ToolTheme }) {
         theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       }
       document.documentElement.setAttribute('data-theme', theme);
+
+      var contrast;
+      try {
+        contrast = localStorage.getItem('itsjust-contrast');
+      } catch(e) {}
+      if (contrast === 'system' || !contrast) {
+        contrast = (window.matchMedia('(forced-colors: active)').matches || window.matchMedia('(prefers-contrast: more)').matches)
+          ? 'more'
+          : 'normal';
+      }
+      document.documentElement.setAttribute('data-contrast', contrast);
     })();
   `;
 

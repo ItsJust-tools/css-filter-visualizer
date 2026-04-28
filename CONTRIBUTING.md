@@ -28,7 +28,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore:` — build process or auxiliary tool changes
 
 Example:
-```
+```text
 feat: add svg export support
 
 - register svg exporter in tool-definition.ts

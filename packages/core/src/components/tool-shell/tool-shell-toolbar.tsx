@@ -55,6 +55,41 @@ function ThemeToggle() {
   );
 }
 
+function ContrastToggle() {
+  const { resolvedContrast, setContrast } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return (
+      <button
+        type="button"
+        className="toolbar-btn contrast-toggle-btn"
+        aria-label={t('enableHighContrast')}
+        title={t('enableHighContrast')}
+        disabled
+      >
+        <span aria-hidden="true">HC</span>
+      </button>
+    );
+  }
+
+  const isHighContrast = resolvedContrast === 'more';
+  return (
+    <button
+      type="button"
+      className="toolbar-btn contrast-toggle-btn"
+      onClick={() => setContrast(isHighContrast ? 'normal' : 'more')}
+      aria-pressed={isHighContrast}
+      aria-label={isHighContrast ? t('disableHighContrast') : t('enableHighContrast')}
+      title={isHighContrast ? t('disableHighContrast') : t('enableHighContrast')}
+    >
+      <span aria-hidden="true">HC</span>
+    </button>
+  );
+}
+
 export function Toolbar({ children }: { children?: ReactNode }) {
   const { config, actions, sidebarOpen, toggleSidebar } = useShell();
   const brandText = config.theme?.brand ?? config.name;
@@ -134,9 +169,6 @@ export function Toolbar({ children }: { children?: ReactNode }) {
             )}
           </>
         )}
-        {children}
-      </div>
-      <div className="toolbar-right">
         {config.features.sidebar && (
           <button
             type="button"
@@ -148,10 +180,15 @@ export function Toolbar({ children }: { children?: ReactNode }) {
             <TooltipLabel text={sidebarOpen ? t('closeSidebar') : t('toggleSidebar')} />
           </button>
         )}
+        {children}
+      </div>
+      <div className="toolbar-right">
         {config.features.darkMode && <ThemeToggle />}
+        <ContrastToggle />
       </div>
     </header>
   );
 }
 Toolbar.displayName = 'Toolbar';
 ThemeToggle.displayName = 'ThemeToggle';
+ContrastToggle.displayName = 'ContrastToggle';

@@ -15,6 +15,22 @@ export function throwIfAborted(signal?: AbortSignal): void {
   }
 }
 
+function getCaptureDimensions(element: HTMLElement): { width: number; height: number } {
+  const rect = element.getBoundingClientRect();
+  const width = Math.max(
+    Math.ceil(rect.width),
+    element.scrollWidth,
+    element.clientWidth,
+  );
+  const height = Math.max(
+    Math.ceil(rect.height),
+    element.scrollHeight,
+    element.clientHeight,
+  );
+
+  return { width, height };
+}
+
 export async function loadHtml2canvas(retries = 2, signal?: AbortSignal): Promise<typeof import('html2canvas').default> {
   throwIfAborted(signal);
   let lastError: unknown;
@@ -55,11 +71,24 @@ export async function renderCanvas(element: HTMLElement, options: ExportOptions)
   }
   const html2canvas = await loadHtml2canvas(2, options.signal);
   throwIfAborted(options.signal);
+  const { width, height } = getCaptureDimensions(element);
   return html2canvas(element, {
     scale: options.scale ?? 2,
     backgroundColor: options.background ?? '#ffffff',
     logging: false,
     useCORS: true,
+    width,
+    height,
+    windowWidth: width,
+    windowHeight: height,
+    scrollX: 0,
+    scrollY: 0,
+    onclone: (doc) => {
+      const clonedElement = doc.getElementById(element.id);
+      if (clonedElement instanceof HTMLElement) {
+        clonedElement.style.overflow = 'visible';
+      }
+    },
   });
 }
 

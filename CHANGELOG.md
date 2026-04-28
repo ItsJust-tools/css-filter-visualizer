@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Layout now uses the full available canvas area instead of an A4-like centered width, with responsive spacing for desktop and mobile.
+- Documentation updated to reflect the full-space responsive canvas behavior in `README.md`, `GUIDE.md`, and `CLAUDE.md`.
+- Privacy-first defaults tightened: removed server-sharing env token guidance, added telemetry-disable default in `.env.example`, and added lint guards that block network calls in tool logic files.
+- Added high-contrast accessibility support (manual toggle + system contrast preference handling) and improved status announcements with `aria-live`.
+- Accessibility guidance now explicitly states that accessibility is mandatory across `README.md`, `GUIDE.md`, and `CLAUDE.md`.
+- Import/Export now includes URL-based sharing with compressed state in query params and automatic state hydration when opening a shared link.
+
 ## [1.0.0] - 2026-04-24
 
 ### Added

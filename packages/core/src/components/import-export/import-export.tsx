@@ -16,6 +16,10 @@ export interface ImportExportProps {
   isImporting?: boolean;
   /** Currently exporting state */
   isExporting?: boolean;
+  /** Called when user wants to create a shareable URL */
+  onShare?: () => void | Promise<unknown>;
+  /** Currently creating a share URL */
+  isSharing?: boolean;
 }
 
 function ImportIcon() {
@@ -38,12 +42,25 @@ function DownloadIcon() {
 }
 DownloadIcon.displayName = 'DownloadIcon';
 
+function ShareIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 5 8 1 4 5" />
+      <path d="M8 1v9" />
+      <path d="M3 9v3a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9" />
+    </svg>
+  );
+}
+ShareIcon.displayName = 'ShareIcon';
+
 export function ImportExport({
   formats,
   onExport,
   onImport,
   isImporting = false,
   isExporting = false,
+  onShare,
+  isSharing = false,
 }: ImportExportProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selected, setSelected] = useState(0);
@@ -242,6 +259,19 @@ export function ImportExport({
           </ul>
         )}
       </div>
+
+      <button
+        type="button"
+        className="toolbar-btn"
+        onClick={() => onShare?.()}
+        disabled={isSharing || !onShare}
+        title={t('share')}
+        aria-label={t('share')}
+      >
+        <ShareIcon />
+        <span>{t('share')}</span>
+        {isSharing && <span className="spinner-icon" aria-hidden="true" />}
+      </button>
     </div>
   );
 }

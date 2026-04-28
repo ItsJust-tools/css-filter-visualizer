@@ -51,8 +51,51 @@
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
+[data-contrast='more'] {
+  --background: #ffffff;
+  --foreground: #000000;
+  --muted: #111111;
+  --muted-bg: #ffffff;
+  --border: #000000;
+  --card: #ffffff;
+  --toolbar-bg: #ffffff;
+  --sidebar-bg: #ffffff;
+  --accent: #0037ff;
+  --accent-hover: #001ea8;
+  --accent-subtle: rgba(0, 55, 255, 0.2);
+  --success: #006b1f;
+  --success-hover: #004f17;
+  --warning: #7a4a00;
+  --error: #8b0000;
+  --error-hover: #670000;
+}
+
+[data-theme='dark'][data-contrast='more'] {
+  --background: #000000;
+  --foreground: #ffffff;
+  --muted: #f0f0f0;
+  --muted-bg: #000000;
+  --border: #ffffff;
+  --card: #000000;
+  --toolbar-bg: #000000;
+  --sidebar-bg: #000000;
+  --accent: #7ea2ff;
+  --accent-hover: #a8c2ff;
+  --accent-subtle: rgba(126, 162, 255, 0.3);
+  --success: #6cff8a;
+  --success-hover: #95ffab;
+  --warning: #ffd166;
+  --error: #ff8a8a;
+  --error-hover: #ffb0b0;
+}
+
 * {
   box-sizing: border-box;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
 }
 
 body {
@@ -109,6 +152,23 @@ body {
   }
 }
 
+@media (prefers-contrast: more) {
+  :root:not([data-contrast]) {
+    --background: #ffffff;
+    --foreground: #000000;
+    --border: #000000;
+    --card: #ffffff;
+    --toolbar-bg: #ffffff;
+    --sidebar-bg: #ffffff;
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    forced-color-adjust: auto;
+  }
+}
+
 /* --- Skip nav --- */
 
 .skip-nav {
@@ -135,11 +195,12 @@ body {
 .tool-canvas {
   width: 100%;
   height: 100%;
-  padding: clamp(1.5rem, 5vw, 3rem);
+  min-height: 100%;
+  padding: clamp(1rem, 2.5vw, 2rem);
   background: var(--card);
   color: var(--foreground);
-  max-width: 48rem;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   border-radius: 0;
   box-shadow: 0 0 0 1px var(--border);
   display: flex;
@@ -303,9 +364,9 @@ body {
 .tool-shell-canvas {
   background: var(--background);
   display: flex;
-  justify-content: center;
+  justify-content: stretch;
   align-items: stretch;
-  padding: 1.5rem;
+  padding: 0;
 }
 
 /* --- Sidebar header --- */

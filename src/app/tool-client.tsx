@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { ToolShell, useTool, ImportExport } from '@itsjust/core';
-import { toolConfig, myTool, ToolCanvas, ToolToolbar, ToolSidebar } from '@/tool';
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
+import { toolConfig, templateBaseVersion, myTool, ToolCanvas, ToolToolbar, ToolSidebar } from '@/tool';
 
 export default function ToolClient() {
   const ToolShellCompat = ToolShell as unknown as ComponentType<Record<string, unknown>> & {
@@ -14,6 +15,10 @@ export default function ToolClient() {
   };
   const canvasRef = useRef<HTMLDivElement>(null);
   const tool = useTool(myTool, canvasRef);
+  const setToolData = tool.state.setData;
+  const showToast = tool.toast;
+  const [isSharing, setIsSharing] = useState(false);
+  const hasLoadedSharedState = useRef(false);
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(toolConfig.features.sidebar);
   const [isRenaming, setIsRenaming] = useState(false);
   const [renameDraft, setRenameDraft] = useState(tool.state.data.title);
@@ -23,6 +28,26 @@ export default function ToolClient() {
     document.title = title;
   }, [title]);
 
+  useEffect(() => {
+    if (hasLoadedSharedState.current) return;
+    hasLoadedSharedState.current = true;
+    const params = new URLSearchParams(window.location.search);
+    const encodedState = params.get('state');
+    if (!encodedState) return;
+    try {
+      const serialized = decompressFromEncodedURIComponent(encodedState);
+      if (!serialized) throw new Error('Invalid shared URL');
+      const parsed: unknown = JSON.parse(serialized);
+      const deserialized = myTool.deserialize(parsed);
+      if (!deserialized.success) throw new Error(deserialized.error);
+      setToolData(deserialized.data);
+      showToast('Loaded state from shared URL', 'success');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to load shared URL';
+      showToast(message, 'error');
+    }
+  }, [setToolData, showToast]);
+
   const startRename = useCallback(() => {
     setRenameDraft(tool.state.data.title);
     setIsRenaming(true);
@@ -30,14 +55,45 @@ export default function ToolClient() {
 
   const commitRename = useCallback(() => {
     const normalizedTitle = renameDraft.trim() || toolConfig.name;
-    tool.state.setData((prev) => ({ ...prev, title: normalizedTitle }));
+    setToolData((prev) => ({ ...prev, title: normalizedTitle }));
     setIsRenaming(false);
-  }, [renameDraft, tool.state]);
+  }, [renameDraft, setToolData]);
 
   const cancelRename = useCallback(() => {
     setRenameDraft(tool.state.data.title);
     setIsRenaming(false);
   }, [tool.state.data.title]);
+
+  const handleShare = useCallback(async () => {
+    setIsSharing(true);
+    try {
+      const serialized = myTool.serialize(tool.state.data);
+      const encodedState = compressToEncodedURIComponent(serialized);
+      if (!encodedState) throw new Error('Failed to encode state for URL');
+      const url = new URL(window.location.href);
+      url.searchParams.set('state', encodedState);
+      url.searchParams.set('tool', toolConfig.id);
+      window.history.replaceState(null, '', url.toString());
+
+      const shareUrl = url.toString();
+      if (navigator.share) {
+        try {
+          await navigator.share({ title, url: shareUrl });
+          showToast('Shared URL ready', 'success');
+          return;
+        } catch (error) {
+          if (error instanceof Error && error.name === 'AbortError') return;
+        }
+      }
+      await navigator.clipboard.writeText(shareUrl);
+      showToast('Share URL copied to clipboard', 'success');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to create share URL';
+      showToast(message, 'error');
+    } finally {
+      setIsSharing(false);
+    }
+  }, [showToast, title, tool.state.data]);
 
   const shellConfig = useMemo(
     () => ({
@@ -59,6 +115,8 @@ export default function ToolClient() {
         onExport={tool.handleExport}
         onImport={tool.importFromFile}
         isImporting={tool.isImporting}
+        onShare={handleShare}
+        isSharing={isSharing}
       />
     </>
   );
@@ -82,7 +140,8 @@ export default function ToolClient() {
         ) : 'Ready'}
       </span>
       <span>{tool.state.data.title}</span>
-      <span>v{toolConfig.version}</span>
+      <span>Tool v{toolConfig.version}</span>
+      <span>Template v{templateBaseVersion}</span>
     </>
   );
 

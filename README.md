@@ -34,7 +34,7 @@ Open [http://localhost:3000](http://localhost:3000) to see the example notepad t
 
 ## Project Structure
 
-```
+```text
 src/
 ├── app/              # Next.js App Router pages & metadata
 │   ├── page.tsx          # Tool main page (Server Component + SEO)
@@ -199,8 +199,14 @@ See [GUIDE.md](./GUIDE.md) for the full walkthrough.
 - **Export** to PNG, JPEG, WebP, PDF, JSON (100% client-side, lazy-loaded)
 - **Import** from JSON and `.itsjust.json` share files (100% client-side)
 - **Share** via file download, Web Share API, or clipboard — no server required
+- **Shareable URL state** — creates URLs that carry the full tool state for collaborative handoff
+- **Privacy-first local processing** — user input, import/export, and share-file generation stay in-browser
 - **Dark/Light mode** with system preference detection
+- **High-contrast mode** with manual toggle plus system contrast preference support
 - **PWA-ready** — Web App Manifest included
+- **Full-space responsive canvas** — uses available viewport space instead of fixed A4-like sizing
+
+Accessibility is mandatory in this template, not optional. New UI changes must keep keyboard navigation, visible focus states, semantic structure, and screen-reader support intact.
 
 ## Import/Export/Share Contracts
 
@@ -311,7 +317,7 @@ Then run `npm run build` and serve the `out/` directory.
 
 ## Troubleshooting
 
-```
+```text
 Problem: npm install fails
 Check:  Node version >= 22? (node -v)
 Fix:   Use nvm or upgrade Node

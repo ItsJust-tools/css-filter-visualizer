@@ -11,6 +11,7 @@ export const strings = {
   en: {
     import: 'Import',
     export: 'Export',
+    share: 'Share',
     undo: 'Undo',
     redo: 'Redo',
     reset: 'Reset',
@@ -31,6 +32,8 @@ export const strings = {
     options: 'Options',
     switchToDarkMode: 'Switch to dark mode',
     switchToLightMode: 'Switch to light mode',
+    enableHighContrast: 'Enable high contrast',
+    disableHighContrast: 'Disable high contrast',
     dismissNotification: 'Dismiss notification',
     skipToContent: 'Skip to content',
     toolToolbar: 'Tool toolbar',

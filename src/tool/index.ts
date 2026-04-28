@@ -1,4 +1,5 @@
 export { default as toolConfig } from './tool.config';
+export { templateBaseVersion } from './tool.config';
 export { templateMetadata, getPublicSiteUrl } from './template-metadata';
 export { myTool } from './tool-definition';
 export { ToolCanvas } from './components/tool-canvas';
