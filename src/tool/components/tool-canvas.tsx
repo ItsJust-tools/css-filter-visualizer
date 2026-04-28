@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import type { ToolState } from '../types';
 
 interface ToolCanvasProps {
@@ -14,13 +14,11 @@ export function ToolCanvas({ state, onTitleChange, readOnly, canvasRef }: ToolCa
   const localRef = useRef<HTMLDivElement>(null);
   const ref = canvasRef ?? localRef;
 
-  useEffect(() => {
-    if (readOnly) return;
-    ref.current?.focus();
-  }, [readOnly, ref]);
+  // Note: auto-focus removed to comply with WCAG 2.4.3 (Focus Order).
+  // The canvas receives focus naturally via tab navigation when needed.
 
   return (
-    <div ref={ref} className="tool-canvas" tabIndex={0}>
+    <div ref={ref} className="tool-canvas" role="application" aria-label="Tool canvas">
       <h1 className="tool-title">
         {readOnly ? (
           state.title
@@ -31,11 +29,12 @@ export function ToolCanvas({ state, onTitleChange, readOnly, canvasRef }: ToolCa
             onChange={(e) => onTitleChange?.(e.target.value)}
             placeholder="Enter tool name..."
             aria-label="Tool name"
+            aria-describedby="tool-canvas-description"
             className="tool-title-input"
           />
         )}
       </h1>
-      <p className="tool-placeholder">
+      <p id="tool-canvas-description" className="tool-placeholder">
         Replace this with your tool&apos;s UI. Edit the files in <code>src/tool/</code> to get started.
       </p>
     </div>

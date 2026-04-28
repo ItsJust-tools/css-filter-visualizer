@@ -16,7 +16,8 @@ describe('useImport', () => {
     const file = createFile(
       'test.itsjust.json',
       JSON.stringify({
-        $schema: 'itsjust-tool',
+        $schema: 'https://itsjust.tools/schema/v1',
+        version: '1.0.0',
         toolId: 'simple-notepad',
         content: { text: 'hello world' },
       }),
@@ -26,10 +27,13 @@ describe('useImport', () => {
     await act(async () => {
       importResult = await result.current.importFromFile(file);
     });
+    if (!importResult) throw new Error('Expected importResult');
 
     expect(importResult!.success).toBe(true);
     expect(importResult!.isItsJustFile).toBe(true);
-    expect((importResult!.data as { text: string }).text).toBe('hello world');
+    if (importResult?.success) {
+      expect((importResult.data as { text: string }).text).toBe('hello world');
+    }
     expect(onImport).toHaveBeenCalledTimes(1);
   });
 
@@ -42,9 +46,12 @@ describe('useImport', () => {
     await act(async () => {
       importResult = await result.current.importFromFile(file);
     });
+    if (!importResult) throw new Error('Expected importResult');
 
     expect(importResult!.success).toBe(false);
-    expect(importResult!.error).toContain('Unsupported format');
+    if (!importResult?.success) {
+      expect(importResult.error).toContain('Unsupported format');
+    }
   });
 
   it('rejects invalid .itsjust.json format', async () => {
@@ -59,9 +66,12 @@ describe('useImport', () => {
     await act(async () => {
       importResult = await result.current.importFromFile(file);
     });
+    if (!importResult) throw new Error('Expected importResult');
 
     expect(importResult!.success).toBe(false);
-    expect(importResult!.error).toContain('Invalid .itsjust.json');
+    if (!importResult?.success) {
+      expect(importResult.error).toContain('Invalid .itsjust.json');
+    }
   });
 
   it('imports a plain JSON file', async () => {
@@ -73,8 +83,29 @@ describe('useImport', () => {
     await act(async () => {
       importResult = await result.current.importFromFile(file);
     });
+    if (!importResult) throw new Error('Expected importResult');
 
     expect(importResult!.success).toBe(true);
-    expect(importResult!.data).toEqual({ foo: 'bar' });
+    if (importResult?.success) {
+      expect(importResult.data).toEqual({ foo: 'bar' });
+    }
+  });
+
+  it('rejects files exceeding maxFileSize', async () => {
+    const { result } = renderHook(() => useImport({ acceptedFormats: ['json'], maxFileSize: 10 }));
+
+    const file = createFile('huge.json', JSON.stringify({ data: 'x'.repeat(100) }));
+
+    let importResult: Awaited<ReturnType<typeof result.current.importFromFile>> | undefined;
+    await act(async () => {
+      importResult = await result.current.importFromFile(file);
+    });
+    if (!importResult) throw new Error('Expected importResult');
+
+    expect(importResult!.success).toBe(false);
+    if (!importResult?.success) {
+      expect(importResult.error).toContain('File too large');
+      expect(importResult.error).toContain('Max allowed: 10B');
+    }
   });
 });

@@ -6,7 +6,8 @@ export interface ToolState<T> {
   canUndo: boolean;
   canRedo: boolean;
   clearHistory: () => void;
-  lastSaved: Date | null;
+  lastSaved: string | null;
   isDirty: boolean;
+  isSaving: boolean;
   saveNow: () => Promise<void>;
 }

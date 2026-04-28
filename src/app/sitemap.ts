@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
+import { getPublicSiteUrl } from '@/tool/template-metadata';
 
-const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://itsjust.tools';
+const SITE_URL = getPublicSiteUrl();
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

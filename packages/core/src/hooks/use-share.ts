@@ -8,6 +8,9 @@ export interface ShareFileResult extends ShareResult {
   blob?: Blob;
 }
 
+const SHARE_SCHEMA_URI = 'https://itsjust.tools/schema/v1';
+const SEMVER_RE = /^\d+\.\d+(?:\.\d+)?(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
+
 /**
  * Client-side only share functionality - no server required.
  * Supports:
@@ -20,26 +23,32 @@ export function useShare() {
   const [shareResult, setShareResult] = useState<ShareFileResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const withShareOperation = useCallback(async <T,>(fn: () => Promise<T>): Promise<T> => {
+    setIsCreating(true);
+    setError(null);
+    try {
+      return await fn();
+    } finally {
+      setIsCreating(false);
+    }
+  }, []);
+
   /**
    * Create a shareable .itsjust.json file blob - 100% client-side
    */
   const createShareFile = useCallback((data: ShareData): Blob => {
-    return new Blob(
-      [
-        JSON.stringify(
-          {
-            $schema: 'itsjust-tool',
-            toolId: data.toolId,
-            version: data.metadata?.schemaVersion || '1.0',
-            content: data.content,
-            createdAt: new Date().toISOString(),
-          },
-          null,
-          2,
-        ),
-      ],
-      { type: 'application/json' },
-    );
+    const schemaVersion = data.metadata?.schemaVersion ?? '1.0.0';
+    if (!SEMVER_RE.test(schemaVersion)) {
+      throw new Error('Invalid schemaVersion. Expected semver string.');
+    }
+    const payload = {
+      $schema: SHARE_SCHEMA_URI,
+      toolId: data.toolId,
+      version: schemaVersion,
+      content: data.content,
+      createdAt: new Date().toISOString(),
+    };
+    return new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   }, []);
 
   /**
@@ -47,14 +56,12 @@ export function useShare() {
    */
   const downloadShareFile = useCallback(
     async (data: ShareData, filename?: string): Promise<void> => {
-      setIsCreating(true);
-      setError(null);
-      try {
+      return withShareOperation(async () => {
         const blob = createShareFile(data);
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = filename ?? `${data.toolId}-${Date.now()}.itsjust.json`;
+        link.download = (filename ?? `${data.toolId}-${Date.now()}.itsjust.json`).replace(/[\/\\:?*"<>|]/g, '_');
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
@@ -68,15 +75,13 @@ export function useShare() {
           isFile: true,
           blob,
         });
-      } catch (err) {
+      }).catch((err) => {
         const message = err instanceof Error ? err.message : 'Download failed';
         setError(message);
         throw err;
-      } finally {
-        setIsCreating(false);
-      }
+      });
     },
-    [createShareFile],
+    [createShareFile, withShareOperation],
   );
 
   /**
@@ -85,17 +90,17 @@ export function useShare() {
    */
   const shareViaWeb = useCallback(
     async (data: ShareData, filename?: string): Promise<boolean> => {
-      if (!navigator.share || !navigator.canShare) {
+      if (!navigator.share) {
         return false;
       }
-
-      setIsCreating(true);
-      setError(null);
-      try {
+      return withShareOperation(async () => {
         const blob = createShareFile(data);
         const file = new File([blob], filename ?? `${data.toolId}.itsjust.json`, {
           type: 'application/json',
         });
+        if (navigator.canShare && !navigator.canShare({ files: [file] })) {
+          return false;
+        }
 
         await navigator.share({
           files: [file],
@@ -110,17 +115,15 @@ export function useShare() {
           isFile: true,
         });
         return true;
-      } catch (err) {
+      }).catch((err) => {
         if (!(err instanceof Error) || err.name !== 'AbortError') {
           const message = err instanceof Error ? err.message : 'Web share failed';
           setError(message);
         }
         return false;
-      } finally {
-        setIsCreating(false);
-      }
+      });
     },
-    [createShareFile],
+    [createShareFile, withShareOperation],
   );
 
   /**
@@ -129,9 +132,7 @@ export function useShare() {
    */
   const copyShareToClipboard = useCallback(
     async (data: ShareData): Promise<boolean> => {
-      setIsCreating(true);
-      setError(null);
-      try {
+      return withShareOperation(async () => {
         const blob = createShareFile(data);
         const text = await blob.text();
         await navigator.clipboard.writeText(text);
@@ -144,15 +145,13 @@ export function useShare() {
           blob,
         });
         return true;
-      } catch (err) {
+      }).catch((err) => {
         const message = err instanceof Error ? err.message : 'Copy failed';
         setError(message);
         return false;
-      } finally {
-        setIsCreating(false);
-      }
+      });
     },
-    [createShareFile],
+    [createShareFile, withShareOperation],
   );
 
   const clearShare = useCallback(() => {

@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useRef, useEffect, type ReactNode } from 'react';
+import { t as tt } from '../../i18n/strings';
 
 interface Toast {
   id: number;
@@ -14,8 +15,6 @@ interface ToastContextValue {
 }
 
 const ToastContext = createContext<ToastContextValue | null>(null);
-
-let nextId = 0;
 
 function ToastIcon({ type }: { type: Toast['type'] }) {
   if (type === 'success') {
@@ -49,20 +48,38 @@ export function useToast() {
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  const nextIdRef = useRef(0);
+
+  useEffect(() => {
+    const timers = timersRef.current;
+    return () => {
+      timers.forEach(clearTimeout);
+      timers.clear();
+    };
+  }, []);
 
   const addToast = useCallback((message: string, type: Toast['type'] = 'info') => {
-    const id = nextId++;
+    const id = nextIdRef.current++;
     setToasts((prev) => [...prev, { id, message, type }]);
 
-    setTimeout(() => {
+    const t1 = setTimeout(() => {
       setToasts((prev) =>
         prev.map((t) => (t.id === id ? { ...t, exiting: true } : t)),
       );
+      timersRef.current.delete(t1);
     }, 2700);
+    timersRef.current.add(t1);
 
-    setTimeout(() => {
+    const t2 = setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
+      timersRef.current.delete(t2);
     }, 3000);
+    timersRef.current.add(t2);
+  }, []);
+
+  const dismissToast = useCallback((id: number) => {
+    setToasts((prev) => prev.map((t) => (t.id === id ? { ...t, exiting: true } : t)));
   }, []);
 
   return (
@@ -70,9 +87,19 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div className="toast-container" aria-live="polite">
         {toasts.map((t) => (
-          <div key={t.id} className={`toast toast-${t.type} ${t.exiting ? 'toast-exit' : ''}`}>
+          <div
+            key={t.id}
+            className={`toast toast-${t.type} ${t.exiting ? 'toast-exit' : ''}`}
+            role={t.type === 'error' ? 'alert' : 'status'}
+            onAnimationEnd={() => {
+              if (t.exiting) {
+                setToasts((prev) => prev.filter((x) => x.id !== t.id));
+              }
+            }}
+          >
             <ToastIcon type={t.type} />
             <span>{t.message}</span>
+            <button type="button" className="toast-dismiss" onClick={() => dismissToast(t.id)} aria-label={tt('dismissNotification')}>×</button>
             <div className="toast-progress" />
           </div>
         ))}
@@ -80,3 +107,4 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     </ToastContext.Provider>
   );
 }
+ToastProvider.displayName = 'ToastProvider';

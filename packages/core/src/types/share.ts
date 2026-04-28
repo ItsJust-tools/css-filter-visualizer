@@ -1,6 +1,6 @@
 export interface ShareData {
   toolId: string;
-  content: string;
+  content: unknown;
   metadata?: {
     title?: string;
     description?: string;

@@ -7,6 +7,9 @@ export interface ExportOptions {
   filename?: string;
   background?: string;
   padding?: number;
+  orientation?: 'portrait' | 'landscape' | 'auto';
+  allowSensitiveData?: boolean;
+  signal?: AbortSignal;
 }
 
 export interface ExportResult {
@@ -25,3 +28,13 @@ export interface Exporter {
     stateSerializer?: () => string,
   ) => Promise<ExportResult>;
 }
+
+export type ExporterLoader = () => Promise<{ default: Exporter } | { exporter: Exporter }>;
+
+export const formatLabels = {
+  png: 'PNG Image',
+  jpeg: 'JPEG Image',
+  webp: 'WebP Image',
+  pdf: 'PDF Document',
+  json: 'JSON Data',
+} satisfies Record<ExportFormat, string>;

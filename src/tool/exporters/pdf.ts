@@ -1,26 +1,31 @@
 import type { Exporter } from '@itsjust/core';
+import { formatExportError, renderCanvas, throwIfAborted } from './utils';
 
 const pdfExporter: Exporter = {
   format: 'pdf',
   export: async (element, options) => {
     try {
-      const html2canvas = (await import('html2canvas')).default;
+      throwIfAborted(options.signal);
       const { jsPDF } = await import('jspdf');
-      const canvas = await html2canvas(element, {
-        scale: options.scale ?? 2,
-        backgroundColor: options.background ?? '#ffffff',
-        logging: false,
-        useCORS: true,
-      });
+      const canvas = await renderCanvas(element, options);
 
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpeg', options.quality ?? 0.92);
+      const pxToMm = (px: number) => (px * 25.4) / 96;
+      const widthMm = pxToMm(canvas.width);
+      const heightMm = pxToMm(canvas.height);
+      const orientation =
+        options.orientation === 'portrait' || options.orientation === 'landscape'
+          ? options.orientation
+          : widthMm > heightMm
+            ? 'landscape'
+            : 'portrait';
       const pdf = new jsPDF({
-        orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
-        unit: 'px',
-        format: [canvas.width, canvas.height],
+        orientation,
+        unit: 'mm',
+        format: [widthMm, heightMm],
       });
 
-      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.addImage(imgData, 'JPEG', 0, 0, widthMm, heightMm);
       const blob = pdf.output('blob');
 
       return {
@@ -35,7 +40,7 @@ const pdfExporter: Exporter = {
         data: null,
         filename: options.filename ?? `export-${Date.now()}.pdf`,
         format: 'pdf',
-        error: error instanceof Error ? error.message : 'PDF export failed',
+        error: formatExportError(error, 'PDF'),
       };
     }
   },

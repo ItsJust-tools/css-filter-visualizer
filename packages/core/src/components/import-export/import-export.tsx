@@ -1,7 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { ExportFormat } from '../../types';
+import { formatLabels } from '../../types';
+import { t } from '../../i18n/strings';
 
 export interface ImportExportProps {
   /** Supported formats for this tool */
@@ -9,7 +11,7 @@ export interface ImportExportProps {
   /** Called when user wants to export */
   onExport?: (format: ExportFormat) => void;
   /** Called when a file is selected for import */
-  onImport?: (file: File) => void;
+  onImport?: (file: File) => void | Promise<unknown>;
   /** Currently importing state */
   isImporting?: boolean;
   /** Currently exporting state */
@@ -24,6 +26,7 @@ function ImportIcon() {
     </svg>
   );
 }
+ImportIcon.displayName = 'ImportIcon';
 
 function DownloadIcon() {
   return (
@@ -33,6 +36,7 @@ function DownloadIcon() {
     </svg>
   );
 }
+DownloadIcon.displayName = 'DownloadIcon';
 
 export function ImportExport({
   formats,
@@ -45,6 +49,21 @@ export function ImportExport({
   const [selected, setSelected] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listboxRef = useRef<HTMLUListElement>(null);
+  const exportButtonRef = useRef<HTMLButtonElement>(null);
+  const typeaheadRef = useRef('');
+  const typeaheadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const listboxId = useId();
+  const optionId = useCallback((index: number) => `${listboxId}-option-${index}`, [listboxId]);
+
+  useEffect(() => {
+    return () => {
+      if (typeaheadTimerRef.current) {
+        clearTimeout(typeaheadTimerRef.current);
+        typeaheadTimerRef.current = null;
+      }
+    };
+  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -56,6 +75,14 @@ export function ImportExport({
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
+  }, [dropdownOpen]);
+
+  useEffect(() => {
+    if (!dropdownOpen) {
+      exportButtonRef.current?.focus();
+      return;
+    }
+    listboxRef.current?.focus();
   }, [dropdownOpen]);
 
   const handleImportClick = useCallback(() => {
@@ -72,25 +99,79 @@ export function ImportExport({
     [onImport],
   );
 
-  const formatLabels: Record<ExportFormat, string> = {
-    png: 'PNG Image',
-    jpeg: 'JPEG Image',
-    webp: 'WebP Image',
-    pdf: 'PDF Document',
-    json: 'JSON Data',
-  };
+  const handleDropdownKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!dropdownOpen) return;
+
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setSelected((i) => Math.min(i + 1, formats.length - 1));
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setSelected((i) => Math.max(i - 1, 0));
+          break;
+        case 'Home':
+          e.preventDefault();
+          setSelected(0);
+          break;
+        case 'End':
+          e.preventDefault();
+          setSelected(formats.length - 1);
+          break;
+        case 'PageUp':
+          e.preventDefault();
+          setSelected((i) => Math.max(i - 5, 0));
+          break;
+        case 'PageDown':
+          e.preventDefault();
+          setSelected((i) => Math.min(i + 5, formats.length - 1));
+          break;
+        case 'Enter':
+          e.preventDefault();
+          const selectedFormat = formats[selected];
+          if (selectedFormat) {
+            onExport?.(selectedFormat);
+          }
+          setDropdownOpen(false);
+          break;
+        case 'Escape':
+          e.preventDefault();
+          setDropdownOpen(false);
+          break;
+        default:
+          if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+            e.preventDefault();
+            typeaheadRef.current += e.key.toLowerCase();
+            if (typeaheadTimerRef.current) clearTimeout(typeaheadTimerRef.current);
+            typeaheadTimerRef.current = setTimeout(() => { typeaheadRef.current = ''; }, 500);
+
+            const match = formats.findIndex(
+              (f) => formatLabels[f]?.toLowerCase().startsWith(typeaheadRef.current),
+            );
+            if (match >= 0) setSelected(match);
+          }
+          break;
+      }
+    },
+    [dropdownOpen, formats, onExport, selected],
+  );
 
   return (
-    <div className="import-export-group" ref={dropdownRef}>
+    <div className="import-export-group" ref={dropdownRef} role="group" aria-label={t('importExport')}>
       {/* Hidden file input for import */}
       <input
         ref={inputRef}
         type="file"
-        accept=".itsjust.json,.json,.svg"
+        accept=".itsjust.json,.json,.png,.jpg,.jpeg,.webp,.pdf"
         onChange={handleFileChange}
         style={{ display: 'none' }}
         aria-hidden="true"
       />
+      <span className="sr-only" aria-live="polite">
+        {isImporting ? 'Importing file' : ''}
+      </span>
 
       {/* Import Button */}
       <button
@@ -98,44 +179,60 @@ export function ImportExport({
         className="toolbar-btn"
         onClick={handleImportClick}
         disabled={isImporting}
-        title="Import file"
-        aria-label="Import file"
+        title={t('import')}
+        aria-label={t('import')}
       >
         <ImportIcon />
-        <span>Import</span>
-        {isImporting && <span className="spinner-icon" />}
+        <span>{t('import')}</span>
+        {isImporting && <span className="spinner-icon" aria-hidden="true" />}
       </button>
 
       {/* Export Dropdown */}
-      <div className="export-dropdown">
+      <div className="export-dropdown" onKeyDown={handleDropdownKeyDown}>
         <button
+          ref={exportButtonRef}
           type="button"
           className="toolbar-btn"
-          onClick={() => setDropdownOpen((v) => !v)}
+          onClick={() => {
+            if (!dropdownOpen && selected < 0 && formats.length > 0) {
+              setSelected(0);
+            }
+            setDropdownOpen((v) => !v);
+          }}
           disabled={isExporting || !onExport}
           aria-expanded={dropdownOpen}
           aria-haspopup="listbox"
-          title="Export"
-          aria-label="Export"
+          aria-controls={dropdownOpen ? listboxId : undefined}
+          aria-activedescendant={dropdownOpen && selected >= 0 ? optionId(selected) : undefined}
+          title={t('export')}
+          aria-label={t('export')}
         >
           <DownloadIcon />
-          <span>Export</span>
+          <span>{t('export')}</span>
+          {isExporting && <span className="spinner-icon" aria-hidden="true" />}
         </button>
 
         {dropdownOpen && onExport && (
-          <ul className="dropdown-menu" role="listbox" aria-label="Export format">
+          <ul
+            ref={listboxRef}
+            id={listboxId}
+            className="dropdown-menu"
+            role="listbox"
+            aria-label={t('export')}
+            tabIndex={0}
+            aria-activedescendant={selected >= 0 ? optionId(selected) : undefined}
+          >
             {formats.map((f, i) => (
-              <li key={f}>
+              <li id={optionId(i)} key={f} role="option" aria-selected={i === selected}>
                 <button
                   type="button"
                   className={`dropdown-item ${i === selected ? 'dropdown-item-active' : ''}`}
-                  role="option"
-                  aria-selected={i === selected}
                   onClick={() => {
                     onExport(f);
                     setDropdownOpen(false);
                   }}
                   onMouseEnter={() => setSelected(i)}
+                  onMouseLeave={() => setSelected(-1)}
                 >
                   <span className="dropdown-label">{formatLabels[f] ?? f.toUpperCase()}</span>
                   <span className="dropdown-shortcut">.{f}</span>
@@ -148,3 +245,4 @@ export function ImportExport({
     </div>
   );
 }
+ImportExport.displayName = 'ImportExport';

@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import type { ToolConfig } from '@itsjust/core';
+import { getPublicSiteUrl, templateMetadata } from '@/tool/template-metadata';
 
-const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://itsjust.tools';
+const SITE_URL = getPublicSiteUrl();
 
 export function generateToolMetadata(config: ToolConfig): Metadata {
   const title = config.name;
@@ -17,7 +18,6 @@ export function generateToolMetadata(config: ToolConfig): Metadata {
     description,
     keywords: [
       config.name,
-      config.description,
       config.id,
       ...config.exportFormats.map((f) => `${f} export`),
       ...config.exportFormats.map((f) => `export to ${f}`),
@@ -31,7 +31,7 @@ export function generateToolMetadata(config: ToolConfig): Metadata {
     },
     openGraph: {
       type: 'website',
-      locale: 'en_US',
+      locale: templateMetadata.locale,
       url,
       title,
       description,

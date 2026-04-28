@@ -9,3 +9,4 @@ export function LoadingSkeleton() {
     </div>
   );
 }
+LoadingSkeleton.displayName = 'LoadingSkeleton';

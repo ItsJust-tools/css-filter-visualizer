@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, type RenderOptions } from '@testing-library/react';
-import { MockThemeProvider } from './mock-providers';
+import { MockThemeProvider, MockToastProvider } from './mock-providers';
 import type { ToolConfig } from '../types';
 
 const testConfig: ToolConfig = {
@@ -25,7 +25,9 @@ export function renderTool(
 ) {
   return render(ui, {
     wrapper: ({ children }) => (
-      <MockThemeProvider theme="light">{children}</MockThemeProvider>
+      <MockThemeProvider theme="light">
+        <MockToastProvider>{children}</MockToastProvider>
+      </MockThemeProvider>
     ),
     ...options,
   });
@@ -43,7 +45,7 @@ export interface MockToolState<T> {
   canUndo: boolean;
   canRedo: boolean;
   clearHistory: () => void;
-  lastSaved: Date | null;
+  lastSaved: string | null;
   isDirty: boolean;
   saveNow: () => Promise<void>;
 }
@@ -65,13 +67,13 @@ export function createMockToolState<T>(initial: T): MockToolState<T> {
     undo: () => {
       if (historyIndex > 0) {
         historyIndex--;
-        data = history[historyIndex];
+        data = history[historyIndex]!;
       }
     },
     redo: () => {
       if (historyIndex < history.length - 1) {
         historyIndex++;
-        data = history[historyIndex];
+        data = history[historyIndex]!;
       }
     },
     get canUndo() { return historyIndex > 0; },

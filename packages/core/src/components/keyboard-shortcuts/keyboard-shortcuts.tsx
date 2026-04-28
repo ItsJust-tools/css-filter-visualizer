@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import type { ShortcutGroup } from '../../types';
+import { t } from '../../i18n/strings';
 
 interface KeyboardShortcutsOverlayProps {
   groups: ShortcutGroup[];
@@ -16,6 +17,27 @@ export function KeyboardShortcutsOverlay({ groups, onClose }: KeyboardShortcutsO
       if (e.key === 'Escape') {
         e.preventDefault();
         onClose();
+        return;
+      }
+
+      if (e.key === 'Tab' && ref.current) {
+        const focusable = ref.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        );
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last?.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first?.focus();
+          }
+        }
       }
     }
     document.addEventListener('keydown', handler);
@@ -36,19 +58,23 @@ export function KeyboardShortcutsOverlay({ groups, onClose }: KeyboardShortcutsO
     const prev = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const first = ref.current?.querySelector<HTMLElement>('.shortcuts-close');
     first?.focus();
-    return () => { prev?.focus(); };
+    return () => {
+      if (prev && document.body.contains(prev)) {
+        prev.focus();
+      }
+    };
   }, []);
 
   return (
-    <div className="shortcuts-overlay" ref={ref} aria-modal="true" role="dialog" aria-label="Keyboard shortcuts">
+    <div className="shortcuts-overlay" ref={ref} aria-modal="true" role="dialog" aria-label={t('keyboardShortcuts')}>
       <div className="shortcuts-card">
         <div className="shortcuts-header">
-          <h2 className="shortcuts-title">Keyboard shortcuts</h2>
-          <span className="shortcuts-hint">Press <kbd className="shortcut-key">?</kbd> to toggle</span>
+          <h2 className="shortcuts-title">{t('keyboardShortcuts')}</h2>
+          <span className="shortcuts-hint">{t('pressToToggle')}</span>
           <button
             className="shortcuts-close"
             onClick={onClose}
-            aria-label="Close shortcuts"
+            aria-label={t('closeShortcuts')}
             type="button"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -67,9 +93,7 @@ export function KeyboardShortcutsOverlay({ groups, onClose }: KeyboardShortcutsO
                     {s.description && <span className="shortcut-description"> &mdash; {s.description}</span>}
                   </span>
                   <span className="shortcut-keys">
-                    {s.keys.split('+').map((key, ki) => (
-                      <kbd key={ki} className="shortcut-key">{key}</kbd>
-                    ))}
+                    <kbd className="shortcut-key">{s.keys}</kbd>
                   </span>
                 </div>
               ))}
@@ -80,3 +104,5 @@ export function KeyboardShortcutsOverlay({ groups, onClose }: KeyboardShortcutsO
     </div>
   );
 }
+KeyboardShortcutsOverlay.displayName = 'KeyboardShortcutsOverlay';
+export default KeyboardShortcutsOverlay;

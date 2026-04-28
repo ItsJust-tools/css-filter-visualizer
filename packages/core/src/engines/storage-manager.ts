@@ -1,121 +1,90 @@
 import type { StorageData } from '../types';
+import { compressToUTF16, decompressFromUTF16 } from 'lz-string';
 
-const DB_NAME = 'itsjust-storage';
-const DB_VERSION = 1;
-const STORE_NAME = 'history';
+export type StorageLoadStatus = 'missing' | 'ok' | 'corrupt';
 
-function openDB(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: 'key' });
-      }
-    };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
+export interface StorageLoadResult<T> {
+  status: StorageLoadStatus;
+  data: T | null;
 }
 
 export class StorageManager {
   private prefix: string;
+  private defaultVersion?: string;
+  private compressionThresholdBytes: number;
 
-  constructor(prefix = 'itsjust') {
+  constructor(prefix = 'itsjust', defaultVersion = '1.0.0', compressionThresholdBytes = 2048) {
     this.prefix = prefix;
+    this.defaultVersion = defaultVersion;
+    this.compressionThresholdBytes = Math.max(0, compressionThresholdBytes);
   }
 
   private key(k: string): string {
     return `${this.prefix}:${k}`;
   }
 
-  // --- localStorage ---
-
-  saveLocal<T>(key: string, data: T): void {
-    const entry: StorageData<T> = {
-      data,
+  async save<T>(key: string, data: T, version?: string): Promise<void> {
+    const serialized = JSON.stringify(data);
+    let storedData: unknown = data;
+    let encoding: StorageData<unknown>['encoding'] = 'plain';
+    if (serialized.length >= this.compressionThresholdBytes) {
+      const compressed = compressToUTF16(serialized);
+      if (compressed.length < serialized.length) {
+        storedData = compressed;
+        encoding = 'lz-string';
+      }
+    }
+    const entry: StorageData<unknown> = {
+      data: storedData,
       savedAt: new Date().toISOString(),
-      version: '0.1.0',
+      version: version ?? this.defaultVersion ?? '1.0.0',
+      encoding,
     };
-    localStorage.setItem(this.key(key), JSON.stringify(entry));
-  }
-
-  loadLocal<T>(key: string): T | null {
-    const raw = localStorage.getItem(this.key(key));
-    if (!raw) return null;
     try {
-      const entry: StorageData<T> = JSON.parse(raw);
-      return entry.data;
-    } catch {
-      return null;
+      localStorage.setItem(this.key(key), JSON.stringify(entry));
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'QuotaExceededError') {
+        console.warn(`[StorageManager] Quota exceeded saving "${key}"`);
+      } else {
+        console.warn(`[StorageManager] Failed to save "${key}":`, error);
+      }
+      throw error;
     }
   }
 
-  clearLocal(key: string): void {
-    localStorage.removeItem(this.key(key));
-  }
-
-  // --- IndexedDB (history) ---
-
-  async saveHistory<T>(key: string, data: T): Promise<void> {
-    const db = await openDB();
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
-
-    const entry: StorageData<T> & { key: string } = {
-      key: this.key(key),
-      data,
-      savedAt: new Date().toISOString(),
-      version: '0.1.0',
-    };
-    store.put(entry);
-    await new Promise<void>((resolve, reject) => {
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
-  }
-
-  async listHistory<T>(key: string, maxEntries = 10): Promise<StorageData<T>[]> {
-    const db = await openDB();
-    const tx = db.transaction(STORE_NAME, 'readonly');
-    const store = tx.objectStore(STORE_NAME);
-
-    const prefix = this.key(key);
-    const results: StorageData<T>[] = [];
-
-    return new Promise((resolve, reject) => {
-      const request = store.openCursor(IDBKeyRange.lowerBound(prefix));
-      request.onsuccess = () => {
-        const cursor = request.result;
-        if (cursor && results.length < maxEntries) {
-          const value = cursor.value;
-          if (
-            value !== null &&
-            typeof value === 'object' &&
-            'key' in value &&
-            typeof value.key === 'string' &&
-            value.key.startsWith(prefix)
-          ) {
-            results.push(value as StorageData<T> & { key: string });
-          }
-          cursor.continue();
-        } else {
-          resolve(results);
+  loadEntry<T>(key: string, expectedVersion?: string): StorageLoadResult<T> {
+    const raw = localStorage.getItem(this.key(key));
+    if (!raw) return { status: 'missing', data: null };
+    try {
+      const entry: StorageData<unknown> = JSON.parse(raw);
+      if (expectedVersion && entry.version !== expectedVersion) {
+        console.warn(
+          `[StorageManager] Version mismatch for "${key}": expected ${expectedVersion}, got ${entry.version}`,
+        );
+      }
+      if (entry.encoding === 'lz-string') {
+        if (typeof entry.data !== 'string') {
+          return { status: 'corrupt', data: null };
         }
-      };
-      request.onerror = () => reject(request.error);
-    });
+        const decompressed = decompressFromUTF16(entry.data);
+        if (decompressed == null) {
+          return { status: 'corrupt', data: null };
+        }
+        return { status: 'ok', data: JSON.parse(decompressed) as T };
+      }
+      return { status: 'ok', data: entry.data as T };
+    } catch (error) {
+      console.warn(`[StorageManager] Failed to load "${key}":`, error);
+      return { status: 'corrupt', data: null };
+    }
   }
 
-  async clearHistory(key: string): Promise<void> {
-    const db = await openDB();
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
-    store.delete(IDBKeyRange.lowerBound(this.key(key)));
-    await new Promise<void>((resolve, reject) => {
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
+  load<T>(key: string, expectedVersion?: string): T | null {
+    return this.loadEntry<T>(key, expectedVersion).data;
+  }
+
+  remove(key: string): void {
+    localStorage.removeItem(this.key(key));
   }
 }
 

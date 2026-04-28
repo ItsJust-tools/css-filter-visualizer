@@ -1,0 +1,74 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [1.0.0] - 2026-04-24
+
+### Added
+
+- **Testing**: Comprehensive test suite with 48 tests across all core hooks and components.
+  - `useExport` tests with race condition and error handling coverage.
+  - `useShare` tests for download, web share, and clipboard.
+  - `useStorage` tests with corrupted data handling.
+  - `useTool` integration tests with ToastProvider wrapper.
+  - `ThemeProvider` tests with `matchMedia` mock.
+  - `ImportExport` component tests for dropdown and file input.
+  - `ExportEngine` tests for Blob URL cleanup.
+- **E2E**: Playwright now runs on Chromium, Firefox, WebKit, and mobile viewports (Pixel 5, iPhone 12).
+- **CI/CD**: Security headers enabled in `next.config.ts` (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy).
+- **Accessibility**:
+  - Focus trap in `KeyboardShortcutsOverlay`.
+  - ARIA live region for toasts (`aria-live="polite"`).
+  - Sidebar resize handle with `aria-valuenow/min/max` and keyboard control (ArrowLeft/Right).
+  - Canvas marked with `role="application"` and `aria-label`.
+- **Keyboard Navigation**: Export dropdown supports Home, End, PageUp, PageDown, and typeahead search.
+- **Error Resilience**: `html2canvas` lazy-load failures handled with retry mechanism (3 attempts with exponential backoff).
+- **Display Names**: All components and icon components have explicit `displayName` for React DevTools.
+
+### Changed
+
+- **API Breaking**: `Tool.deserialize` now returns `DeserializeResult<TState>` instead of `TState` directly.
+  - Callers must check `result.success` before using `result.data`.
+- **API Breaking**: `useImport` no longer uses generic `T`. Returns `ImportResult` with `data: unknown`.
+  - Type safety enforced via `tool.deserialize` validation.
+- **API Breaking**: `handleExport` now returns `Promise<{ success: boolean; error?: string }>`.
+  - Callers can react to export failures.
+- **File Size Display**: Dynamic units (B, KB, MB) instead of always showing MB with `toFixed(0)`.
+
+### Fixed
+
+- **Memory Leak**: `triggerDownload` now revokes Blob URLs for string exports too.
+- **Race Condition**: `useExport.isExporting` uses a ref for atomic check before concurrent exports.
+- **Export Format Mismatch**: `tool.config.ts` lists all registered formats.
+- **Keyboard Shortcuts**: `useKeyboardShortcuts` deps fixed — listens to entire `actions` object.
+- **Sidebar Callback Churn**: `toggleSidebar` uses `useRef` for current value instead of closure.
+- **Focus Restoration**: `KeyboardShortcutsOverlay` checks `document.body.contains(prev)` before restoring focus.
+- **Sidebar Resize**: Ref anti-pattern replaced with direct save in `mouseup` handler.
+
+### Removed
+
+- **Deprecated API**: `registerExporterLoader` and `registerToolExporters` removed.
+- **Dead Component**: `tool-shell-export-dropdown.tsx` removed (unused, `ImportExport` component is used instead).
+- **Duplicate `formatLabels`**: Centralized in `packages/core/src/types/export.ts`.
+
+## [0.1.0] - 2026-04-24
+
+### Added
+
+- Initial release of the itsjust template.
+- Next.js 16 with App Router and Turbopack.
+- `@itsjust/core` monorepo package with shared hooks, components, and engines.
+- `useToolState` with undo/redo, auto-save, and dirty state tracking.
+- `useExport` with client-side export to PNG, JPEG, WebP, PDF, JSON.
+- `useImport` with `.itsjust.json` share format support.
+- `useShare` with download, Web Share API, and clipboard support.
+- `ToolShell` component with toolbar, sidebar, canvas, and status bar.
+- ThemeProvider with light/dark/system modes.
+- Keyboard shortcuts overlay.
+- Toast notifications.
+- Vitest unit tests and Playwright E2E tests.

@@ -1,5 +1,5 @@
 export { ToolShell, type ToolbarActions } from './tool-shell';
-export { ThemeProvider, ThemeContext, useTheme, ThemeScript } from './theme-provider';
+export { ThemeProvider, useTheme, ThemeScript } from './theme-provider';
 export type { ToolTheme } from './theme-provider';
 export { ToastProvider, useToast } from './toast';
 export { KeyboardShortcutsOverlay } from './keyboard-shortcuts';

@@ -11,3 +11,4 @@ export function StatusBar({ children }: { children?: ReactNode }) {
     </footer>
   );
 }
+StatusBar.displayName = 'StatusBar';

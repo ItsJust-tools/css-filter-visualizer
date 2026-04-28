@@ -3,6 +3,7 @@ import { Geist } from 'next/font/google';
 import { ThemeProvider, ThemeScript, ToastProvider } from '@itsjust/core';
 import { generateToolMetadata } from '@/lib/seo';
 import toolConfig from '@/tool/tool.config';
+import { templateMetadata } from '@/tool/template-metadata';
 import './globals.css';
 
 const geistSans = Geist({
@@ -18,6 +19,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
+  viewportFit: 'cover',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#ffffff' },
     { media: '(prefers-color-scheme: dark)', color: '#0c0e14' },
@@ -30,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang={templateMetadata.htmlLang} className={`${geistSans.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <ThemeScript toolTheme={toolConfig.theme} />
       </head>

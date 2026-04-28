@@ -6,6 +6,7 @@ export function UndoIcon() {
     </svg>
   );
 }
+UndoIcon.displayName = 'UndoIcon';
 
 export function RedoIcon() {
   return (
@@ -15,6 +16,7 @@ export function RedoIcon() {
     </svg>
   );
 }
+RedoIcon.displayName = 'RedoIcon';
 
 export function ExportIcon() {
   return (
@@ -24,6 +26,7 @@ export function ExportIcon() {
     </svg>
   );
 }
+ExportIcon.displayName = 'ExportIcon';
 
 export function CheckIcon() {
   return (
@@ -32,6 +35,7 @@ export function CheckIcon() {
     </svg>
   );
 }
+CheckIcon.displayName = 'CheckIcon';
 
 export function SpinnerIcon() {
   return (
@@ -40,6 +44,7 @@ export function SpinnerIcon() {
     </svg>
   );
 }
+SpinnerIcon.displayName = 'SpinnerIcon';
 
 export function SidebarIcon({ open }: { open: boolean }) {
   return open ? (
@@ -55,6 +60,7 @@ export function SidebarIcon({ open }: { open: boolean }) {
     </svg>
   );
 }
+SidebarIcon.displayName = 'SidebarIcon';
 
 export function SunIcon({ className }: { className?: string }) {
   return (
@@ -64,6 +70,7 @@ export function SunIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+SunIcon.displayName = 'SunIcon';
 
 export function MoonIcon({ className }: { className?: string }) {
   return (
@@ -72,3 +79,4 @@ export function MoonIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+MoonIcon.displayName = 'MoonIcon';
