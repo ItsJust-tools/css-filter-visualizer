@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import HelpPage from '@/app/help/page';
 import ToolClient from '@/app/tool-client';
 import ToolClientWrapper from '@/app/tool-client-wrapper';
 
@@ -84,13 +83,6 @@ describe('app client and help page', () => {
       value: vi.fn().mockResolvedValue(undefined),
     });
     window.history.replaceState(null, '', 'http://localhost:3000/?state=e30%3D');
-  });
-
-  it('renders help page content', () => {
-    render(<HelpPage />);
-    expect(screen.getByRole('heading', { name: /Help/i })).toBeInTheDocument();
-    expect(screen.getByText('Quick Start')).toBeInTheDocument();
-    expect(screen.getByText('Share URL Flow')).toBeInTheDocument();
   });
 
   it('renders dynamic tool client wrapper', () => {

@@ -134,11 +134,7 @@ describe('exporters', () => {
       const originalImage = globalThis.Image;
       vi.stubGlobal('Image', mockImageClass(200, 100));
 
-      const result = await renderToImage(
-        el,
-        makeOptions({ allowSensitiveData: true, scale: 3 }),
-        'image/png'
-      );
+      const result = await renderToImage(el, makeOptions({ allowSensitiveData: true, scale: 3 }));
 
       expect(result).toBeInstanceOf(HTMLCanvasElement);
       expect(result.width).toBe(200);
@@ -219,7 +215,7 @@ describe('exporters', () => {
       input.type = 'password';
       el.appendChild(input);
 
-      await expect(renderToImage(el, makeOptions(), 'image/png')).rejects.toThrowError(
+      await expect(renderToImage(el, makeOptions())).rejects.toThrowError(
         /sensitive elements detected/
       );
     });
@@ -576,8 +572,8 @@ describe('exporters', () => {
       el.textContent = 'pdf text';
 
       const printMock = vi.fn();
-      let capturedDoc: { write: ReturnType<typeof vi.fn>; close: ReturnType<typeof vi.fn> } | null =
-        null;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let capturedDoc: any = null;
 
       const appendChildSpy = vi.spyOn(document.body, 'appendChild').mockImplementation((node) => {
         if (node instanceof HTMLIFrameElement || (node as HTMLElement).tagName === 'IFRAME') {
