@@ -73,10 +73,5 @@ export function buildDefaultShortcutGroups(config: ToolConfig): ShortcutGroup[] 
   if (config.features.darkMode) view.push({ keys: `${mod}+D`, label: 'Toggle dark mode' });
   if (view.length) groups.push({ title: 'View', shortcuts: view });
 
-  groups.push({
-    title: 'Help',
-    shortcuts: [{ keys: `${mod}+?`, label: 'Show keyboard shortcuts' }],
-  });
-
   return groups;
 }
