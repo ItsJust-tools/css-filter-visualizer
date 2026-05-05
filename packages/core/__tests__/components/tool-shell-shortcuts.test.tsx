@@ -4,7 +4,7 @@ import {
   useKeyboardShortcuts,
   buildDefaultShortcutGroups,
 } from '../../src/components/tool-shell/tool-shell-shortcuts';
-import type { ToolConfig, ToolbarActions } from '../../src/types';
+import type { ToolConfig } from '../../src/types';
 
 const config: ToolConfig = {
   id: 'test',
