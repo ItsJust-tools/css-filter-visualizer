@@ -160,7 +160,6 @@ describe('Sidebar', () => {
 
   it('traps focus with Tab key on mobile', () => {
     renderSidebar({ isMobile: true, sidebarOpen: true });
-    const sidebar = screen.getByRole('dialog');
 
     // Tab from last element should wrap to first
     const resizeHandle = screen.getByRole('separator');
