@@ -287,13 +287,13 @@ export function ToolSidebar({ state, logic }: ToolSidebarProps) {
 
 ### Supported Formats
 
-| Format | How it works                 | Requires canvas ref |
-| ------ | ---------------------------- | ------------------- |
-| `json` | `serialize(state)`           | No                  |
-| `png`  | `html-to-image` → blob       | Yes                 |
-| `jpeg` | `html-to-image` → blob       | Yes                 |
-| `webp` | `html-to-image` → blob       | Yes                 |
-| `pdf`  | `@media print` iframe → PDF  | Yes                 |
+| Format | How it works                | Requires canvas ref |
+| ------ | --------------------------- | ------------------- |
+| `json` | `serialize(state)`          | No                  |
+| `png`  | `html-to-image` → blob      | Yes                 |
+| `jpeg` | `html-to-image` → blob      | Yes                 |
+| `webp` | `html-to-image` → blob      | Yes                 |
+| `pdf`  | `@media print` iframe → PDF | Yes                 |
 
 Set `exportFormats` in `tool.config.ts` to control which formats appear in the Export dropdown.
 

@@ -249,13 +249,13 @@ This section is the **canonical source of truth** for data contracts. All docume
 
 ### Export Formats
 
-| Format | How it works                       | Requires canvas ref |
-| ------ | ---------------------------------- | ------------------- |
-| `json` | `serialize(state)` → `.json` file  | No                  |
-| `png`  | `html-to-image` → `.png` blob      | Yes                 |
-| `jpeg` | `html-to-image` → `.jpeg` blob     | Yes                 |
-| `webp` | `html-to-image` → `.webp` blob     | Yes                 |
-| `pdf`  | `@media print` iframe → `.pdf`     | Yes                 |
+| Format | How it works                      | Requires canvas ref |
+| ------ | --------------------------------- | ------------------- |
+| `json` | `serialize(state)` → `.json` file | No                  |
+| `png`  | `html-to-image` → `.png` blob     | Yes                 |
+| `jpeg` | `html-to-image` → `.jpeg` blob    | Yes                 |
+| `webp` | `html-to-image` → `.webp` blob    | Yes                 |
+| `pdf`  | `@media print` iframe → `.pdf`    | Yes                 |
 
 Exporters are lazy-loaded. Register them in `src/tool/tool-definition.ts`:
 

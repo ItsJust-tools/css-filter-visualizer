@@ -52,8 +52,16 @@ function ThemeToggle() {
       title={resolvedTheme === 'dark' ? 'Light mode (D)' : 'Dark mode (D)'}
     >
       <span className="theme-toggle-icon">
-        <Sun className={resolvedTheme === 'dark' ? 'fade-in' : 'fade-out'} size={16} strokeWidth={1.5} />
-        <Moon className={resolvedTheme === 'dark' ? 'fade-out' : 'fade-in'} size={16} strokeWidth={1.5} />
+        <Sun
+          className={resolvedTheme === 'dark' ? 'fade-in' : 'fade-out'}
+          size={16}
+          strokeWidth={1.5}
+        />
+        <Moon
+          className={resolvedTheme === 'dark' ? 'fade-out' : 'fade-in'}
+          size={16}
+          strokeWidth={1.5}
+        />
       </span>
     </button>
   );

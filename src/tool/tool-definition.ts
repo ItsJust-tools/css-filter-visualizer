@@ -21,7 +21,10 @@ export const notepadTool: Tool<NotepadState> = {
     if (isNotepadState(data)) {
       return { success: true, data: { text: data.text, title: data.title } };
     }
-    return { success: false, error: 'Invalid data format: expected { text: string, title?: string }' };
+    return {
+      success: false,
+      error: 'Invalid data format: expected { text: string, title?: string }',
+    };
   },
   exporters: [
     { format: 'png', loader: () => import('./exporters/png') },

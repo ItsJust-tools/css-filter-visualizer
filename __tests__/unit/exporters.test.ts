@@ -576,7 +576,8 @@ describe('exporters', () => {
       el.textContent = 'pdf text';
 
       const printMock = vi.fn();
-      let capturedDoc: { write: ReturnType<typeof vi.fn>; close: ReturnType<typeof vi.fn> } | null = null;
+      let capturedDoc: { write: ReturnType<typeof vi.fn>; close: ReturnType<typeof vi.fn> } | null =
+        null;
 
       const appendChildSpy = vi.spyOn(document.body, 'appendChild').mockImplementation((node) => {
         if (node instanceof HTMLIFrameElement || (node as HTMLElement).tagName === 'IFRAME') {

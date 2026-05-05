@@ -258,7 +258,9 @@ test('import from json file works', async ({ page }) => {
     buffer: Buffer.from(fileContent),
   });
 
-  await expect.poll(() => page.locator('.notepad-textarea').inputValue()).toContain('Imported Note');
+  await expect
+    .poll(() => page.locator('.notepad-textarea').inputValue())
+    .toContain('Imported Note');
 });
 
 test('export json download triggers', async ({ page }) => {

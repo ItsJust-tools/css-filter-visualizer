@@ -10,7 +10,13 @@ interface ToolCanvasProps {
   onChange?: (text: string) => void;
 }
 
-export function ToolCanvas({ text, fontSize, readOnly = false, canvasRef, onChange }: ToolCanvasProps) {
+export function ToolCanvas({
+  text,
+  fontSize,
+  readOnly = false,
+  canvasRef,
+  onChange,
+}: ToolCanvasProps) {
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       onChange?.(e.target.value);
