@@ -67,4 +67,31 @@ describe('StorageManager', () => {
     expect(result.data).toBeNull();
     warnSpy.mockRestore();
   });
+
+  it('compresses large data and loads it back', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const largeData = 'x'.repeat(3000);
+    await manager.save('compressed', largeData);
+
+    const loaded = manager.load<string>('compressed');
+    expect(loaded).toBe(largeData);
+
+    const entry = manager.loadEntry<string>('compressed');
+    expect(entry.status).toBe('ok');
+    warnSpy.mockRestore();
+  });
+
+  it('handles non-QuotaExceededError on save', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('Storage blocked');
+    });
+
+    await expect(manager.save('blocked', 'value')).rejects.toThrow('Storage blocked');
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to save'),
+      expect.any(Error)
+    );
+    warnSpy.mockRestore();
+  });
 });

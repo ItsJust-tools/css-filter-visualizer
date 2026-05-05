@@ -107,4 +107,56 @@ describe('useTool', () => {
     expect(result.current.state.data).toEqual({ title: 'Test' });
     consoleSpy.mockRestore();
   });
+
+  it('resets state when handleReset is confirmed', async () => {
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const canvasRef = { current: document.createElement('div') };
+    const { result } = renderHook(() => useTool(mockTool, canvasRef), renderOptions);
+
+    // Change state so we can verify reset
+    act(() => {
+      result.current.state.setData({ title: 'Changed' });
+    });
+    expect(result.current.state.data).toEqual({ title: 'Changed' });
+
+    act(() => {
+      result.current.toolbarActions.onReset?.();
+    });
+
+    expect(result.current.state.data).toEqual({ title: 'Test' });
+    confirmSpy.mockRestore();
+  });
+
+  it('does not reset when handleReset is cancelled', async () => {
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const canvasRef = { current: document.createElement('div') };
+    const { result } = renderHook(() => useTool(mockTool, canvasRef), renderOptions);
+
+    act(() => {
+      result.current.state.setData({ title: 'Changed' });
+    });
+
+    act(() => {
+      result.current.toolbarActions.onReset?.();
+    });
+
+    expect(result.current.state.data).toEqual({ title: 'Changed' });
+    confirmSpy.mockRestore();
+  });
+
+  it('exposes onUndo and onRedo when state allows', async () => {
+    const canvasRef = { current: document.createElement('div') };
+    const { result } = renderHook(() => useTool(mockTool, canvasRef), renderOptions);
+
+    // Initially no undo/redo
+    expect(result.current.toolbarActions.onUndo).toBeUndefined();
+    expect(result.current.toolbarActions.onRedo).toBeUndefined();
+
+    // After state change, undo should be available
+    act(() => {
+      result.current.state.setData({ title: 'Changed' });
+    });
+
+    expect(result.current.toolbarActions.onUndo).toBeDefined();
+  });
 });
