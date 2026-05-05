@@ -108,4 +108,28 @@ describe('useExport', () => {
     expect(exportResult!.error).toBe('PNG export failed');
     errorSpy.mockRestore();
   });
+
+  it('returns error when canvasRef is null', async () => {
+    const canvasRef = { current: null };
+    const { result } = renderHook(() => useExport(canvasRef, mockConfig, () => '{}'));
+
+    let exportResult: Awaited<ReturnType<typeof result.current.exportTo>>;
+    await act(async () => {
+      exportResult = await result.current.exportTo('json');
+    });
+
+    expect(exportResult!.success).toBe(false);
+    expect(exportResult!.error).toBe('Export target is not ready');
+  });
+
+  it('aborts ongoing export', () => {
+    const canvasRef = { current: document.createElement('div') };
+    const { result } = renderHook(() => useExport(canvasRef, mockConfig, () => '{}'));
+
+    act(() => {
+      result.current.abortExport();
+    });
+
+    expect(result.current.isExporting).toBe(false);
+  });
 });

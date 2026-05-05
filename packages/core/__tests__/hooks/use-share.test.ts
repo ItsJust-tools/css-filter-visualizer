@@ -103,4 +103,90 @@ describe('useShare', () => {
 
     clickSpy.mockRestore();
   });
+
+  it('throws on invalid schemaVersion', () => {
+    const { result } = renderHook(() => useShare());
+
+    expect(() =>
+      result.current.createShareFile({
+        toolId: 'test',
+        content: '{}',
+        metadata: { schemaVersion: 'not-semver' },
+      })
+    ).toThrow('Invalid schemaVersion');
+  });
+
+  it('handles download error', async () => {
+    const { result } = renderHook(() => useShare());
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {
+      throw new Error('Click failed');
+    });
+
+    await act(async () => {
+      await expect(
+        result.current.downloadShareFile({ toolId: 'test', content: '{}' })
+      ).rejects.toThrow('Click failed');
+    });
+
+    expect(result.current.error).toBe('Click failed');
+    clickSpy.mockRestore();
+  });
+
+  it('returns false when navigator.share exists but canShare rejects', async () => {
+    Object.assign(navigator, {
+      share: vi.fn().mockResolvedValue(undefined),
+      canShare: vi.fn().mockReturnValue(false),
+    });
+    const { result } = renderHook(() => useShare());
+
+    const success = await act(async () => {
+      return result.current.shareViaWeb({ toolId: 'test', content: '{}' });
+    });
+
+    expect(success).toBe(false);
+  });
+
+  it('returns false on web share abort', async () => {
+    Object.assign(navigator, {
+      share: vi.fn().mockRejectedValue(Object.assign(new Error('Abort'), { name: 'AbortError' })),
+      canShare: vi.fn().mockReturnValue(true),
+    });
+    const { result } = renderHook(() => useShare());
+
+    const success = await act(async () => {
+      return result.current.shareViaWeb({ toolId: 'test', content: '{}' });
+    });
+
+    expect(success).toBe(false);
+    expect(result.current.error).toBeNull();
+  });
+
+  it('returns false and sets error on web share failure', async () => {
+    Object.assign(navigator, {
+      share: vi.fn().mockRejectedValue(new Error('Share failed')),
+      canShare: vi.fn().mockReturnValue(true),
+    });
+    const { result } = renderHook(() => useShare());
+
+    const success = await act(async () => {
+      return result.current.shareViaWeb({ toolId: 'test', content: '{}' });
+    });
+
+    expect(success).toBe(false);
+    expect(result.current.error).toBe('Share failed');
+  });
+
+  it('returns false on clipboard failure', async () => {
+    Object.assign(navigator, {
+      clipboard: { writeText: vi.fn().mockRejectedValue(new Error('Clipboard blocked')) },
+    });
+    const { result } = renderHook(() => useShare());
+
+    const success = await act(async () => {
+      return result.current.copyShareToClipboard({ toolId: 'test', content: '{}' });
+    });
+
+    expect(success).toBe(false);
+    expect(result.current.error).toBe('Clipboard blocked');
+  });
 });
