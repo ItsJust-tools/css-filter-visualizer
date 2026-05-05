@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.9] - 2026-05-05
+
+### Fixed
+
+- Edited toolbar title now survives page reloads. `brandValue` was initialized once and never synced back to the stored `title` after async state hydration.
+- Tab title (`document.title`) now reliably reflects the stored title via a dedicated `useEffect` that tracks `title` changes.
+
 ## [1.2.8] - 2026-05-05
 
 ### Changed

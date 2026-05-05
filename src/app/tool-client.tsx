@@ -30,7 +30,7 @@ export default function ToolClient() {
 
   const title = tool.state.data.title?.trim() || toolConfig.name;
   const [isEditingBrand, setIsEditingBrand] = useState(false);
-  const [brandValue, setBrandValue] = useState(title);
+  const [editValue, setEditValue] = useState(title);
 
   useEffect(() => {
     document.title = title;
@@ -102,23 +102,23 @@ export default function ToolClient() {
     () => ({
       ...tool.toolbarActions,
       onBrandClick: () => {
-        setBrandValue(title);
+        setEditValue(title);
         setIsEditingBrand(true);
       },
       isBrandEditing: isEditingBrand,
-      brandValue,
-      onBrandChange: (value: string) => setBrandValue(value),
+      brandValue: isEditingBrand ? editValue : title,
+      onBrandChange: (value: string) => setEditValue(value),
       onBrandCommit: () => {
-        const trimmed = brandValue.trim();
+        const trimmed = editValue.trim();
         setToolData((prev) => ({ ...prev, title: trimmed || undefined }));
         setIsEditingBrand(false);
       },
       onBrandCancel: () => {
-        setBrandValue(title);
+        setEditValue(title);
         setIsEditingBrand(false);
       },
     }),
-    [tool.toolbarActions, isEditingBrand, brandValue, title, setToolData]
+    [tool.toolbarActions, isEditingBrand, editValue, title, setToolData]
   );
 
   const toolbarContent = (
