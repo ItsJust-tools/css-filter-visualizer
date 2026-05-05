@@ -7,16 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.2.11] - 2026-05-05
-
-### Added
-
-- Font size in the sidebar is now editable inline. Click the size display to type a custom value; Enter confirms, Escape cancels.
-
-### Changed
-
-- Sidebar font-size controls now use full-width spacing so the A− and A+ buttons sit flush against the left and right edges.
-
 ## [1.2.10] - 2026-05-05
 
 ### Removed

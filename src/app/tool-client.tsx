@@ -47,10 +47,6 @@ export default function ToolClient() {
     setFontSize((prev) => Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, prev + delta)));
   }, []);
 
-  const handleFontSizeSet = useCallback((value: number) => {
-    setFontSize(Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, value)));
-  }, []);
-
   useEffect(() => {
     if (hasLoadedSharedState.current) return;
     hasLoadedSharedState.current = true;
@@ -144,7 +140,6 @@ export default function ToolClient() {
       text={tool.state.data.text}
       fontSize={fontSize}
       onFontSizeChange={handleFontSizeChange}
-      onFontSizeSet={handleFontSizeSet}
     />
   );
 
