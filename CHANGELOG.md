@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.10] - 2026-05-05
+
+### Removed
+
+- Removed the dedicated `/help` page, its CSS, and the Help shortcut group. Tool UX is designed to be self-explanatory.
+
 ## [1.2.9] - 2026-05-05
 
 ### Fixed
