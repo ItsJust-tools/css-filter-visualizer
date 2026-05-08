@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.11] - 2026-05-08
+
+### Added
+
+- Added **Design Principles** section covering HCD and general UI principles.
+- Added **File Boundaries** section documenting read-only, editable, and conditionally editable files.
+- Added mandatory reading notices to top of CLAUDE.md and in "Creating a New Tool" checklist.
+
+### Changed
+
+- Strengthened Agent Workflow Rules: proactive commit/push, version audit before every commit, and no co-author trailers.
+
 ## [1.2.10] - 2026-05-05
 
 ### Removed
