@@ -259,6 +259,30 @@ NEXT_PUBLIC_URL=https://your-tool.vercel.app
 - **Accessibility is mandatory** — all UI must preserve keyboard access, strong visible focus, semantic landmarks, and screen-reader support
 - **Full-space canvas** — tool UI should use available viewport space; avoid fixed A4-like layout constraints
 
+## Design Principles
+
+These principles guide every UI/UX decision in the template. They are non-negotiable and apply to all tools built on this stack.
+
+### Human-Centered Design (HCD)
+
+- **Immediate visibility of system status** — Every action must provide clear, timely feedback. If an export takes time, show a spinner or disabled state. Never leave the user guessing whether their input registered.
+- **Recognition over recall** — All available actions should be visible or inferable from the current interface state. Do not hide core functionality behind unlabeled icons, mystery meat navigation, or right-click menus without visible cues.
+- **Progressive disclosure with information scent** — Secondary features belong behind clear, well-labeled toggles (e.g., "More options..." with a chevron). The interface must signal that deeper controls exist, and focus must be managed when they open.
+- **Error prevention over error recovery** — Design to make errors structurally impossible. Use constrained inputs, filtered dropdowns, and sensible defaults instead of relying on validation messages after the fact.
+- **Undo as a first-class citizen** — Every mutating action must be reversible via a single, consistently placed control. The undo stack state must be reflected in real time (enabled/disabled). Destructive actions must never rely solely on blocking browser alerts.
+- **Affordances that survive mobile touch** — Interactive elements need visible shape, minimum 44x44px touch targets, and clear `:active` states. Do not rely on hover or right-click to reveal critical actions.
+
+### General UI Principles
+
+- **Minimalist design equals no bloat** — Every pixel and line of text must serve the tool's single purpose. Remove decorative elements, upsell nudges, newsletter modals, and feature creep that competes for attention.
+- **Zero-friction instant value** — The user must derive core value within seconds of landing. No onboarding tours, no account creation, no permission requests, no cookie banners blocking interaction.
+- **Accessible by default** — All functionality is reachable via keyboard, screen reader, and assistive input devices without a separate "accessibility mode." Use native semantic elements, visible focus rings, and meaningful `aria-label`s.
+- **Performance perception via local-first** — Process data client-side and use optimistic UI updates. Avoid server round-trips, skeleton screens for instant operations, and full-page loading states for work that can happen in the browser.
+- **Consistent platform conventions** — Follow established web and OS patterns for icons, shortcuts, and layout. Use standard symbols (floppy disk for save, trash for delete), standard shortcuts (`Ctrl+Z` for undo, `Ctrl+S` for export), and platform-aware key labels (`Ctrl` vs `⌘`).
+- **Honest limits and clear feedback** — When client-side constraints exist (memory, file size, no persistence), communicate them transparently before the user invests effort. If the tool crashes on a 50MB file, say so upfront.
+- **Respectful data minimization** — Collect the absolute minimum data necessary. The UI should reflect this restraint: no unnecessary permission prompts, no tracking widgets, no excessive telemetry. Privacy claims must be visible and verifiable.
+- **Mobile-first input resilience** — Gracefully adapt to mobile constraints (virtual keyboard, no hover, limited space) without stripping desktop functionality. Ensure action buttons remain accessible when the virtual keyboard is open.
+
 ## Common Pitfalls
 
 - Don't use `useEffect` for state updates — use `useCallback` with handlers
