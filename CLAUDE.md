@@ -259,6 +259,97 @@ NEXT_PUBLIC_URL=https://your-tool.vercel.app
 - **Accessibility is mandatory** — all UI must preserve keyboard access, strong visible focus, semantic landmarks, and screen-reader support
 - **Full-space canvas** — tool UI should use available viewport space; avoid fixed A4-like layout constraints
 
+## File Boundaries
+
+To protect the template baseline, treat files according to these boundaries. Do not silently edit read-only files to work around template limitations — report template bugs instead.
+
+### Read-Only (Template Baseline)
+
+These files are part of the template infrastructure. They must not be edited when customizing a tool. If they are inadequate for a tool's needs, report a template bug per the Agent Workflow Rules.
+
+| Path | Why read-only |
+|------|---------------|
+| `packages/core/**/*` | Shared core library (`@itsjust/core`). All hooks, components, engines, types, and tests. |
+| `src/lib/**/*` | Generic utilities (`seo.ts`, `utils.ts`). |
+| `src/app/layout.tsx`, `error.tsx`, `not-found.tsx`, `robots.ts`, `sitemap.ts`, `manifest.ts`, `json-ld.tsx`, `globals.css` | App shell, metadata, and global styles. |
+| `src/app/tool-client-wrapper.tsx` | Generic dynamic-import wrapper. |
+| `src/app/page.tsx` | Generic tool page shell (imports `JsonLd` and `ToolClient`). |
+| `src/app/apple-icon.svg`, `icon.svg` | App icons. |
+| `scripts/**/*` | Preflight and bundle-size checks. |
+| `next.config.ts`, `vitest.config.ts`, `playwright.config.ts`, `postcss.config.mjs`, `eslint.config.mjs`, `tsconfig.json` | Build and tooling configs. |
+| `packages/core/package.json`, `tsconfig.json`, `tsup.config.ts` | Core build configs. |
+| `Dockerfile`, `.github/**/*`, `.husky/**/*` | DevOps and CI/CD. |
+| `public/apple-touch-icon.svg`, `icon-192.svg`, `icon-512.svg` | PWA icons. |
+
+### Editable (Tool Customization)
+
+These files are expected to be modified or replaced when building a new tool on this template.
+
+| Path | What to customize |
+|------|-------------------|
+| `src/tool/tool.config.ts` | Tool metadata, name, description, features, theme. |
+| `src/tool/tool-definition.ts` | State shape, serialize/deserialize, exporter registration. |
+| `src/tool/template-metadata.ts` | Locale, URL, PWA metadata. |
+| `src/tool/types.ts` | Tool-specific TypeScript types. |
+| `src/tool/index.ts` | Barrel exports (update when adding/replacing components). |
+| `src/tool/components/**/*` | Canvas, toolbar, sidebar, and any tool-specific UI. |
+| `src/tool/exporters/**/*` | Lazy-loaded exporters (`png.ts`, `pdf.ts`, etc.). |
+| `src/app/tool-client.tsx` | Main client component. Wire tool hooks, state, handlers, and render `ToolShell`. |
+| `public/og.svg` | Open Graph image. |
+| `__tests__/unit/**/*` | Tool-specific unit tests. |
+| `__tests__/e2e/**/*` | Tool-specific E2E tests. |
+
+### Conditionally Editable
+
+These files may need edits for specific maintenance tasks, but are otherwise read-only.
+
+| Path | When to edit |
+|------|--------------|
+| `package.json` | Version bumps and adding tool-specific dependencies only. |
+| `CHANGELOG.md` | When releasing a new version. |
+| `README.md` | To document the specific tool. |
+| `CLAUDE.md` | Adding new conventions or rules is allowed. The **Canonical Import/Export/Share Contracts** and **Monorepo Structure** sections are read-only contracts — do not alter canonical data formats without a major version bump. |
+
+### Local Enforcement
+
+For extra guardrails, add these rules to `.claude/settings.local.json`:
+
+```json
+{
+  "permissions": {
+    "deny": [
+      "Edit(packages/core)",
+      "Write(packages/core)",
+      "Edit(src/lib)",
+      "Write(src/lib)",
+      "Edit(src/app/layout.tsx)",
+      "Edit(src/app/error.tsx)",
+      "Edit(src/app/not-found.tsx)",
+      "Edit(src/app/robots.ts)",
+      "Edit(src/app/sitemap.ts)",
+      "Edit(src/app/manifest.ts)",
+      "Edit(src/app/json-ld.tsx)",
+      "Edit(src/app/globals.css)",
+      "Edit(src/app/tool-client-wrapper.tsx)",
+      "Edit(src/app/page.tsx)",
+      "Edit(scripts)",
+      "Write(scripts)",
+      "Edit(next.config.ts)",
+      "Edit(vitest.config.ts)",
+      "Edit(playwright.config.ts)",
+      "Edit(postcss.config.mjs)",
+      "Edit(eslint.config.mjs)",
+      "Edit(tsconfig.json)",
+      "Edit(Dockerfile)",
+      "Edit(.github)",
+      "Write(.github)",
+      "Edit(.husky)",
+      "Write(.husky)"
+    ]
+  }
+}
+```
+
 ## Design Principles
 
 These principles guide every UI/UX decision in the template. They are non-negotiable and apply to all tools built on this stack.
