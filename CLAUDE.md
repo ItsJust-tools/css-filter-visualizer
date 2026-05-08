@@ -422,7 +422,7 @@ For static export, uncomment `output: 'export'` and `images: { unoptimized: true
   - Never silently "fix" or rewrite template defaults/content to hide template-level issues.
   - If a problem is caused by template baseline data/contracts, explicitly report it as a template bug.
   - State clearly that the upstream template must be updated, instead of masking the issue in downstream tool code.
-- Always keep `CHANGELOG.md` up to date when behavior, API, UX, dependencies, or version changes.
+- Commit and push regularly as work progresses. Do not let uncommitted changes accumulate. Update version numbers and `CHANGELOG.md` proactively when behavior, API, UX, dependencies, or version changes.
 - When asked to "commit and push", do the full flow automatically (`git add`, commit, push) without extra confirmation.
 - Never add Co-Authored-By trailers or set yourself as a co-author in commits.
 - Always verify version consistency before committing:
