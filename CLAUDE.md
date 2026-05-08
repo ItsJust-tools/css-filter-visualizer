@@ -1,5 +1,7 @@
 # itsjust Template — AI Assistant Guide
 
+> **Read this file in full before modifying anything.** The rules, contracts, and boundaries documented here are binding for all tools built on this template. If something in this document conflicts with what you think should be done, follow the document and report the discrepancy.
+
 ## Project Overview
 
 Single-purpose web tool template built with Next.js App Router. Each tool does ONE thing well — no bloat, no signups.
@@ -46,13 +48,17 @@ template/
 
 ## Creating a New Tool
 
-1. Edit `src/tool/tool.config.ts` — set id, name, export formats
-2. Replace `src/tool/tool-definition.ts` — state shape, serialize, deserialize
-3. Edit `src/tool/template-metadata.ts` — locale, URL defaults
-4. Replace `src/tool/components/` — canvas, toolbar, sidebar
-5. Wire up `src/app/tool-client.tsx` and `src/app/page.tsx`
-6. Replace `public/og.svg` — Open Graph image
-7. Run `node scripts/preflight.mjs` to validate
+> **Do not skip steps or skip reading the relevant sections above.** Each step below references concepts (contracts, file boundaries, design principles) that are defined earlier in this document.
+
+1. Read the **File Boundaries** section to know what you may edit.
+2. Read the **Design Principles** section to internalize the UX constraints.
+3. Edit `src/tool/tool.config.ts` — set id, name, export formats
+4. Replace `src/tool/tool-definition.ts` — state shape, serialize, deserialize
+5. Edit `src/tool/template-metadata.ts` — locale, URL defaults
+6. Replace `src/tool/components/` — canvas, toolbar, sidebar
+7. Wire up `src/app/tool-client.tsx` and `src/app/page.tsx`
+8. Replace `public/og.svg` — Open Graph image
+9. Run `node scripts/preflight.mjs` to validate
 
 ## Canonical Import/Export/Share Contracts
 
