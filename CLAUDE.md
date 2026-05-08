@@ -425,7 +425,7 @@ For static export, uncomment `output: 'export'` and `images: { unoptimized: true
 - Commit and push regularly as work progresses. Do not let uncommitted changes accumulate. Update version numbers and `CHANGELOG.md` proactively when behavior, API, UX, dependencies, or version changes.
 - When asked to "commit and push", do the full flow automatically (`git add`, commit, push) without extra confirmation.
 - Never add Co-Authored-By trailers or set yourself as a co-author in commits.
-- Always verify version consistency before committing:
+- Audit version consistency before every commit. Check and align:
   - `package.json` version
   - `packages/core/package.json` version
   - `src/tool/tool.config.ts` version source/value
