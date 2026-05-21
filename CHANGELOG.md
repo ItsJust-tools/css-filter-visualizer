@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.12] - 2026-05-21
+
+### Changed
+
+- Bumped dependencies: lucide-react (1.16.0), react/react-dom (19.2.6), tailwindcss (4.3.0), @tailwindcss/postcss (4.3.0), jsdom (29.1.1), @playwright/test (1.60.0), vitest (4.1.6), @types/node (25.8.0), eslint-config-next (16.2.6)
+
 ## [1.2.11] - 2026-05-08
 
 ### Added
