@@ -126,7 +126,12 @@ export function ToolShell({
 
   return (
     <ShellContext.Provider value={shellContextValue}>
-      <div id="main-content" className="tool-shell" data-tool={config.id} data-readonly={readOnly ? 'true' : 'false'}>
+      <div
+        id="main-content"
+        className="tool-shell"
+        data-tool={config.id}
+        data-readonly={readOnly ? 'true' : 'false'}
+      >
         <a href="#tool-canvas" className="skip-link">
           {t('skipToContent')}
         </a>

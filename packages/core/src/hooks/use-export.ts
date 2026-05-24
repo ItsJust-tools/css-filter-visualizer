@@ -107,11 +107,7 @@ export function useExport(
           ...options,
           signal: controller.signal,
         };
-        return await engine.exportAndDownload(
-          canvasRef.current,
-          merged,
-          stateSerializer
-        );
+        return await engine.exportAndDownload(canvasRef.current, merged, stateSerializer);
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Export failed';
         console.error('[useExport]', message);
