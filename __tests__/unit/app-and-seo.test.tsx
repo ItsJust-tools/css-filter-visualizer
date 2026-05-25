@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 import { generateJsonLd, generateToolMetadata } from '@/lib/seo';
 import toolConfig from '@/tool/tool.config';
 import { getPublicSiteUrl, templateMetadata } from '@/tool/template-metadata';
-import { notepadTool } from '@/tool/tool-definition';
+import { cssFilterTool, buildFilterCss } from '@/tool/tool-definition';
 import { ToolCanvas } from '@/tool/components/tool-canvas';
 import { ToolSidebar } from '@/tool/components/tool-sidebar';
 import { ToolToolbar } from '@/tool/components/tool-toolbar';
@@ -92,20 +92,31 @@ describe('app and seo', () => {
   it('covers tool definition and helper exports', async () => {
     expect(cn('a', undefined, 'b', false, null, 'c')).toBe('a b c');
     expect(getPublicSiteUrl()).toBe('http://localhost:3000');
-    expect(notepadTool.deserialize({ text: 'x' })).toEqual({
+
+    // Valid filter state
+    const validState = {
+      steps: [{ id: '1', type: 'blur', value: 5, enabled: true }],
+      baseColor: '#000',
+      previewText: 'Hello',
+      presetName: '',
+    };
+    expect(cssFilterTool.deserialize(validState)).toEqual({
       success: true,
-      data: { text: 'x' },
+      data: validState,
     });
-    expect(notepadTool.deserialize({ nope: true })).toEqual({
+
+    // Invalid state
+    expect(cssFilterTool.deserialize({ nope: true })).toEqual({
       success: false,
-      error: 'Invalid data format: expected { text: string, title?: string }',
+      error: 'Invalid data format: expected { steps: FilterStep[], baseColor: string, previewText: string }',
     });
-    expect(notepadTool.serialize({ text: 'x' })).toContain('"text": "x"');
-    expect(notepadTool.deserialize({ text: 'x', title: 'My Note' })).toEqual({
-      success: true,
-      data: { text: 'x', title: 'My Note' },
-    });
-    const exporters = notepadTool.exporters ?? [];
+
+    expect(cssFilterTool.serialize(validState)).toContain('"baseColor"');
+
+    // Build filter CSS
+    expect(buildFilterCss([{ id: '1', type: 'saturate', value: 180, enabled: true }])).toContain('saturate(180%)');
+
+    const exporters = cssFilterTool.exporters ?? [];
     expect(exporters).toHaveLength(4);
     const first = exporters[0];
     expect(first).toBeDefined();
@@ -119,13 +130,40 @@ describe('app and seo', () => {
     render(
       <>
         <ToolToolbar />
-        <ToolSidebar text="Hello world" fontSize={16} onFontSizeChange={() => {}} />
-        <ToolCanvas text="" fontSize={16} />
+        <ToolSidebar
+          steps={[
+            { id: '1', type: 'blur', value: 5, enabled: true },
+            { id: '2', type: 'brightness', value: 150, enabled: false },
+          ]}
+          presetsOpen={true}
+          onTogglePresets={() => {}}
+          onAddFilter={() => {}}
+          onRemoveFilter={() => {}}
+          onToggleFilter={() => {}}
+          onUpdateFilter={() => {}}
+          onApplyPreset={() => {}}
+          onClearAll={() => {}}
+        />
+        <ToolCanvas
+          state={{
+            steps: [],
+            baseColor: '#6366f1',
+            previewText: 'Hello',
+            presetName: '',
+          }}
+          canvasRef={undefined}
+        />
       </>
     );
 
     expect(screen.getByRole('link', { name: 'Open help page' })).toBeInTheDocument();
-    expect(screen.getByText('11')).toBeInTheDocument(); // char count for "Hello world"
-    expect(screen.getByRole('application', { name: 'Notepad canvas' })).toBeInTheDocument();
+    // Should see preset buttons
+    expect(screen.getByText('Vintage')).toBeInTheDocument();
+    // Should see a filter type button in add filter grid 
+    expect(screen.getAllByText('Blur').length).toBeGreaterThan(0);
+    // Should see the add filter heading
+    expect(screen.getByText('Add Filter')).toBeInTheDocument();
+    // Canvas preview text
+    expect(screen.getByText('Hello')).toBeInTheDocument();
   });
 });
