@@ -25,10 +25,10 @@ const mockToolbarActions = { canUndo: true, canRedo: true, onUndo: vi.fn(), onRe
 vi.mock('@itsjust/core', () => ({
   ToolShell: ({ toolbar, sidebar, canvas, statusBar }: Record<string, unknown>) => (
     <div>
-      <div>{toolbar as ReactNode}</div>
-      <div>{sidebar as ReactNode}</div>
-      <div>{canvas as ReactNode}</div>
-      <div>{statusBar as ReactNode}</div>
+      <div>{toolbar as unknown as ReactNode}</div>
+      <div>{sidebar as unknown as ReactNode}</div>
+      <div>{canvas as unknown as ReactNode}</div>
+      <div>{statusBar as unknown as ReactNode}</div>
     </div>
   ),
   ImportExport: ({ onShare }: { onShare?: () => void }) => (
@@ -38,7 +38,15 @@ vi.mock('@itsjust/core', () => ({
   ),
   useTool: () => ({
     state: {
-      data: { text: 'Hello' },
+      data: {
+        steps: [
+          { id: '1', type: 'blur', value: 5, enabled: true },
+          { id: '2', type: 'brightness', value: 150, enabled: true },
+        ],
+        baseColor: '#6366f1',
+        previewText: 'Hello',
+        presetName: '',
+      },
       setData: mockSetData,
       isDirty: false,
       lastSaved: 'just now',
@@ -54,20 +62,22 @@ vi.mock('@itsjust/core', () => ({
 
 vi.mock('@/tool', () => ({
   toolConfig: {
-    id: 'simple-notepad',
-    name: 'Notepad',
+    id: 'css-filter-visualizer',
+    name: 'CSS Filter Visualizer',
     version: '1.0.0',
     features: { sidebar: true },
-    theme: { brand: 'Notepad' },
+    theme: { brand: 'CSS Filter Visualizer' },
   },
-  templateBaseVersion: '1.1.0',
-  notepadTool: {
+  templateBaseVersion: '1.0.0',
+  cssFilterTool: {
     serialize: (state: unknown) => JSON.stringify(state),
-    deserialize: () => ({ success: true, data: { text: 'From Shared Url' } }),
+    deserialize: () => ({ success: true, data: { steps: [{ id: '1', type: 'blur', value: 5, enabled: true }], baseColor: '#000', previewText: 'From Shared Url', presetName: '' } }),
   },
-  ToolCanvas: ({ text }: { text: string }) => <div>canvas:{text}</div>,
+  ToolCanvas: ({ state }: { state: { previewText: string; baseColor: string } }) => (
+    <div>{state.previewText}</div>
+  ),
   ToolToolbar: () => <div>toolbar</div>,
-  ToolSidebar: ({ text }: { text: string }) => <div>sidebar:{text}</div>,
+  ToolSidebar: ({ steps }: { steps: Array<unknown> }) => <div>sidebar:{steps.length} filters</div>,
 }));
 
 describe('app client and help page', () => {
@@ -88,6 +98,14 @@ describe('app client and help page', () => {
   it('renders dynamic tool client wrapper', () => {
     render(<ToolClientWrapper />);
     expect(screen.getByTestId('dynamic-tool-client')).toBeInTheDocument();
+  });
+
+  it('renders tool client with filter canvas and sidebar', async () => {
+    render(<ToolClient />);
+
+    expect(screen.getByText('toolbar')).toBeInTheDocument();
+    expect(screen.getByText(/sidebar:/)).toBeInTheDocument();
+    expect(screen.getByText('Hello')).toBeInTheDocument();
   });
 
   it('handles share flow in tool client', async () => {

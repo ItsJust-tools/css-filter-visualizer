@@ -1,41 +1,85 @@
 'use client';
 
 import { useCallback } from 'react';
+import { buildFilterCss } from '../tool-definition';
+import type { FilterState } from '../types';
 
 interface ToolCanvasProps {
-  text: string;
-  fontSize: number;
-  readOnly?: boolean;
+  state: FilterState;
   canvasRef?: React.RefObject<HTMLDivElement | null>;
-  onChange?: (text: string) => void;
+  onBaseColorChange?: (color: string) => void;
+  onPreviewTextChange?: (text: string) => void;
 }
 
 export function ToolCanvas({
-  text,
-  fontSize,
-  readOnly = false,
+  state,
   canvasRef,
-  onChange,
+  onBaseColorChange,
+  onPreviewTextChange,
 }: ToolCanvasProps) {
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onChange?.(e.target.value);
-    },
-    [onChange]
-  );
+  const filterCss = buildFilterCss(state.steps);
 
   return (
-    <div ref={canvasRef} className="notepad-canvas" role="application" aria-label="Notepad canvas">
-      <textarea
-        className="notepad-textarea"
-        value={text}
-        onChange={handleChange}
-        readOnly={readOnly}
-        placeholder="Start typing your notes here..."
-        aria-label="Note text"
-        spellCheck={false}
-        style={{ fontSize: `${fontSize}px` }}
-      />
+    <div
+      ref={canvasRef}
+      className="filter-canvas"
+      role="application"
+      aria-label="CSS Filter Preview"
+    >
+      {/* Preview area */}
+      <div className="filter-preview-section">
+        <div
+          className="filter-preview-box"
+          style={{ backgroundColor: state.baseColor, filter: filterCss }}
+        >
+          <div className="filter-preview-text">{state.previewText}</div>
+        </div>
+        <div className="filter-css-output" aria-label="CSS filter rule">
+          <code>filter: {filterCss || 'none'};</code>
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className="filter-controls">
+        <div className="filter-control-group">
+          <label htmlFor="base-color" className="filter-label">
+            Background Color
+          </label>
+          <div className="filter-color-row">
+            <input
+              id="base-color"
+              type="color"
+              value={state.baseColor}
+              onChange={(e) => onBaseColorChange?.(e.target.value)}
+              className="filter-color-picker"
+              aria-label="Background color"
+            />
+            <input
+              type="text"
+              value={state.baseColor}
+              onChange={(e) => onBaseColorChange?.(e.target.value)}
+              className="filter-color-input"
+              aria-label="Color hex value"
+              placeholder="#000000"
+            />
+          </div>
+        </div>
+
+        <div className="filter-control-group">
+          <label htmlFor="preview-text" className="filter-label">
+            Preview Text
+          </label>
+          <input
+            id="preview-text"
+            type="text"
+            value={state.previewText}
+            onChange={(e) => onPreviewTextChange?.(e.target.value)}
+            className="filter-text-input"
+            aria-label="Preview text"
+            placeholder="Type something..."
+          />
+        </div>
+      </div>
     </div>
   );
 }

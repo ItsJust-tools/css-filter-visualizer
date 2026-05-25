@@ -6,19 +6,21 @@ import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from
 import {
   toolConfig,
   templateBaseVersion,
-  notepadTool,
+  cssFilterTool,
   ToolCanvas,
   ToolToolbar,
   ToolSidebar,
 } from '@/tool';
+import type { FilterState, FilterType } from '@/tool/types';
+import { FILTER_TYPES } from '@/tool/types';
 
-const DEFAULT_FONT_SIZE = 16;
-const MIN_FONT_SIZE = 8;
-const MAX_FONT_SIZE = 72;
+function generateId(): string {
+  return `f-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
 
 export default function ToolClient() {
   const canvasRef = useRef<HTMLDivElement>(null);
-  const tool = useTool(notepadTool, canvasRef);
+  const tool = useTool(cssFilterTool, canvasRef);
   const setToolData = tool.state.setData;
   const showToast = tool.toast;
   const [isSharing, setIsSharing] = useState(false);
@@ -26,9 +28,9 @@ export default function ToolClient() {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(
     () => typeof window !== 'undefined' && window.innerWidth > 768 && toolConfig.features.sidebar
   );
-  const [fontSize, setFontSize] = useState(DEFAULT_FONT_SIZE);
+  const [presetsOpen, setPresetsOpen] = useState(true);
 
-  const title = tool.state.data.title?.trim() || toolConfig.name;
+  const title = toolConfig.name;
   const [isEditingBrand, setIsEditingBrand] = useState(false);
   const [editValue, setEditValue] = useState(title);
 
@@ -36,16 +38,77 @@ export default function ToolClient() {
     document.title = title;
   }, [title]);
 
-  const handleTextChange = useCallback(
-    (text: string) => {
-      setToolData((prev) => ({ ...prev, text }));
+  const handleBaseColorChange = useCallback(
+    (color: string) => {
+      setToolData((prev) => ({ ...prev, baseColor: color }));
     },
     [setToolData]
   );
 
-  const handleFontSizeChange = useCallback((delta: number) => {
-    setFontSize((prev) => Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, prev + delta)));
-  }, []);
+  const handlePreviewTextChange = useCallback(
+    (text: string) => {
+      setToolData((prev) => ({ ...prev, previewText: text }));
+    },
+    [setToolData]
+  );
+
+  const handleAddFilter = useCallback(
+    (type: FilterType) => {
+      const ft = FILTER_TYPES.find((f) => f.type === type);
+      const defaultValue = ft?.default ?? 50;
+      const newStep = { id: generateId(), type, value: defaultValue, enabled: true };
+      setToolData((prev) => ({ ...prev, steps: [...prev.steps, newStep] }));
+      showToast(`Added ${ft?.label ?? type} filter`, 'success');
+    },
+    [setToolData, showToast]
+  );
+
+  const handleRemoveFilter = useCallback(
+    (id: string) => {
+      setToolData((prev) => ({
+        ...prev,
+        steps: prev.steps.filter((s) => s.id !== id),
+      }));
+    },
+    [setToolData]
+  );
+
+  const handleToggleFilter = useCallback(
+    (id: string) => {
+      setToolData((prev) => ({
+        ...prev,
+        steps: prev.steps.map((s) => (s.id === id ? { ...s, enabled: !s.enabled } : s)),
+      }));
+    },
+    [setToolData]
+  );
+
+  const handleUpdateFilter = useCallback(
+    (id: string, value: number) => {
+      setToolData((prev) => ({
+        ...prev,
+        steps: prev.steps.map((s) => (s.id === id ? { ...s, value } : s)),
+      }));
+    },
+    [setToolData]
+  );
+
+  const handleApplyPreset = useCallback(
+    (steps: FilterState['steps']) => {
+      setToolData((prev) => ({
+        ...prev,
+        steps: steps.map((s) => ({ ...s, id: generateId() })),
+        presetName: '',
+      }));
+      showToast('Preset applied', 'success');
+    },
+    [setToolData, showToast]
+  );
+
+  const handleClearAll = useCallback(() => {
+    setToolData((prev) => ({ ...prev, steps: [] }));
+    showToast('All filters cleared', 'success');
+  }, [setToolData, showToast]);
 
   useEffect(() => {
     if (hasLoadedSharedState.current) return;
@@ -57,7 +120,7 @@ export default function ToolClient() {
       const serialized = decompressFromEncodedURIComponent(encodedState);
       if (!serialized) throw new Error('Invalid shared URL');
       const parsed: unknown = JSON.parse(serialized);
-      const deserialized = notepadTool.deserialize(parsed);
+      const deserialized = cssFilterTool.deserialize(parsed);
       if (!deserialized.success) throw new Error(deserialized.error);
       setToolData(deserialized.data);
       showToast('Loaded state from shared URL', 'success');
@@ -70,7 +133,7 @@ export default function ToolClient() {
   const handleShare = useCallback(async () => {
     setIsSharing(true);
     try {
-      const serialized = notepadTool.serialize(tool.state.data);
+      const serialized = cssFilterTool.serialize(tool.state.data);
       const encodedState = compressToEncodedURIComponent(serialized);
       if (!encodedState) throw new Error('Failed to encode state for URL');
       const url = new URL(window.location.href);
@@ -110,7 +173,7 @@ export default function ToolClient() {
       onBrandChange: (value: string) => setEditValue(value),
       onBrandCommit: () => {
         const trimmed = editValue.trim();
-        setToolData((prev) => ({ ...prev, title: trimmed || undefined }));
+        setEditValue(trimmed || title);
         setIsEditingBrand(false);
       },
       onBrandCancel: () => {
@@ -118,7 +181,7 @@ export default function ToolClient() {
         setIsEditingBrand(false);
       },
     }),
-    [tool.toolbarActions, isEditingBrand, editValue, title, setToolData]
+    [tool.toolbarActions, isEditingBrand, editValue, title]
   );
 
   const toolbarContent = (
@@ -137,20 +200,28 @@ export default function ToolClient() {
 
   const sidebarContent = (
     <ToolSidebar
-      text={tool.state.data.text}
-      fontSize={fontSize}
-      onFontSizeChange={handleFontSizeChange}
+      steps={tool.state.data.steps}
+      presetsOpen={presetsOpen}
+      onTogglePresets={() => setPresetsOpen((p) => !p)}
+      onAddFilter={handleAddFilter}
+      onRemoveFilter={handleRemoveFilter}
+      onToggleFilter={handleToggleFilter}
+      onUpdateFilter={handleUpdateFilter}
+      onApplyPreset={handleApplyPreset}
+      onClearAll={handleClearAll}
     />
   );
 
   const canvasContent = (
     <ToolCanvas
       canvasRef={canvasRef}
-      text={tool.state.data.text}
-      fontSize={fontSize}
-      onChange={handleTextChange}
+      state={tool.state.data}
+      onBaseColorChange={handleBaseColorChange}
+      onPreviewTextChange={handlePreviewTextChange}
     />
   );
+
+  const enabledCount = tool.state.data.steps.filter((s) => s.enabled).length;
 
   const statusBarContent = (
     <>
@@ -168,7 +239,7 @@ export default function ToolClient() {
           'Ready'
         )}
       </span>
-      <span className="status-slot status-slot-font-size">{fontSize}px</span>
+      <span className="status-slot status-slot-steps">{enabledCount} filters active</span>
       <span className="status-slot status-slot-tool-version">Tool v{toolConfig.version}</span>
       <span className="status-slot status-slot-template-version">
         Template v{templateBaseVersion}
