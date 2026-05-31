@@ -1,6 +1,5 @@
 'use client';
 
-import { useCallback } from 'react';
 import { buildFilterCss } from '../tool-definition';
 import type { FilterState } from '../types';
 

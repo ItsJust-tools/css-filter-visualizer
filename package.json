@@ -1,7 +1,13 @@
 {
   "name": "css-filter-visualizer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
+  "description": "Build and preview CSS filter chains visually — blur, brightness, contrast, and more with real-time preview.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ItsJust-tools/css-filter-visualizer.git"
+  },
   "workspaces": [
     "packages/*"
   ],
@@ -52,14 +58,14 @@
     "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@vitejs/plugin-react": "^5.2.0",
+    "@vitejs/plugin-react": "^6.0.2",
     "@vitest/coverage-v8": "^4.1.6",
     "depcheck": "^1.4.7",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
-    "lint-staged": "^15.2.10",
+    "lint-staged": "^17.0.6",
     "prettier": "^3.4.0",
     "sharp": "^0.34.5",
     "tailwindcss": "^4",

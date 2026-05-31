@@ -1,5 +1,7 @@
 # CSS Filter Visualizer
 
+[![CI](https://github.com/ItsJust-tools/css-filter-visualizer/actions/workflows/ci.yml/badge.svg)](https://github.com/ItsJust-tools/css-filter-visualizer/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Live Site](https://img.shields.io/badge/Live-8b5cf6?style=for-the-badge&logo=vercel&logoColor=white)](https://css-filter-visualizer.itsjust.tools)
 [![GitHub](https://img.shields.io/badge/Source-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ItsJust-tools/css-filter-visualizer)
 
