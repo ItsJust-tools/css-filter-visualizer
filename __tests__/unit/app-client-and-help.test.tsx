@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { act, render, screen, fireEvent } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import ToolClient from '@/app/tool-client';
 import ToolClientWrapper from '@/app/tool-client-wrapper';
@@ -112,7 +112,9 @@ describe('app client and help page', () => {
     render(<ToolClient />);
 
     expect(screen.getByText('toolbar')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('trigger-share'));
+    await act(async () => {
+      fireEvent.click(screen.getByText('trigger-share'));
+    });
 
     expect(mockToast).toHaveBeenCalled();
   });

@@ -95,7 +95,7 @@ describe('app and seo', () => {
 
     // Valid filter state
     const validState = {
-      steps: [{ id: '1', type: 'blur', value: 5, enabled: true }],
+      steps: [{ id: '1', type: 'blur' as const, value: 5, enabled: true }],
       baseColor: '#000',
       previewText: 'Hello',
       presetName: '',
@@ -114,7 +114,7 @@ describe('app and seo', () => {
     expect(cssFilterTool.serialize(validState)).toContain('"baseColor"');
 
     // Build filter CSS
-    expect(buildFilterCss([{ id: '1', type: 'saturate', value: 180, enabled: true }])).toContain('saturate(180%)');
+    expect(buildFilterCss([{ id: '1', type: 'saturate' as const, value: 180, enabled: true }])).toContain('saturate(180%)');
 
     const exporters = cssFilterTool.exporters ?? [];
     expect(exporters).toHaveLength(4);
