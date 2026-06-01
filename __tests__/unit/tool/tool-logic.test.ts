@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { buildFilterCss, cssFilterTool, initialState } from '@/tool/tool-definition';
-import type { FilterState, FilterStep } from '@/tool/types';
+import type { FilterState, FilterStep, DropShadowFilterStep, UrlFilterStep } from '@/tool/types';
 
 describe('CSS Filter Visualizer logic', () => {
   it('initializes with default state', () => {
@@ -32,7 +32,7 @@ describe('CSS Filter Visualizer logic', () => {
     expect(buildFilterCss([])).toBe('');
   });
 
-  it('builds filter CSS for all filter types', () => {
+  it('builds filter CSS for all scalar filter types', () => {
     const steps: FilterStep[] = [
       { id: '1', type: 'blur', value: 5, enabled: true },
       { id: '2', type: 'brightness', value: 150, enabled: true },
@@ -56,18 +56,49 @@ describe('CSS Filter Visualizer logic', () => {
     expect(css).toContain('sepia(100%)');
   });
 
-  it('handles drop-shadow filter type', () => {
+  it('handles drop-shadow filter type with proper value shape', () => {
+    const steps: DropShadowFilterStep[] = [
+      {
+        id: '1',
+        type: 'drop-shadow',
+        value: { offsetX: 2, offsetY: 3, blurRadius: 6, color: '#ff0000' },
+        enabled: true,
+      },
+    ];
+    const css = buildFilterCss(steps);
+    expect(css).toMatch(/drop-shadow\(2px 3px 6px #ff0000\)/);
+  });
+
+  it('handles url filter type', () => {
+    const steps: UrlFilterStep[] = [
+      {
+        id: 'svg-123',
+        type: 'url',
+        value: undefined,
+        enabled: true,
+      },
+    ];
+    const css = buildFilterCss(steps);
+    expect(css).toBe('url(#filter-svg-123)');
+  });
+
+  it('skips disabled url and drop-shadow filters', () => {
     const steps: FilterStep[] = [
       {
         id: '1',
         type: 'drop-shadow',
-        value: 5, // fallback — the real value is in DropShadowValue shape
-        enabled: true,
+        value: { offsetX: 2, offsetY: 2, blurRadius: 4, color: '#000' },
+        enabled: false,
+      },
+      {
+        id: '2',
+        type: 'url',
+        value: undefined,
+        enabled: false,
       },
     ];
-    // When value is stored as a simple number, buildFilterCss uses it as offsetX
     const css = buildFilterCss(steps);
-    expect(css).toMatch(/drop-shadow\(/);
+    expect(css).toBe('');
   });
 
   it('serializes state to JSON string', () => {
@@ -95,6 +126,34 @@ describe('CSS Filter Visualizer logic', () => {
     if (result.success) {
       expect(result.data.baseColor).toBe('#fff');
       expect(result.data.previewText).toBe('Hello');
+    }
+  });
+
+  it('deserializes valid drop-shadow step state', () => {
+    const result = cssFilterTool.deserialize({
+      steps: [
+        {
+          id: 'ds-1',
+          type: 'drop-shadow',
+          value: { offsetX: 3, offsetY: 5, blurRadius: 8, color: 'rgba(0,0,0,0.5)' },
+          enabled: true,
+        },
+      ],
+      baseColor: '#fff',
+      previewText: 'Test',
+      presetName: '',
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.steps).toHaveLength(1);
+      const ds = result.data.steps[0];
+      if (ds.type === 'drop-shadow') {
+        expect(ds.value.offsetX).toBe(3);
+        expect(ds.value.offsetY).toBe(5);
+        expect(ds.value.color).toBe('rgba(0,0,0,0.5)');
+      } else {
+        expect.unreachable('Expected drop-shadow type');
+      }
     }
   });
 
@@ -134,5 +193,27 @@ describe('CSS Filter Visualizer logic', () => {
     const parsed = JSON.parse(serialized);
     expect(parsed.baseColor).toBe('#6366f1');
     expect(parsed.steps).toHaveLength(1);
+  });
+
+  it('generates steps via createFilterStep factory', async () => {
+    const { createFilterStep } = await import('@/tool/types');
+    const blur = createFilterStep('blur', 3);
+    expect(blur.type).toBe('blur');
+    if (blur.type === 'blur') {
+      expect(blur.value).toBe(3);
+      expect(blur.enabled).toBe(true);
+      expect(blur.id).toMatch(/^f-/);
+    }
+
+    const ds = createFilterStep('drop-shadow');
+    expect(ds.type).toBe('drop-shadow');
+    if (ds.type === 'drop-shadow') {
+      expect(ds.value.offsetX).toBe(2);
+      expect(ds.value.color).toBe('#00000066');
+    }
+
+    const urlStep = createFilterStep('url');
+    expect(urlStep.type).toBe('url');
+    expect(urlStep.enabled).toBe(true);
   });
 });

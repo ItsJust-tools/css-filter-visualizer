@@ -1,11 +1,4 @@
-export interface FilterStep {
-  id: string;
-  type: FilterType;
-  value: number;
-  enabled: boolean;
-}
-
-export type FilterType =
+export type ScalarFilterType =
   | 'blur'
   | 'brightness'
   | 'contrast'
@@ -14,9 +7,9 @@ export type FilterType =
   | 'invert'
   | 'opacity'
   | 'saturate'
-  | 'sepia'
-  | 'drop-shadow'
-  | 'url';
+  | 'sepia';
+
+export type FilterType = ScalarFilterType | 'drop-shadow' | 'url';
 
 export interface DropShadowValue {
   offsetX: number;
@@ -24,6 +17,29 @@ export interface DropShadowValue {
   blurRadius: number;
   color: string;
 }
+
+export interface ScalarFilterStep {
+  id: string;
+  type: ScalarFilterType;
+  value: number;
+  enabled: boolean;
+}
+
+export interface DropShadowFilterStep {
+  id: string;
+  type: 'drop-shadow';
+  value: DropShadowValue;
+  enabled: boolean;
+}
+
+export interface UrlFilterStep {
+  id: string;
+  type: 'url';
+  value: undefined;
+  enabled: boolean;
+}
+
+export type FilterStep = ScalarFilterStep | DropShadowFilterStep | UrlFilterStep;
 
 export interface FilterState {
   steps: FilterStep[];
@@ -38,7 +54,16 @@ export interface Preset {
   steps: FilterStep[];
 }
 
-export const FILTER_TYPES: { type: FilterType; label: string; unit: string; min: number; max: number; default: number; hasDropShadow?: true }[] = [
+type FilterTypeConfig = {
+  type: FilterType;
+  label: string;
+  unit: string;
+  min: number;
+  max: number;
+  default: number;
+};
+
+export const FILTER_TYPES: FilterTypeConfig[] = [
   { type: 'blur', label: 'Blur', unit: 'px', min: 0, max: 20, default: 5 },
   { type: 'brightness', label: 'Brightness', unit: '%', min: 0, max: 200, default: 150 },
   { type: 'contrast', label: 'Contrast', unit: '%', min: 0, max: 200, default: 150 },
@@ -48,8 +73,22 @@ export const FILTER_TYPES: { type: FilterType; label: string; unit: string; min:
   { type: 'opacity', label: 'Opacity', unit: '%', min: 0, max: 100, default: 50 },
   { type: 'saturate', label: 'Saturate', unit: '%', min: 0, max: 300, default: 200 },
   { type: 'sepia', label: 'Sepia', unit: '%', min: 0, max: 100, default: 100 },
-  { type: 'drop-shadow', label: 'Drop Shadow', unit: '', min: 0, max: 20, default: 5, hasDropShadow: true },
+  { type: 'drop-shadow', label: 'Drop Shadow', unit: 'px', min: 0, max: 20, default: 4 },
 ];
+
+export function createFilterStep(type: ScalarFilterType, value: number): ScalarFilterStep;
+export function createFilterStep(type: 'drop-shadow'): DropShadowFilterStep;
+export function createFilterStep(type: 'url'): UrlFilterStep;
+export function createFilterStep(type: FilterType, value?: number): FilterStep {
+  const id = `f-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  if (type === 'drop-shadow') {
+    return { id, type, value: { offsetX: 2, offsetY: 2, blurRadius: 4, color: '#00000066' }, enabled: true };
+  }
+  if (type === 'url') {
+    return { id, type, value: undefined, enabled: true };
+  }
+  return { id, type: type as ScalarFilterType, value: value ?? 50, enabled: true };
+}
 
 export const PRESETS: Preset[] = [
   {

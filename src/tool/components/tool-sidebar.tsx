@@ -1,8 +1,9 @@
 'use client';
 
-import type { FilterStep, FilterType } from '../types';
+import type { FilterStep, FilterType, DropShadowValue } from '../types';
 import { FILTER_TYPES, PRESETS } from '../types';
 import { buildFilterCss } from '../tool-definition';
+import type { ReactNode } from 'react';
 
 interface ToolSidebarProps {
   steps: FilterStep[];
@@ -11,9 +12,131 @@ interface ToolSidebarProps {
   onAddFilter: (type: FilterType) => void;
   onRemoveFilter: (id: string) => void;
   onToggleFilter: (id: string) => void;
-  onUpdateFilter: (id: string, value: number) => void;
+  onUpdateFilter: (id: string, value: number | Record<string, unknown>) => void;
   onApplyPreset: (steps: FilterStep[]) => void;
   onClearAll: () => void;
+}
+
+function stepLabel(step: FilterStep): string {
+  const ft = FILTER_TYPES.find((f) => f.type === step.type);
+  if (ft) return ft.label;
+  if (step.type === 'url') return 'SVG Filter';
+  return step.type;
+}
+
+function FilterStepControl({
+  step,
+  onUpdateFilter,
+}: {
+  step: FilterStep;
+  onUpdateFilter: (id: string, value: number | Record<string, unknown>) => void;
+}): ReactNode {
+  if (step.type === 'drop-shadow') {
+    const ds = step.value as DropShadowValue;
+    return (
+      <div className="filter-step-drop-shadow">
+        <div className="ds-row">
+          <label className="ds-label">X</label>
+          <input
+            type="range"
+            min={-20}
+            max={20}
+            value={ds.offsetX}
+            onChange={(e) =>
+              onUpdateFilter(step.id, { ...ds, offsetX: Number(e.target.value) })
+            }
+            disabled={!step.enabled}
+            className="filter-slider"
+            aria-label={`Drop shadow X offset`}
+          />
+          <span className="filter-step-value">{ds.offsetX}px</span>
+        </div>
+        <div className="ds-row">
+          <label className="ds-label">Y</label>
+          <input
+            type="range"
+            min={-20}
+            max={20}
+            value={ds.offsetY}
+            onChange={(e) =>
+              onUpdateFilter(step.id, { ...ds, offsetY: Number(e.target.value) })
+            }
+            disabled={!step.enabled}
+            className="filter-slider"
+            aria-label={`Drop shadow Y offset`}
+          />
+          <span className="filter-step-value">{ds.offsetY}px</span>
+        </div>
+        <div className="ds-row">
+          <label className="ds-label">Blur</label>
+          <input
+            type="range"
+            min={0}
+            max={40}
+            value={ds.blurRadius}
+            onChange={(e) =>
+              onUpdateFilter(step.id, { ...ds, blurRadius: Number(e.target.value) })
+            }
+            disabled={!step.enabled}
+            className="filter-slider"
+            aria-label={`Drop shadow blur radius`}
+          />
+          <span className="filter-step-value">{ds.blurRadius}px</span>
+        </div>
+        <div className="ds-row">
+          <label className="ds-label" htmlFor={`ds-color-${step.id}`}>Color</label>
+          <input
+            id={`ds-color-${step.id}`}
+            type="color"
+            value={ds.color}
+            onChange={(e) =>
+              onUpdateFilter(step.id, { ...ds, color: e.target.value })
+            }
+            disabled={!step.enabled}
+            className="filter-color-picker filter-color-picker--small"
+            aria-label="Drop shadow color"
+          />
+          <input
+            type="text"
+            value={ds.color}
+            onChange={(e) =>
+              onUpdateFilter(step.id, { ...ds, color: e.target.value })
+            }
+            disabled={!step.enabled}
+            className="filter-color-input filter-color-input--small"
+            aria-label="Drop shadow color hex"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (step.type === 'url') {
+    return (
+      <div className="filter-step-info">
+        <span className="filter-step-info-text">SVG filter reference (no slider)</span>
+      </div>
+    );
+  }
+
+  const ft = FILTER_TYPES.find((f) => f.type === step.type);
+  return (
+    <div className="filter-step-control">
+      <input
+        type="range"
+        min={ft?.min ?? 0}
+        max={ft?.max ?? 100}
+        value={step.value as number}
+        onChange={(e) => onUpdateFilter(step.id, Number(e.target.value))}
+        disabled={!step.enabled}
+        className="filter-slider"
+        aria-label={`${ft?.label ?? step.type} value`}
+      />
+      <span className="filter-step-value">
+        {step.value}{ft?.unit ?? ''}
+      </span>
+    </div>
+  );
 }
 
 export function ToolSidebar({
@@ -98,49 +221,32 @@ export function ToolSidebar({
           <p className="empty-state">No filter steps. Click a filter type above to add one.</p>
         ) : (
           <ul className="filter-steps-list" role="list" aria-label="Active filter steps">
-            {steps.map((step) => {
-              const ft = FILTER_TYPES.find((f) => f.type === step.type);
-              return (
-                <li key={step.id} className="filter-step-item">
-                  <div className="filter-step-header">
-                    <button
-                      type="button"
-                      className={`toggle-btn ${step.enabled ? 'toggle-on' : 'toggle-off'}`}
-                      onClick={() => onToggleFilter(step.id)}
-                      aria-label={`${step.enabled ? 'Disable' : 'Enable'} ${step.type} filter`}
-                      aria-pressed={step.enabled}
-                    >
-                      {step.enabled ? '✓' : '○'}
-                    </button>
-                    <span className="filter-step-label">{ft?.label ?? step.type}</span>
-                    <button
-                      type="button"
-                      className="remove-filter-btn"
-                      onClick={() => onRemoveFilter(step.id)}
-                      aria-label={`Remove ${step.type} filter`}
-                      title="Remove filter"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                  <div className="filter-step-control">
-                    <input
-                      type="range"
-                      min={ft?.min ?? 0}
-                      max={ft?.max ?? 100}
-                      value={step.value}
-                      onChange={(e) => onUpdateFilter(step.id, Number(e.target.value))}
-                      disabled={!step.enabled}
-                      className="filter-slider"
-                      aria-label={`${ft?.label ?? step.type} value`}
-                    />
-                    <span className="filter-step-value">
-                      {step.value}{ft?.unit ?? ''}
-                    </span>
-                  </div>
-                </li>
-              );
-            })}
+            {steps.map((step) => (
+              <li key={step.id} className="filter-step-item">
+                <div className="filter-step-header">
+                  <button
+                    type="button"
+                    className={`toggle-btn ${step.enabled ? 'toggle-on' : 'toggle-off'}`}
+                    onClick={() => onToggleFilter(step.id)}
+                    aria-label={`${step.enabled ? 'Disable' : 'Enable'} ${step.type} filter`}
+                    aria-pressed={step.enabled}
+                  >
+                    {step.enabled ? '✓' : '○'}
+                  </button>
+                  <span className="filter-step-label">{stepLabel(step)}</span>
+                  <button
+                    type="button"
+                    className="remove-filter-btn"
+                    onClick={() => onRemoveFilter(step.id)}
+                    aria-label={`Remove ${step.type} filter`}
+                    title="Remove filter"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <FilterStepControl step={step} onUpdateFilter={onUpdateFilter} />
+              </li>
+            ))}
           </ul>
         )}
         {steps.length > 0 && (

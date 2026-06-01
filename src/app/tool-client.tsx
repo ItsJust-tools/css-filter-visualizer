@@ -11,8 +11,8 @@ import {
   ToolToolbar,
   ToolSidebar,
 } from '@/tool';
-import type { FilterState, FilterType } from '@/tool/types';
-import { FILTER_TYPES } from '@/tool/types';
+import type { FilterState, FilterType, ScalarFilterType } from '@/tool/types';
+import { createFilterStep, FILTER_TYPES } from '@/tool/types';
 
 function generateId(): string {
   return `f-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -54,9 +54,16 @@ export default function ToolClient() {
 
   const handleAddFilter = useCallback(
     (type: FilterType) => {
+      if (type === 'drop-shadow' || type === 'url') {
+        const newStep = createFilterStep(type);
+        setToolData((prev) => ({ ...prev, steps: [...prev.steps, newStep] }));
+        const label = type === 'drop-shadow' ? 'Drop Shadow' : 'SVG Filter (URL)';
+        showToast(`Added ${label} filter`, 'success');
+        return;
+      }
       const ft = FILTER_TYPES.find((f) => f.type === type);
       const defaultValue = ft?.default ?? 50;
-      const newStep = { id: generateId(), type, value: defaultValue, enabled: true };
+      const newStep = createFilterStep(type as ScalarFilterType, defaultValue);
       setToolData((prev) => ({ ...prev, steps: [...prev.steps, newStep] }));
       showToast(`Added ${ft?.label ?? type} filter`, 'success');
     },
@@ -84,7 +91,7 @@ export default function ToolClient() {
   );
 
   const handleUpdateFilter = useCallback(
-    (id: string, value: number) => {
+    (id: string, value: number | Record<string, unknown>) => {
       setToolData((prev) => ({
         ...prev,
         steps: prev.steps.map((s) => (s.id === id ? { ...s, value } : s)),

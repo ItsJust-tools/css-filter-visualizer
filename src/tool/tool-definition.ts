@@ -1,16 +1,27 @@
 import toolConfig from './tool.config';
-import type { FilterState, FilterStep, DropShadowValue } from './types';
+import type { FilterState, FilterStep } from './types';
+import { createFilterStep } from './types';
 import type { ExportFormat } from '@itsjust/core';
 
 function isFilterStep(value: unknown): value is FilterStep {
   if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
-  return (
-    typeof v.id === 'string' &&
-    typeof v.type === 'string' &&
-    typeof v.value === 'number' &&
-    typeof v.enabled === 'boolean'
-  );
+  if (typeof v.id !== 'string' || typeof v.type !== 'string' || typeof v.enabled !== 'boolean') return false;
+  const type = v.type as string;
+  if (type === 'drop-shadow') {
+    const ds = v.value as Record<string, unknown> | undefined;
+    return (
+      typeof ds === 'object' && ds !== null &&
+      typeof ds.offsetX === 'number' &&
+      typeof ds.offsetY === 'number' &&
+      typeof ds.blurRadius === 'number' &&
+      typeof ds.color === 'string'
+    );
+  }
+  if (type === 'url') {
+    return v.value === undefined || v.value === null;
+  }
+  return typeof v.value === 'number';
 }
 
 function isFilterState(value: unknown): value is FilterState {
@@ -23,15 +34,12 @@ function isFilterState(value: unknown): value is FilterState {
   return true;
 }
 
-function generateId(): string {
-  return `f-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
 
 const DEFAULT_FILTERS: FilterStep[] = [
-  { id: generateId(), type: 'blur', value: 0, enabled: false },
-  { id: generateId(), type: 'brightness', value: 100, enabled: false },
-  { id: generateId(), type: 'contrast', value: 100, enabled: false },
-  { id: generateId(), type: 'saturate', value: 100, enabled: false },
+  createFilterStep('blur', 0),
+  createFilterStep('brightness', 100),
+  createFilterStep('contrast', 100),
+  createFilterStep('saturate', 100),
 ];
 
 export const initialState: FilterState = {
@@ -46,8 +54,8 @@ export function buildFilterCss(steps: FilterStep[]): string {
     .filter((s) => s.enabled)
     .map((s) => {
       if (s.type === 'drop-shadow') {
-        const ds = s.value as unknown as DropShadowValue;
-        return `drop-shadow(${ds?.offsetX ?? 2}px ${ds?.offsetY ?? 2}px ${ds?.blurRadius ?? 4}px ${ds?.color ?? '#00000066'})`;
+        const ds = s.value;
+        return `drop-shadow(${ds.offsetX}px ${ds.offsetY}px ${ds.blurRadius}px ${ds.color})`;
       }
       if (s.type === 'url') return `url(#filter-${s.id})`;
       const typeMap: Record<string, string> = {
