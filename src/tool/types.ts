@@ -1,3 +1,4 @@
+/** Supported filter types that accept a single numeric value (percentage, pixels, or degrees). */
 export type ScalarFilterType =
   | 'blur'
   | 'brightness'
@@ -9,8 +10,13 @@ export type ScalarFilterType =
   | 'saturate'
   | 'sepia';
 
+/** All supported CSS filter types, including compound types like drop-shadow and SVG url(). */
 export type FilterType = ScalarFilterType | 'drop-shadow' | 'url';
 
+/**
+ * Value type for the drop-shadow filter.
+ * Contains offset, blur, and color properties matching the CSS drop-shadow() function.
+ */
 export interface DropShadowValue {
   offsetX: number;
   offsetY: number;
@@ -18,6 +24,7 @@ export interface DropShadowValue {
   color: string;
 }
 
+/** Filter step for scalar-valued filters (blur, brightness, contrast, etc.). */
 export interface ScalarFilterStep {
   id: string;
   type: ScalarFilterType;
@@ -25,6 +32,7 @@ export interface ScalarFilterStep {
   enabled: boolean;
 }
 
+/** Filter step for the drop-shadow() CSS filter. */
 export interface DropShadowFilterStep {
   id: string;
   type: 'drop-shadow';
@@ -32,6 +40,7 @@ export interface DropShadowFilterStep {
   enabled: boolean;
 }
 
+/** Filter step for SVG url() filter references. No scalar value needed. */
 export interface UrlFilterStep {
   id: string;
   type: 'url';
@@ -39,8 +48,10 @@ export interface UrlFilterStep {
   enabled: boolean;
 }
 
+/** Discriminated union of all possible filter step types. */
 export type FilterStep = ScalarFilterStep | DropShadowFilterStep | UrlFilterStep;
 
+/** Complete serializable state of the CSS Filter Visualizer. */
 export interface FilterState {
   steps: FilterStep[];
   baseColor: string;
@@ -48,12 +59,14 @@ export interface FilterState {
   presetName: string;
 }
 
+/** A named preset of filter steps for quick application. */
 export interface Preset {
   name: string;
   description: string;
   steps: FilterStep[];
 }
 
+/** Configuration metadata for a filter type: label, unit, range, and defaults. */
 type FilterTypeConfig = {
   type: FilterType;
   label: string;
@@ -76,6 +89,17 @@ export const FILTER_TYPES: FilterTypeConfig[] = [
   { type: 'drop-shadow', label: 'Drop Shadow', unit: 'px', min: 0, max: 20, default: 4 },
 ];
 
+/**
+ * Create a new filter step with a unique ID and sensible defaults.
+ *
+ * Overloaded signatures ensure type safety:
+ * - Scalar filters require a numeric value
+ * - Drop-shadow and url filters use their own default values
+ *
+ * @param type - The filter type to create
+ * @param value - Numeric value (required for scalar filters, ignored for drop-shadow/url)
+ * @returns A fully populated FilterStep with a unique ID
+ */
 export function createFilterStep(type: ScalarFilterType, value: number): ScalarFilterStep;
 export function createFilterStep(type: 'drop-shadow'): DropShadowFilterStep;
 export function createFilterStep(type: 'url'): UrlFilterStep;
@@ -134,6 +158,21 @@ export const PRESETS: Preset[] = [
       { id: 'p13', type: 'contrast', value: 180, enabled: true },
       { id: 'p14', type: 'brightness', value: 80, enabled: true },
       { id: 'p15', type: 'saturate', value: 80, enabled: true },
+    ],
+  },
+  {
+    name: 'Frosted Glass',
+    description: 'Modern frosted glass effect with shadow and blur',
+    steps: [
+      { id: 'p16', type: 'blur', value: 4, enabled: true },
+      { id: 'p17', type: 'brightness', value: 120, enabled: true },
+      { id: 'p18', type: 'saturate', value: 80, enabled: true },
+      {
+        id: 'p19',
+        type: 'drop-shadow',
+        value: { offsetX: 0, offsetY: 4, blurRadius: 12, color: '#00000033' },
+        enabled: true,
+      },
     ],
   },
 ];

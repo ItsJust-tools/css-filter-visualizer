@@ -3,6 +3,10 @@ import packageJson from '../../package.json';
 
 export const templateBaseVersion = packageJson.version;
 
+/**
+ * Tool configuration for the CSS Filter Visualizer.
+ * Defines tool metadata, features, theming, and keyboard shortcuts.
+ */
 const toolConfig = {
   id: 'css-filter-visualizer',
   name: 'CSS Filter Visualizer',

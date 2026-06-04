@@ -8,6 +8,9 @@ import type { FilterState } from '../types';
  * Parse a hex color string to its RGB components.
  * Supports 3-, 4-, 6-, and 8-digit hex (with or without #).
  * Returns normalized RGB values between 0 and 1.
+ *
+ * @param hex - Hex color string (e.g. "#ff0000", "f00", "#ff000080")
+ * @returns RGB object with values 0-1, or null if parsing fails
  */
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   const clean = hex.replace('#', '').trim();
@@ -32,8 +35,12 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 }
 
 /**
- * Calculate relative luminance of a hex color (sRGB).
+ * Calculate relative luminance of a hex color using the sRGB luminance formula.
  * Returns a value between 0 (dark) and 1 (light).
+ * Used to determine optimal text contrast color against a given background.
+ *
+ * @param hex - Hex color string
+ * @returns Relative luminance value between 0 and 1, or 0.5 on failure
  */
 function hexLuminance(hex: string): number {
   const rgb = hexToRgb(hex);
@@ -43,6 +50,13 @@ function hexLuminance(hex: string): number {
   return 0.2126 * linearize(rgb.r) + 0.7152 * linearize(rgb.g) + 0.0722 * linearize(rgb.b);
 }
 
+/**
+ * Determine the optimal text color (black or white) for readability
+ * against the given background color using WCAG-style luminance contrast.
+ *
+ * @param baseColor - Background hex color
+ * @returns Black or white hex color string
+ */
 function previewTextColor(baseColor: string): string {
   return hexLuminance(baseColor) > 0.5 ? '#1a1a2e' : '#ffffff';
 }

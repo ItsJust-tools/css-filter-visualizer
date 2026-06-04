@@ -14,10 +14,18 @@ import {
 import type { FilterState, FilterStep, FilterType, ScalarFilterType, DropShadowValue } from '@/tool/types';
 import { createFilterStep, FILTER_TYPES } from '@/tool/types';
 
+/**
+ * Generate a unique (time + random) identifier for newly created filter steps.
+ * Format: "f-" + timestamp + random suffix.
+ */
 function generateId(): string {
   return `f-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+/**
+ * Main client component for the CSS Filter Visualizer.
+ * Manages filter state, presets, sharing, undo/redo, and the tool shell layout.
+ */
 export default function ToolClient() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const tool = useTool(cssFilterTool, canvasRef);

@@ -49,6 +49,14 @@ export const initialState: FilterState = {
   presetName: '',
 };
 
+/**
+ * Serializes an array of FilterStep into a complete CSS filter property value.
+ * Each enabled step is converted to its CSS function form and joined with spaces.
+ * Returns an empty string if no filters are enabled.
+ *
+ * @param steps - The array of filter steps to serialize
+ * @returns CSS filter property value (e.g. "blur(5px) brightness(150%)")
+ */
 export function buildFilterCss(steps: FilterStep[]): string {
   return steps
     .filter((s) => s.enabled)

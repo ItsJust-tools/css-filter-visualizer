@@ -17,6 +17,13 @@ interface ToolSidebarProps {
   onClearAll: () => void;
 }
 
+/**
+ * Returns the human-readable label for a filter step,
+ * looking it up from the FILTER_TYPES configuration.
+ *
+ * @param step - The filter step to label
+ * @returns Display label string
+ */
 function stepLabel(step: FilterStep): string {
   const ft = FILTER_TYPES.find((f) => f.type === step.type);
   if (ft) return ft.label;
@@ -24,6 +31,13 @@ function stepLabel(step: FilterStep): string {
   return step.type;
 }
 
+/**
+ * Renders the interactive control for a single filter step.
+ * Different controls are shown based on the filter type:
+ * - Scalar filters (blur, brightness, etc.): range slider with value display
+ * - Drop shadow: multi-field controls for X offset, Y offset, blur, and color
+ * - URL: informational text (no slider needed)
+ */
 function FilterStepControl({
   step,
   onUpdateFilter,
@@ -139,6 +153,13 @@ function FilterStepControl({
   );
 }
 
+/**
+ * Renders the sidebar panel for the CSS Filter Visualizer.
+ * Contains:
+ * - Collapsible preset buttons for quick filter configurations
+ * - Add Filter grid for appending new filter steps
+ * - Active Filter Chain list with enable/disable sliders and remove buttons
+ */
 export function ToolSidebar({
   steps,
   presetsOpen,
