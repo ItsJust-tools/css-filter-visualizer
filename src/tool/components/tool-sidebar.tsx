@@ -12,7 +12,7 @@ interface ToolSidebarProps {
   onAddFilter: (type: FilterType) => void;
   onRemoveFilter: (id: string) => void;
   onToggleFilter: (id: string) => void;
-  onUpdateFilter: (id: string, value: number | Record<string, unknown>) => void;
+  onUpdateFilter: (id: string, value: number | DropShadowValue) => void;
   onApplyPreset: (steps: FilterStep[]) => void;
   onClearAll: () => void;
 }
@@ -29,7 +29,7 @@ function FilterStepControl({
   onUpdateFilter,
 }: {
   step: FilterStep;
-  onUpdateFilter: (id: string, value: number | Record<string, unknown>) => void;
+  onUpdateFilter: (id: string, value: number | DropShadowValue) => void;
 }): ReactNode {
   if (step.type === 'drop-shadow') {
     const ds = step.value as DropShadowValue;

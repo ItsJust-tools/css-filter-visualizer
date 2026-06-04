@@ -11,7 +11,7 @@ import {
   ToolToolbar,
   ToolSidebar,
 } from '@/tool';
-import type { FilterState, FilterType, ScalarFilterType } from '@/tool/types';
+import type { FilterState, FilterStep, FilterType, ScalarFilterType, DropShadowValue } from '@/tool/types';
 import { createFilterStep, FILTER_TYPES } from '@/tool/types';
 
 function generateId(): string {
@@ -54,11 +54,16 @@ export default function ToolClient() {
 
   const handleAddFilter = useCallback(
     (type: FilterType) => {
-      if (type === 'drop-shadow' || type === 'url') {
+      if (type === 'drop-shadow') {
         const newStep = createFilterStep(type);
         setToolData((prev) => ({ ...prev, steps: [...prev.steps, newStep] }));
-        const label = type === 'drop-shadow' ? 'Drop Shadow' : 'SVG Filter (URL)';
-        showToast(`Added ${label} filter`, 'success');
+        showToast('Added Drop Shadow filter', 'success');
+        return;
+      }
+      if (type === 'url') {
+        const newStep = createFilterStep(type);
+        setToolData((prev) => ({ ...prev, steps: [...prev.steps, newStep] }));
+        showToast('Added SVG Filter (URL) filter', 'success');
         return;
       }
       const ft = FILTER_TYPES.find((f) => f.type === type);
@@ -91,10 +96,16 @@ export default function ToolClient() {
   );
 
   const handleUpdateFilter = useCallback(
-    (id: string, value: number | Record<string, unknown>) => {
+    (id: string, value: number | DropShadowValue) => {
       setToolData((prev) => ({
         ...prev,
-        steps: prev.steps.map((s) => (s.id === id ? { ...s, value } : s)),
+        steps: prev.steps.map((s) => {
+          if (s.id !== id) return s;
+          if (s.type === 'drop-shadow') {
+            return { ...s, value: value as DropShadowValue };
+          }
+          return { ...s, value: value as number };
+        }),
       }));
     },
     [setToolData]
@@ -102,9 +113,13 @@ export default function ToolClient() {
 
   const handleApplyPreset = useCallback(
     (steps: FilterState['steps']) => {
+      const clonedSteps: FilterStep[] = steps.map((s) => ({
+        ...s,
+        id: generateId(),
+      }));
       setToolData((prev) => ({
         ...prev,
-        steps: steps.map((s) => ({ ...s, id: generateId() })),
+        steps: clonedSteps,
         presetName: '',
       }));
       showToast('Preset applied', 'success');

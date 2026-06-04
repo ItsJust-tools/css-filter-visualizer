@@ -146,14 +146,13 @@ describe('CSS Filter Visualizer logic', () => {
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.steps).toHaveLength(1);
-      const ds = result.data.steps[0];
-      if (ds.type === 'drop-shadow') {
-        expect(ds.value.offsetX).toBe(3);
-        expect(ds.value.offsetY).toBe(5);
-        expect(ds.value.color).toBe('rgba(0,0,0,0.5)');
-      } else {
+      const ds = result.data.steps[0]!;
+      if (ds.type !== 'drop-shadow') {
         expect.unreachable('Expected drop-shadow type');
       }
+      expect(ds.value.offsetX).toBe(3);
+      expect(ds.value.offsetY).toBe(5);
+      expect(ds.value.color).toBe('rgba(0,0,0,0.5)');
     }
   });
 
