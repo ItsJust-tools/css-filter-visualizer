@@ -161,7 +161,7 @@ export function ToolSidebar({
           className="sidebar-section-header"
           onClick={onTogglePresets}
           aria-expanded={presetsOpen}
-          aria-label="Toggle presets"
+          aria-label={`${presetsOpen ? 'Collapse' : 'Expand'} presets section`}
         >
           <span>Presets</span>
           <span className="sidebar-chevron" data-open={presetsOpen}>

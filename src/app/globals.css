@@ -705,7 +705,8 @@ body {
   font-family: ui-monospace, Menlo, Monaco, 'Cascadia Code', 'Segoe UI Mono', monospace;
   font-size: 0.8125rem;
   overflow-x: auto;
-  white-space: nowrap;
+  word-break: break-all;
+  overflow-wrap: break-word;
 }
 
 .filter-css-output code {

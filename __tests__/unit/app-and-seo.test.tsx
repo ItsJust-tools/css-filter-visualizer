@@ -156,7 +156,7 @@ describe('app and seo', () => {
       </>
     );
 
-    expect(screen.getByRole('link', { name: 'Open help page' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Open help page (opens in new tab)' })).toBeInTheDocument();
     // Should see preset buttons
     expect(screen.getByText('Vintage')).toBeInTheDocument();
     // Should see a filter type button in add filter grid 

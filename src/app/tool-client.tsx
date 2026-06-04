@@ -99,11 +99,12 @@ export default function ToolClient() {
     (id: string, value: number | DropShadowValue) => {
       setToolData((prev) => ({
         ...prev,
-        steps: prev.steps.map((s) => {
+        steps: prev.steps.map((s): FilterStep => {
           if (s.id !== id) return s;
           if (s.type === 'drop-shadow') {
             return { ...s, value: value as DropShadowValue };
           }
+          if (s.type === 'url') return s;
           return { ...s, value: value as number };
         }),
       }));
