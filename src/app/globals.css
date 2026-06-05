@@ -677,7 +677,7 @@ body {
   border-radius: calc(var(--radius) * 1.5);
   border: 1px solid var(--border);
   padding: 2rem;
-  transition: filter 0.15s ease;
+  transition: filter 0.15s ease, background-color 0.25s ease;
 }
 
 .filter-preview-text {
@@ -698,7 +698,7 @@ body {
 
 .filter-css-output {
   flex: 1;
-  background: var(--card);
+  background: color-mix(in srgb, var(--accent) 6%, var(--card));
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 0.75rem 1rem;
@@ -711,6 +711,7 @@ body {
 
 .filter-css-output code {
   color: var(--accent);
+  font-weight: 500;
 }
 
 .filter-copy-btn {
@@ -724,8 +725,10 @@ body {
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.12s, background-color 0.12s, color 0.12s;
+  transition: border-color 0.12s, background-color 0.12s, color 0.12s, opacity 0.12s;
   white-space: nowrap;
+  min-width: 4.5rem;
+  text-align: center;
 }
 
 .filter-copy-btn:hover {
@@ -1040,8 +1043,12 @@ body {
 }
 
 .filter-slider:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
+}
+
+.filter-slider:disabled + .filter-step-value {
+  opacity: 0.45;
 }
 
 .filter-step-value {

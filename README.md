@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/ItsJust-tools/css-filter-visualizer/actions/workflows/ci.yml/badge.svg)](https://github.com/ItsJust-tools/css-filter-visualizer/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node](https://img.shields.io/badge/node-%3E%3D22.0.0-339933?logo=node.js&logoColor=white)](https://nodejs.org)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![Live Site](https://img.shields.io/badge/Live-8b5cf6?style=for-the-badge&logo=vercel&logoColor=white)](https://css-filter-visualizer.itsjust.tools)
 [![GitHub](https://img.shields.io/badge/Source-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ItsJust-tools/css-filter-visualizer)
 
@@ -22,6 +24,12 @@ Build and preview CSS filter chains visually. Combine blur, brightness, contrast
 - **Privacy-first** — Everything runs in your browser. No data sent to any server
 - **Dark/Light/High-contrast mode** — System preference detection with manual toggle
 - **Works offline** — PWA-ready for mobile and desktop
+
+## Changelog & What's New
+
+See [CHANGELOG.md](./CHANGELOG.md) for release notes.
+
+---
 
 ## Usage
 

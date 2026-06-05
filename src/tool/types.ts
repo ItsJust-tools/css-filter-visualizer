@@ -66,7 +66,22 @@ export interface Preset {
   steps: FilterStep[];
 }
 
-/** Configuration metadata for a filter type: label, unit, range, and defaults. */
+/**
+ * Configuration metadata for a filter type: label, unit, range, defaults, and description.
+ *
+ * For scalar filters (blur, brightness, etc.):
+ * - `unit`: CSS unit suffix (px, %, deg)
+ * - `min`/`max`: slider bounds
+ * - `default`: initial slider value
+ *
+ * For drop-shadow:
+ * - `unit`, `min`, `max`, `default` refer to the blur-radius sub-property
+ * - The other sub-property defaults (offsetX: 2, offsetY: 2, color: #00000066)
+ *   are set in `createFilterStep()`
+ *
+ * For url:
+ * - No scalar value; all numeric fields are informational only.
+ */
 type FilterTypeConfig = {
   type: FilterType;
   label: string;
