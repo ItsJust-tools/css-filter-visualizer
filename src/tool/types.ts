@@ -121,7 +121,12 @@ export function createFilterStep(type: 'url'): UrlFilterStep;
 export function createFilterStep(type: FilterType, value?: number): FilterStep {
   const id = `f-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   if (type === 'drop-shadow') {
-    return { id, type, value: { offsetX: 2, offsetY: 2, blurRadius: 4, color: '#00000066' }, enabled: true };
+    return {
+      id,
+      type,
+      value: { offsetX: 2, offsetY: 2, blurRadius: 4, color: '#00000066' },
+      enabled: true,
+    };
   }
   if (type === 'url') {
     return { id, type, value: undefined, enabled: true };

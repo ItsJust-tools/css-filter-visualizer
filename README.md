@@ -14,15 +14,18 @@ Build and preview CSS filter chains visually. Combine blur, brightness, contrast
 ## Features
 
 - **Visual filter chain builder** — Add, remove, toggle, and reorder CSS filters from a list of 10 filter types
+  including **drop-shadow** with full X/Y/blur/color controls
 - **Real-time preview** — See the combined effect instantly on a colored background with sample text
-- **Presets** — One-click presets: Vintage, Vivid, Noir, Dreamy, Dramatic
+- **Presets** — One-click presets: Vintage, Vivid, Noir, Dreamy, Dramatic, Frosted Glass
+  (the **Frosted Glass** preset demonstrates drop-shadow + blur for a modern UI effect)
 - **Adjustable controls** — Fine-tune each filter with range sliders
 - **CSS output** — Copy the generated `filter` CSS rule for use in your projects
 - **Customizable** — Change the background color and preview text
 - **Export** — Save your filter configuration as JSON, PNG, JPEG, WebP, or PDF
-- **Shareable URLs** — Share your current filter setup via URL
+- **Shareable URLs** — Share your current filter setup via URL (compressed with LZ-String)
 - **Privacy-first** — Everything runs in your browser. No data sent to any server
 - **Dark/Light/High-contrast mode** — System preference detection with manual toggle
+- **Keyboard shortcuts** — `Ctrl+Shift+N` add filter, `Ctrl+Shift+E` export, `Delete` remove selected
 - **Works offline** — PWA-ready for mobile and desktop
 
 ## Changelog & What's New

@@ -71,7 +71,15 @@ vi.mock('@/tool', () => ({
   templateBaseVersion: '1.0.0',
   cssFilterTool: {
     serialize: (state: unknown) => JSON.stringify(state),
-    deserialize: () => ({ success: true, data: { steps: [{ id: '1', type: 'blur', value: 5, enabled: true }], baseColor: '#000', previewText: 'From Shared Url', presetName: '' } }),
+    deserialize: () => ({
+      success: true,
+      data: {
+        steps: [{ id: '1', type: 'blur', value: 5, enabled: true }],
+        baseColor: '#000',
+        previewText: 'From Shared Url',
+        presetName: '',
+      },
+    }),
   },
   ToolCanvas: ({ state }: { state: { previewText: string; baseColor: string } }) => (
     <div>{state.previewText}</div>

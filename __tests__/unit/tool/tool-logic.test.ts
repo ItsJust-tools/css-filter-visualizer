@@ -22,9 +22,7 @@ describe('CSS Filter Visualizer logic', () => {
   });
 
   it('returns empty string when no steps are enabled', () => {
-    const steps: FilterStep[] = [
-      { id: '1', type: 'blur', value: 5, enabled: false },
-    ];
+    const steps: FilterStep[] = [{ id: '1', type: 'blur', value: 5, enabled: false }];
     expect(buildFilterCss(steps)).toBe('');
   });
 

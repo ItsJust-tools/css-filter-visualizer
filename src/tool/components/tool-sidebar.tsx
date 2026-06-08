@@ -56,9 +56,7 @@ function FilterStepControl({
             min={-20}
             max={20}
             value={ds.offsetX}
-            onChange={(e) =>
-              onUpdateFilter(step.id, { ...ds, offsetX: Number(e.target.value) })
-            }
+            onChange={(e) => onUpdateFilter(step.id, { ...ds, offsetX: Number(e.target.value) })}
             disabled={!step.enabled}
             className="filter-slider"
             aria-label={`Drop shadow X offset`}
@@ -72,9 +70,7 @@ function FilterStepControl({
             min={-20}
             max={20}
             value={ds.offsetY}
-            onChange={(e) =>
-              onUpdateFilter(step.id, { ...ds, offsetY: Number(e.target.value) })
-            }
+            onChange={(e) => onUpdateFilter(step.id, { ...ds, offsetY: Number(e.target.value) })}
             disabled={!step.enabled}
             className="filter-slider"
             aria-label={`Drop shadow Y offset`}
@@ -88,9 +84,7 @@ function FilterStepControl({
             min={0}
             max={40}
             value={ds.blurRadius}
-            onChange={(e) =>
-              onUpdateFilter(step.id, { ...ds, blurRadius: Number(e.target.value) })
-            }
+            onChange={(e) => onUpdateFilter(step.id, { ...ds, blurRadius: Number(e.target.value) })}
             disabled={!step.enabled}
             className="filter-slider"
             aria-label={`Drop shadow blur radius`}
@@ -98,14 +92,14 @@ function FilterStepControl({
           <span className="filter-step-value">{ds.blurRadius}px</span>
         </div>
         <div className="ds-row">
-          <label className="ds-label" htmlFor={`ds-color-${step.id}`}>Color</label>
+          <label className="ds-label" htmlFor={`ds-color-${step.id}`}>
+            Color
+          </label>
           <input
             id={`ds-color-${step.id}`}
             type="color"
             value={ds.color}
-            onChange={(e) =>
-              onUpdateFilter(step.id, { ...ds, color: e.target.value })
-            }
+            onChange={(e) => onUpdateFilter(step.id, { ...ds, color: e.target.value })}
             disabled={!step.enabled}
             className="filter-color-picker filter-color-picker--small"
             aria-label="Drop shadow color"
@@ -113,9 +107,7 @@ function FilterStepControl({
           <input
             type="text"
             value={ds.color}
-            onChange={(e) =>
-              onUpdateFilter(step.id, { ...ds, color: e.target.value })
-            }
+            onChange={(e) => onUpdateFilter(step.id, { ...ds, color: e.target.value })}
             disabled={!step.enabled}
             className="filter-color-input filter-color-input--small"
             aria-label="Drop shadow color hex"
@@ -147,7 +139,8 @@ function FilterStepControl({
         aria-label={`${ft?.label ?? step.type} value`}
       />
       <span className="filter-step-value">
-        {step.value}{ft?.unit ?? ''}
+        {step.value}
+        {ft?.unit ?? ''}
       </span>
     </div>
   );
@@ -200,10 +193,7 @@ export function ToolSidebar({
                 title={preset.description}
                 aria-label={`Apply ${preset.name} preset: ${preset.description}`}
               >
-                <span
-                  className="preset-preview"
-                  style={{ filter: buildFilterCss(preset.steps) }}
-                >
+                <span className="preset-preview" style={{ filter: buildFilterCss(preset.steps) }}>
                   Aa
                 </span>
                 <span className="preset-name">{preset.name}</span>
@@ -236,7 +226,9 @@ export function ToolSidebar({
       <div className="sidebar-section">
         <div className="sidebar-section-row">
           <h3>Filter Chain</h3>
-          <span className="badge">{enabledCount}/{steps.length} active</span>
+          <span className="badge">
+            {enabledCount}/{steps.length} active
+          </span>
         </div>
         {steps.length === 0 ? (
           <p className="empty-state">No filter steps. Click a filter type above to add one.</p>

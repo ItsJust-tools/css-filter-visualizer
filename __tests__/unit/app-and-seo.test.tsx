@@ -108,13 +108,16 @@ describe('app and seo', () => {
     // Invalid state
     expect(cssFilterTool.deserialize({ nope: true })).toEqual({
       success: false,
-      error: 'Invalid data format: expected { steps: FilterStep[], baseColor: string, previewText: string }',
+      error:
+        'Invalid data format: expected { steps: FilterStep[], baseColor: string, previewText: string }',
     });
 
     expect(cssFilterTool.serialize(validState)).toContain('"baseColor"');
 
     // Build filter CSS
-    expect(buildFilterCss([{ id: '1', type: 'saturate' as const, value: 180, enabled: true }])).toContain('saturate(180%)');
+    expect(
+      buildFilterCss([{ id: '1', type: 'saturate' as const, value: 180, enabled: true }])
+    ).toContain('saturate(180%)');
 
     const exporters = cssFilterTool.exporters ?? [];
     expect(exporters).toHaveLength(4);
@@ -156,10 +159,12 @@ describe('app and seo', () => {
       </>
     );
 
-    expect(screen.getByRole('button', { name: 'Open help page (opens in new tab)' })).toBeInTheDocument();
+    // Should see the shortcuts and help buttons in the toolbar
+    expect(screen.getByRole('button', { name: 'View keyboard shortcuts' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Open help in new tab' })).toBeInTheDocument();
     // Should see preset buttons
     expect(screen.getByText('Vintage')).toBeInTheDocument();
-    // Should see a filter type button in add filter grid 
+    // Should see a filter type button in add filter grid
     expect(screen.getAllByText('Blur').length).toBeGreaterThan(0);
     // Should see the add filter heading
     expect(screen.getByText('Add Filter')).toBeInTheDocument();

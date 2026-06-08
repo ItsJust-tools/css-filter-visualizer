@@ -1,17 +1,19 @@
 import toolConfig from './tool.config';
-import type { FilterState, FilterStep } from './types';
+import type { FilterState, FilterStep, ScalarFilterType } from './types';
 import { createFilterStep } from './types';
 import type { ExportFormat } from '@itsjust/core';
 
 function isFilterStep(value: unknown): value is FilterStep {
   if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
-  if (typeof v.id !== 'string' || typeof v.type !== 'string' || typeof v.enabled !== 'boolean') return false;
+  if (typeof v.id !== 'string' || typeof v.type !== 'string' || typeof v.enabled !== 'boolean')
+    return false;
   const type = v.type as string;
   if (type === 'drop-shadow') {
     const ds = v.value as Record<string, unknown> | undefined;
     return (
-      typeof ds === 'object' && ds !== null &&
+      typeof ds === 'object' &&
+      ds !== null &&
       typeof ds.offsetX === 'number' &&
       typeof ds.offsetY === 'number' &&
       typeof ds.blurRadius === 'number' &&
@@ -34,6 +36,22 @@ function isFilterState(value: unknown): value is FilterState {
   return true;
 }
 
+/**
+ * Maps internal filter type names to their CSS function names.
+ * All keys are literal `ScalarFilterType` values that produce a
+ * one-to-one CSS function (e.g. `blur` → `blur()`, `hue-rotate` → `hue-rotate()`).
+ */
+const FILTER_CSS_MAP: Record<ScalarFilterType, string> = {
+  blur: 'blur',
+  brightness: 'brightness',
+  contrast: 'contrast',
+  grayscale: 'grayscale',
+  'hue-rotate': 'hue-rotate',
+  invert: 'invert',
+  opacity: 'opacity',
+  saturate: 'saturate',
+  sepia: 'sepia',
+};
 
 const DEFAULT_FILTERS: FilterStep[] = [
   createFilterStep('blur', 0),
@@ -54,6 +72,11 @@ export const initialState: FilterState = {
  * Each enabled step is converted to its CSS function form and joined with spaces.
  * Returns an empty string if no filters are enabled.
  *
+ * Handles all supported filter types:
+ * - Scalar filters (blur, brightness, contrast, etc.) with px/%/deg units
+ * - Drop-shadow with offset, blur radius, and color
+ * - SVG url() filter references
+ *
  * @param steps - The array of filter steps to serialize
  * @returns CSS filter property value (e.g. "blur(5px) brightness(150%)")
  */
@@ -66,19 +89,8 @@ export function buildFilterCss(steps: FilterStep[]): string {
         return `drop-shadow(${ds.offsetX}px ${ds.offsetY}px ${ds.blurRadius}px ${ds.color})`;
       }
       if (s.type === 'url') return `url(#filter-${s.id})`;
-      const typeMap: Record<string, string> = {
-        blur: 'blur',
-        brightness: 'brightness',
-        contrast: 'contrast',
-        grayscale: 'grayscale',
-        'hue-rotate': 'hue-rotate',
-        invert: 'invert',
-        opacity: 'opacity',
-        saturate: 'saturate',
-        sepia: 'sepia',
-      };
-      const fn = typeMap[s.type];
-      if (!fn) return '';
+
+      const fn = FILTER_CSS_MAP[s.type];
       if (s.type === 'blur') return `${fn}(${s.value}px)`;
       if (s.type === 'hue-rotate') return `${fn}(${s.value}deg)`;
       return `${fn}(${s.value}%)`;
@@ -99,7 +111,8 @@ export const cssFilterTool = {
     }
     return {
       success: false as const,
-      error: 'Invalid data format: expected { steps: FilterStep[], baseColor: string, previewText: string }',
+      error:
+        'Invalid data format: expected { steps: FilterStep[], baseColor: string, previewText: string }',
     };
   },
   exporters: [

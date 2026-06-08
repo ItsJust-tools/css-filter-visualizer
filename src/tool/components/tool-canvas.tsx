@@ -45,8 +45,7 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 function hexLuminance(hex: string): number {
   const rgb = hexToRgb(hex);
   if (!rgb) return 0.5; // fallback for invalid input
-  const linearize = (c: number) =>
-    c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  const linearize = (c: number) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
   return 0.2126 * linearize(rgb.r) + 0.7152 * linearize(rgb.g) + 0.0722 * linearize(rgb.b);
 }
 
@@ -100,7 +99,9 @@ export function ToolCanvas({
           className="filter-preview-box"
           style={{ backgroundColor: state.baseColor, filter: filterCss }}
         >
-          <div className="filter-preview-text" style={{ color: previewTextColor(state.baseColor) }}>{state.previewText}</div>
+          <div className="filter-preview-text" style={{ color: previewTextColor(state.baseColor) }}>
+            {state.previewText}
+          </div>
         </div>
         <div className="filter-css-output-row">
           <div className="filter-css-output" aria-label="CSS filter rule">
