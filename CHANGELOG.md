@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Filter chain reordering: move individual filter steps up/down with ▲/▼ buttons
+  - Filter order now controllable — CSS filter chains are order-sensitive for visual results
+- Move filter step unit tests (up, down, boundary checks, CSS output order verification)
+- Keyboard shortcuts: Ctrl+Shift+↑ (Move Up) and Ctrl+Shift+↓ (Move Down)
+
 ## [1.0.0] - 2026-05-24
 
 ### Added

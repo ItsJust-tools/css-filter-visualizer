@@ -15,6 +15,7 @@ interface ToolSidebarProps {
   onUpdateFilter: (id: string, value: number | DropShadowValue) => void;
   onApplyPreset: (steps: FilterStep[]) => void;
   onClearAll: () => void;
+  onMoveFilter: (id: string, direction: 'up' | 'down') => void;
 }
 
 /**
@@ -151,7 +152,8 @@ function FilterStepControl({
  * Contains:
  * - Collapsible preset buttons for quick filter configurations
  * - Add Filter grid for appending new filter steps
- * - Active Filter Chain list with enable/disable sliders and remove buttons
+ * - Active Filter Chain list with enable/disable toggles, move buttons, and remove buttons
+ * - Filter order matters in CSS — move items up/down to change the chain order
  */
 export function ToolSidebar({
   steps,
@@ -163,6 +165,7 @@ export function ToolSidebar({
   onUpdateFilter,
   onApplyPreset,
   onClearAll,
+  onMoveFilter,
 }: ToolSidebarProps) {
   const enabledCount = steps.filter((s) => s.enabled).length;
 
@@ -234,7 +237,7 @@ export function ToolSidebar({
           <p className="empty-state">No filter steps. Click a filter type above to add one.</p>
         ) : (
           <ul className="filter-steps-list" role="list" aria-label="Active filter steps">
-            {steps.map((step) => (
+            {steps.map((step, idx) => (
               <li key={step.id} className="filter-step-item">
                 <div className="filter-step-header">
                   <button
@@ -247,6 +250,28 @@ export function ToolSidebar({
                     {step.enabled ? '✓' : '○'}
                   </button>
                   <span className="filter-step-label">{stepLabel(step)}</span>
+                  <div className="filter-step-move-buttons">
+                    <button
+                      type="button"
+                      className="move-filter-btn"
+                      onClick={() => onMoveFilter(step.id, 'up')}
+                      disabled={idx === 0}
+                      aria-label={`Move ${stepLabel(step)} filter up`}
+                      title="Move up"
+                    >
+                      ▲
+                    </button>
+                    <button
+                      type="button"
+                      className="move-filter-btn"
+                      onClick={() => onMoveFilter(step.id, 'down')}
+                      disabled={idx === steps.length - 1}
+                      aria-label={`Move ${stepLabel(step)} filter down`}
+                      title="Move down"
+                    >
+                      ▼
+                    </button>
+                  </div>
                   <button
                     type="button"
                     className="remove-filter-btn"

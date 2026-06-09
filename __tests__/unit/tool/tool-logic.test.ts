@@ -213,4 +213,59 @@ describe('CSS Filter Visualizer logic', () => {
     expect(urlStep.type).toBe('url');
     expect(urlStep.enabled).toBe(true);
   });
+
+  it('respects filter order in CSS output', () => {
+    const steps: FilterStep[] = [
+      { id: '1', type: 'blur', value: 5, enabled: true },
+      { id: '2', type: 'contrast', value: 150, enabled: true },
+    ];
+    expect(buildFilterCss(steps)).toBe('blur(5px) contrast(150%)');
+
+    // Reversed order should produce different CSS
+    const reversed: FilterStep[] = [steps[1]!, steps[0]!];
+    expect(buildFilterCss(reversed)).toBe('contrast(150%) blur(5px)');
+  });
+
+  it('moves a filter step up', () => {
+    const steps: FilterStep[] = [
+      { id: '1', type: 'blur', value: 5, enabled: true },
+      { id: '2', type: 'contrast', value: 150, enabled: true },
+      { id: '3', type: 'sepia', value: 50, enabled: true },
+    ];
+    const idx = steps.findIndex((s) => s.id === '3');
+    const temp = steps[idx]!;
+    steps[idx] = steps[idx - 1]!;
+    steps[idx - 1] = temp;
+    expect(steps[0]!.id).toBe('1');
+    expect(steps[1]!.id).toBe('3');
+    expect(steps[2]!.id).toBe('2');
+    expect(buildFilterCss(steps)).toBe('blur(5px) sepia(50%) contrast(150%)');
+  });
+
+  it('moves a filter step down', () => {
+    const steps: FilterStep[] = [
+      { id: '1', type: 'blur', value: 5, enabled: true },
+      { id: '2', type: 'contrast', value: 150, enabled: true },
+      { id: '3', type: 'sepia', value: 50, enabled: true },
+    ];
+    const idx = steps.findIndex((s) => s.id === '1');
+    const temp = steps[idx]!;
+    steps[idx] = steps[idx + 1]!;
+    steps[idx + 1] = temp;
+    expect(steps[0]!.id).toBe('2');
+    expect(steps[1]!.id).toBe('1');
+    expect(steps[2]!.id).toBe('3');
+    expect(buildFilterCss(steps)).toBe('contrast(150%) blur(5px) sepia(50%)');
+  });
+
+  it('does not move first step up or last step down', () => {
+    const steps: FilterStep[] = [
+      { id: '1', type: 'blur', value: 5, enabled: true },
+      { id: '2', type: 'contrast', value: 150, enabled: true },
+    ];
+    const upIdx = steps.findIndex((s) => s.id === '1');
+    expect(upIdx).toBe(0); // already at top, cannot move up
+    const downIdx = steps.findIndex((s) => s.id === '2');
+    expect(downIdx).toBe(1); // already at bottom, cannot move down
+  });
 });

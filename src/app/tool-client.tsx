@@ -144,6 +144,23 @@ export default function ToolClient() {
     [setToolData, showToast]
   );
 
+  const handleMoveFilter = useCallback(
+    (id: string, direction: 'up' | 'down') => {
+      setToolData((prev) => {
+        const idx = prev.steps.findIndex((s) => s.id === id);
+        if (idx === -1) return prev;
+        const newIdx = direction === 'up' ? idx - 1 : idx + 1;
+        if (newIdx < 0 || newIdx >= prev.steps.length) return prev;
+        const steps = [...prev.steps] as FilterStep[];
+        const temp = steps[idx]!;
+        steps[idx] = steps[newIdx]!;
+        steps[newIdx] = temp;
+        return { ...prev, steps };
+      });
+    },
+    [setToolData]
+  );
+
   const handleClearAll = useCallback(() => {
     setToolData((prev) => ({ ...prev, steps: [] }));
     showToast('All filters cleared', 'success');
@@ -248,6 +265,7 @@ export default function ToolClient() {
       onUpdateFilter={handleUpdateFilter}
       onApplyPreset={handleApplyPreset}
       onClearAll={handleClearAll}
+      onMoveFilter={handleMoveFilter}
     />
   );
 

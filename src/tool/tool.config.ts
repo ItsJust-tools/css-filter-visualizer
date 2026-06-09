@@ -36,6 +36,8 @@ const toolConfig = {
         { keys: 'Ctrl+Shift+E', label: 'Export All', description: 'exports all formats at once' },
         { keys: 'Ctrl+Shift+N', label: 'New Filter', description: 'add a new filter step' },
         { keys: 'Delete', label: 'Remove Filter', description: 'remove selected filter step' },
+        { keys: 'Ctrl+Shift+↑', label: 'Move Up', description: 'move selected filter up in chain' },
+        { keys: 'Ctrl+Shift+↓', label: 'Move Down', description: 'move selected filter down in chain' },
       ],
     },
   ],

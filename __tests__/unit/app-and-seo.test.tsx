@@ -146,6 +146,7 @@ describe('app and seo', () => {
           onUpdateFilter={() => {}}
           onApplyPreset={() => {}}
           onClearAll={() => {}}
+          onMoveFilter={() => {}}
         />
         <ToolCanvas
           state={{
