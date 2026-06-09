@@ -20,15 +20,7 @@ import type {
 } from '@/tool/types';
 import { createFilterStep, FILTER_TYPES } from '@/tool/types';
 
-/**
- * Generate a unique (time + random) identifier for newly created filter steps.
- * Format: "f-" + timestamp + random suffix.
- *
- * @returns A unique identifier string
- */
-function generateId(): string {
-  return `f-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
+import { generateId } from '@/tool/lib/utils';
 
 /**
  * Main client component for the CSS Filter Visualizer.

@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] — 2026-06-09
+
+### Added
+
+- `src/tool/lib/color-utils.ts` — extracted `hexToRgb`, `hexLuminance`, and `previewTextColor`
+  from `tool-canvas.tsx` into a testable utility module with 24 unit tests covering
+  parsing, luminance calculation, and text-color contrast logic.
+- `src/tool/lib/utils.ts` — extracted shared `generateId()` to eliminate the duplicate
+  ID-generation logic between `types.ts` (`createFilterStep`) and `tool-client.tsx`.
+
+### Changed
+
+- `src/tool/components/tool-canvas.tsx` — now imports color utilities from `@/tool/lib/color-utils`
+  instead of defining them as local functions.
+- `src/tool/index.ts` — exports `hexToRgb`, `hexLuminance`, `previewTextColor`, and `generateId`.
+
+### Internal
+
+- Removed duplicate `generateId()` function from `src/app/tool-client.tsx`;
+  both `handleAddFilter` and `handleApplyPreset` now use the shared implementation
+  from `@/tool/lib/utils`.
+
 ## [Unreleased]
 
 ### Added
