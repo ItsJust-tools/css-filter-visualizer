@@ -1,3 +1,5 @@
+import { generateId } from '@/tool/lib/utils';
+
 /** Supported filter types that accept a single numeric value (percentage, pixels, or degrees). */
 export type ScalarFilterType =
   | 'blur'
@@ -119,7 +121,7 @@ export function createFilterStep(type: ScalarFilterType, value: number): ScalarF
 export function createFilterStep(type: 'drop-shadow'): DropShadowFilterStep;
 export function createFilterStep(type: 'url'): UrlFilterStep;
 export function createFilterStep(type: FilterType, value?: number): FilterStep {
-  const id = `f-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const id = generateId();
   if (type === 'drop-shadow') {
     return {
       id,

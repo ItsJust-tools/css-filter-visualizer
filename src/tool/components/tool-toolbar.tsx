@@ -2,11 +2,22 @@
 
 import { useCallback, useState } from 'react';
 
+/**
+ * Renders the filter toolbar with keyboard shortcut reference and help.
+ *
+ * Provides:
+ * - A Shortcuts button that toggles a dropdown listing all keyboard shortcuts
+ * - A Help button linking to the GitHub GUIDE.md for full documentation
+ */
 export function ToolToolbar() {
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
   const handleHelp = useCallback(() => {
-    window.open('https://css-filter-visualizer.itsjust.tools', '_blank', 'noopener,noreferrer');
+    window.open(
+      'https://github.com/ItsJust-tools/css-filter-visualizer/blob/main/GUIDE.md',
+      '_blank',
+      'noopener,noreferrer'
+    );
   }, []);
 
   return (

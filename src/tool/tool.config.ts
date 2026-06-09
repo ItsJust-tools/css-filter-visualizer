@@ -12,7 +12,7 @@ const toolConfig = {
   name: 'CSS Filter Visualizer',
   description:
     'Build and preview CSS filter chains visually. Combine blur, brightness, contrast, and more — see the result in real time.',
-  version: '1.0.0',
+  version: '1.1.0',
   exportFormats: ['json', 'png', 'jpeg', 'webp', 'pdf'],
   features: {
     export: true,

@@ -738,7 +738,7 @@ body {
   border-radius: calc(var(--radius) * 1.5);
   border: 1px solid var(--border);
   padding: 2rem;
-  transition: filter 0.15s ease, background-color 0.25s ease;
+  transition: filter 0.2s ease, background-color 0.2s ease;
 }
 
 .filter-preview-text {
@@ -1090,6 +1090,7 @@ body {
   border-radius: 2px;
   outline: none;
   cursor: pointer;
+  transition: opacity 0.15s;
 }
 
 .filter-slider::-webkit-slider-thumb {
