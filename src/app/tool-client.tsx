@@ -7,6 +7,7 @@ import {
   toolConfig,
   templateBaseVersion,
   cssFilterTool,
+  initialState,
   ToolCanvas,
   ToolToolbar,
   ToolSidebar,
@@ -156,6 +157,11 @@ export default function ToolClient() {
   const handleClearAll = useCallback(() => {
     setToolData((prev) => ({ ...prev, steps: [] }));
     showToast('All filters cleared', 'success');
+  }, [setToolData, showToast]);
+
+  const handleResetDefaults = useCallback(() => {
+    setToolData(initialState);
+    showToast('Reset to default filters', 'success');
   }, [setToolData, showToast]);
 
   useEffect(() => {
@@ -314,6 +320,7 @@ export default function ToolClient() {
       onApplyPreset={handleApplyPreset}
       onClearAll={handleClearAll}
       onMoveFilter={handleMoveFilter}
+      onResetDefaults={handleResetDefaults}
     />
   );
 

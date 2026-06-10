@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { buildFilterCss } from '../tool-definition';
 import { previewTextColor } from '../lib/color-utils';
 import type { FilterState } from '../types';
@@ -20,13 +20,29 @@ export function ToolCanvas({
 }: ToolCanvasProps) {
   const filterCss = buildFilterCss(state.steps);
   const [cssCopied, setCssCopied] = useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const startCopyTimer = useCallback(() => {
+    setCssCopied(true);
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => {
+      setCssCopied(false);
+      copyTimerRef.current = null;
+    }, 2000);
+  }, []);
+
+  // Clean up copy timer on unmount
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, []);
 
   const handleCopyCss = useCallback(async () => {
     const cssText = `filter: ${filterCss || 'none'};`;
     try {
       await navigator.clipboard.writeText(cssText);
-      setCssCopied(true);
-      setTimeout(() => setCssCopied(false), 2000);
+      startCopyTimer();
     } catch {
       // Clipboard API not available — fall back to text selection
       const el = document.querySelector('.filter-css-output code');
@@ -37,15 +53,14 @@ export function ToolCanvas({
         if (selection) {
           selection.removeAllRanges();
           selection.addRange(range);
-          setCssCopied(true);
+          startCopyTimer();
           setTimeout(() => {
-            setCssCopied(false);
             selection.removeAllRanges();
           }, 2000);
         }
       }
     }
-  }, [filterCss]);
+  }, [filterCss, startCopyTimer]);
 
   return (
     <div
@@ -124,3 +139,5 @@ export function ToolCanvas({
     </div>
   );
 }
+
+ToolCanvas.displayName = 'ToolCanvas';

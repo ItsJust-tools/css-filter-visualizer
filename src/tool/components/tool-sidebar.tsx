@@ -16,6 +16,7 @@ interface ToolSidebarProps {
   onApplyPreset: (steps: FilterStep[]) => void;
   onClearAll: () => void;
   onMoveFilter: (id: string, direction: 'up' | 'down') => void;
+  onResetDefaults?: () => void;
 }
 
 /**
@@ -166,6 +167,7 @@ export function ToolSidebar({
   onApplyPreset,
   onClearAll,
   onMoveFilter,
+  onResetDefaults,
 }: ToolSidebarProps) {
   const enabledCount = steps.filter((s) => s.enabled).length;
 
@@ -297,7 +299,19 @@ export function ToolSidebar({
             Clear All
           </button>
         )}
+        {onResetDefaults && (
+          <button
+            type="button"
+            className="reset-defaults-btn"
+            onClick={onResetDefaults}
+            aria-label="Reset to default filters"
+          >
+            Reset to Defaults
+          </button>
+        )}
       </div>
     </div>
   );
 }
+
+ToolSidebar.displayName = 'ToolSidebar';
