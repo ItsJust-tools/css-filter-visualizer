@@ -209,6 +209,62 @@ export default function ToolClient() {
     }
   }, [showToast, tool.state.data, title]);
 
+  // Keyboard shortcut handler
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      const ctrlOrMeta = e.ctrlKey || e.metaKey;
+
+      // Ctrl+Shift+E: Export all formats
+      if (ctrlOrMeta && e.shiftKey && e.key === 'E') {
+        e.preventDefault();
+        tool.handleExport();
+        return;
+      }
+
+      // Ctrl+Shift+N: Add new filter (default: blur)
+      if (ctrlOrMeta && e.shiftKey && e.key === 'N') {
+        e.preventDefault();
+        handleAddFilter('blur');
+        return;
+      }
+
+      // Delete: Remove last filter step
+      if (e.key === 'Delete' && !isInputFocused(e)) {
+        const steps = tool.state.data.steps;
+        if (steps.length > 0) {
+          e.preventDefault();
+          handleRemoveFilter(steps[steps.length - 1]!.id);
+        }
+        return;
+      }
+
+      // Ctrl+Shift+Up/Down: Move selected step
+      if (ctrlOrMeta && e.shiftKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+        const steps = tool.state.data.steps;
+        if (steps.length === 0) return;
+        // Move the last focused step (for simplicity, use last step)
+        // Users can also use the move buttons in the sidebar
+        const targetId = steps[steps.length - 1]!.id;
+        const direction = e.key === 'ArrowUp' ? 'up' : 'down';
+        e.preventDefault();
+        handleMoveFilter(targetId, direction);
+      }
+    }
+
+    function isInputFocused(e: KeyboardEvent): boolean {
+      const target = e.target as HTMLElement;
+      return (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        target.isContentEditable
+      );
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [tool.handleExport, handleAddFilter, handleRemoveFilter, handleMoveFilter, tool.state.data.steps]);
+
   const toolbarActions = useMemo(
     () => ({
       ...tool.toolbarActions,

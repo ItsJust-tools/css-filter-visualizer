@@ -22,12 +22,28 @@ export function ToolCanvas({
   const [cssCopied, setCssCopied] = useState(false);
 
   const handleCopyCss = useCallback(async () => {
+    const cssText = `filter: ${filterCss || 'none'};`;
     try {
-      await navigator.clipboard.writeText(`filter: ${filterCss || 'none'};`);
+      await navigator.clipboard.writeText(cssText);
       setCssCopied(true);
       setTimeout(() => setCssCopied(false), 2000);
     } catch {
-      // Clipboard API not available — fall back to selection
+      // Clipboard API not available — fall back to text selection
+      const el = document.querySelector('.filter-css-output code');
+      if (el) {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const selection = window.getSelection();
+        if (selection) {
+          selection.removeAllRanges();
+          selection.addRange(range);
+          setCssCopied(true);
+          setTimeout(() => {
+            setCssCopied(false);
+            selection.removeAllRanges();
+          }, 2000);
+        }
+      }
     }
   }, [filterCss]);
 
