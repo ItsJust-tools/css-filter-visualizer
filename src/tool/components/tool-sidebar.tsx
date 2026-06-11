@@ -13,7 +13,7 @@ interface ToolSidebarProps {
   onRemoveFilter: (id: string) => void;
   onToggleFilter: (id: string) => void;
   onUpdateFilter: (id: string, value: number | DropShadowValue) => void;
-  onApplyPreset: (steps: FilterStep[]) => void;
+  onApplyPreset: (steps: FilterStep[], presetName?: string) => void;
   onClearAll: () => void;
   onMoveFilter: (id: string, direction: 'up' | 'down') => void;
   onResetDefaults?: () => void;
@@ -194,7 +194,7 @@ export function ToolSidebar({
                 key={preset.name}
                 type="button"
                 className="preset-btn"
-                onClick={() => onApplyPreset(preset.steps)}
+                onClick={() => onApplyPreset(preset.steps, preset.name)}
                 title={preset.description}
                 aria-label={`Apply ${preset.name} preset: ${preset.description}`}
               >

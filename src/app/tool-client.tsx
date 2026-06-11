@@ -19,7 +19,7 @@ import type {
   ScalarFilterType,
   DropShadowValue,
 } from '@/tool/types';
-import { createFilterStep, FILTER_TYPES } from '@/tool/types';
+import { createFilterStep, FILTER_TYPES, PRESETS } from '@/tool/types';
 
 import { generateId } from '@/tool/lib/utils';
 
@@ -122,7 +122,7 @@ export default function ToolClient() {
   );
 
   const handleApplyPreset = useCallback(
-    (steps: FilterState['steps']) => {
+    (steps: FilterState['steps'], presetName?: string) => {
       const clonedSteps: FilterStep[] = steps.map((s) => ({
         ...s,
         id: generateId(),
@@ -130,9 +130,9 @@ export default function ToolClient() {
       setToolData((prev) => ({
         ...prev,
         steps: clonedSteps,
-        presetName: '',
+        presetName: presetName ?? '',
       }));
-      showToast('Preset applied', 'success');
+      showToast(presetName ? `Preset: ${presetName}` : 'Preset applied', 'success');
     },
     [setToolData, showToast]
   );
@@ -144,10 +144,8 @@ export default function ToolClient() {
         if (idx === -1) return prev;
         const newIdx = direction === 'up' ? idx - 1 : idx + 1;
         if (newIdx < 0 || newIdx >= prev.steps.length) return prev;
-        const steps = [...prev.steps] as FilterStep[];
-        const temp = steps[idx]!;
-        steps[idx] = steps[newIdx]!;
-        steps[newIdx] = temp;
+        const steps = [...prev.steps];
+        [steps[idx], steps[newIdx]] = [steps[newIdx]!, steps[idx]!];
         return { ...prev, steps };
       });
     },
@@ -220,10 +218,10 @@ export default function ToolClient() {
     function handleKeyDown(e: KeyboardEvent) {
       const ctrlOrMeta = e.ctrlKey || e.metaKey;
 
-      // Ctrl+Shift+E: Export all formats
+      // Ctrl+Shift+E: Export all formats (defaults to PNG)
       if (ctrlOrMeta && e.shiftKey && e.key === 'E') {
         e.preventDefault();
-        tool.handleExport();
+        tool.handleExport('png');
         return;
       }
 
@@ -241,6 +239,18 @@ export default function ToolClient() {
           e.preventDefault();
           handleRemoveFilter(steps[steps.length - 1]!.id);
         }
+        return;
+      }
+
+      // Ctrl+Shift+P: Cycle through presets
+      if (ctrlOrMeta && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        const presetIndex = tool.state.data.presetName
+          ? PRESETS.findIndex((p) => p.name === tool.state.data.presetName)
+          : -1;
+        const nextIndex = (presetIndex + 1) % PRESETS.length;
+        const nextPreset = PRESETS[nextIndex]!;
+        handleApplyPreset(nextPreset.steps, nextPreset.name);
         return;
       }
 

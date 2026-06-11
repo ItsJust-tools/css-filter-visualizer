@@ -44,6 +44,10 @@ export function ToolToolbar() {
             <span className="shortcut-desc">Add new filter</span>
           </div>
           <div className="shortcut-row">
+            <kbd className="shortcut-key">Ctrl+Shift+P</kbd>
+            <span className="shortcut-desc">Cycle through presets</span>
+          </div>
+          <div className="shortcut-row">
             <kbd className="shortcut-key">Delete</kbd>
             <span className="shortcut-desc">Remove selected filter</span>
           </div>
