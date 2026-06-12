@@ -52,7 +52,9 @@ function FilterStepControl({
     return (
       <div className="filter-step-drop-shadow">
         <div className="ds-row">
-          <label className="ds-label" htmlFor={`ds-x-${step.id}`}>X</label>
+          <label className="ds-label" htmlFor={`ds-x-${step.id}`}>
+            X
+          </label>
           <input
             id={`ds-x-${step.id}`}
             type="range"
@@ -67,7 +69,9 @@ function FilterStepControl({
           <span className="filter-step-value">{ds.offsetX}px</span>
         </div>
         <div className="ds-row">
-          <label className="ds-label" htmlFor={`ds-y-${step.id}`}>Y</label>
+          <label className="ds-label" htmlFor={`ds-y-${step.id}`}>
+            Y
+          </label>
           <input
             id={`ds-y-${step.id}`}
             type="range"
@@ -82,7 +86,9 @@ function FilterStepControl({
           <span className="filter-step-value">{ds.offsetY}px</span>
         </div>
         <div className="ds-row">
-          <label className="ds-label" htmlFor={`ds-blur-${step.id}`}>Blur</label>
+          <label className="ds-label" htmlFor={`ds-blur-${step.id}`}>
+            Blur
+          </label>
           <input
             id={`ds-blur-${step.id}`}
             type="range"

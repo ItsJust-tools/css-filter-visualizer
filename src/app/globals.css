@@ -738,12 +738,16 @@ body {
   border-radius: calc(var(--radius) * 1.5);
   border: 1px solid var(--border);
   padding: 2rem;
-  transition: filter 0.2s ease, background-color 0.2s ease;
+  transition:
+    filter 0.2s ease,
+    background-color 0.2s ease;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .filter-preview-box {
-    transition: filter 0.2s ease, background-color 0.2s ease;
+    transition:
+      filter 0.2s ease,
+      background-color 0.2s ease;
   }
 }
 
@@ -805,7 +809,11 @@ body {
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.12s, background-color 0.12s, color 0.12s, opacity 0.12s;
+  transition:
+    border-color 0.12s,
+    background-color 0.12s,
+    color 0.12s,
+    opacity 0.12s;
   white-space: nowrap;
   min-width: 4.5rem;
   text-align: center;
@@ -891,7 +899,9 @@ body {
   color: var(--muted);
   font-size: 0.875rem;
   cursor: pointer;
-  transition: border-color 0.12s, color 0.12s;
+  transition:
+    border-color 0.12s,
+    color 0.12s;
   padding: 0;
 }
 
@@ -978,7 +988,9 @@ body {
   border-radius: var(--radius);
   background: var(--card);
   cursor: pointer;
-  transition: border-color 0.12s, box-shadow 0.12s;
+  transition:
+    border-color 0.12s,
+    box-shadow 0.12s;
 }
 
 .preset-btn:hover {
@@ -1035,7 +1047,9 @@ body {
   font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
-  transition: border-color 0.12s, background-color 0.12s;
+  transition:
+    border-color 0.12s,
+    background-color 0.12s;
 }
 
 .add-filter-btn:hover {
@@ -1133,7 +1147,9 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  transition: color 0.12s, background-color 0.12s;
+  transition:
+    color 0.12s,
+    background-color 0.12s;
 }
 
 .remove-filter-btn:hover {
@@ -1219,7 +1235,9 @@ body {
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.12s, color 0.12s;
+  transition:
+    background-color 0.12s,
+    color 0.12s;
 }
 
 .clear-all-btn:hover {
@@ -1239,7 +1257,9 @@ body {
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.12s, border-color 0.12s;
+  transition:
+    background-color 0.12s,
+    border-color 0.12s;
 }
 
 .reset-defaults-btn:hover {
