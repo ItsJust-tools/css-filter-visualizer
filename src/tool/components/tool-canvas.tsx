@@ -12,6 +12,10 @@ interface ToolCanvasProps {
   onPreviewTextChange?: (text: string) => void;
 }
 
+/**
+ * Displays the live filtered preview, copyable CSS output,
+ * and controls for background color and preview text.
+ */
 export function ToolCanvas({
   state,
   canvasRef,
@@ -20,6 +24,7 @@ export function ToolCanvas({
 }: ToolCanvasProps) {
   const filterCss = buildFilterCss(state.steps);
   const [cssCopied, setCssCopied] = useState(false);
+  const [isCopying, setIsCopying] = useState(false);
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const startCopyTimer = useCallback(() => {
@@ -39,6 +44,7 @@ export function ToolCanvas({
   }, []);
 
   const handleCopyCss = useCallback(async () => {
+    setIsCopying(true);
     const cssText = `filter: ${filterCss || 'none'};`;
     try {
       await navigator.clipboard.writeText(cssText);
@@ -59,8 +65,12 @@ export function ToolCanvas({
           }, 2000);
         }
       }
+    } finally {
+      setIsCopying(false);
     }
   }, [filterCss, startCopyTimer]);
+
+  const textColor = previewTextColor(state.baseColor);
 
   return (
     <div
@@ -75,7 +85,7 @@ export function ToolCanvas({
           className="filter-preview-box"
           style={{ backgroundColor: state.baseColor, filter: filterCss }}
         >
-          <div className="filter-preview-text" style={{ color: previewTextColor(state.baseColor) }}>
+          <div className="filter-preview-text" style={{ color: textColor }}>
             {state.previewText}
           </div>
         </div>
@@ -88,9 +98,11 @@ export function ToolCanvas({
             className={`filter-copy-btn ${cssCopied ? 'filter-copy-btn--copied' : ''}`}
             onClick={handleCopyCss}
             aria-label={cssCopied ? 'CSS copied' : 'Copy CSS rule to clipboard'}
-            title={cssCopied ? 'Copied!' : 'Copy to clipboard'}
+            aria-busy={isCopying || undefined}
+            disabled={isCopying}
+            title={cssCopied ? 'Copied!' : isCopying ? 'Copying…' : 'Copy to clipboard'}
           >
-            {cssCopied ? 'Copied!' : 'Copy'}
+            {isCopying ? '…' : cssCopied ? 'Copied!' : 'Copy'}
           </button>
         </div>
       </div>

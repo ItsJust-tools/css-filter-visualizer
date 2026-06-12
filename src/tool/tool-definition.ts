@@ -53,6 +53,22 @@ const FILTER_CSS_MAP: Record<ScalarFilterType, string> = {
   sepia: 'sepia',
 };
 
+/**
+ * Maps scalar filter types to their CSS unit suffix.
+ * Extracted to avoid repeated if/else branching in `buildFilterCss`.
+ */
+const FILTER_UNIT_MAP: Record<ScalarFilterType, string> = {
+  blur: 'px',
+  brightness: '%',
+  contrast: '%',
+  grayscale: '%',
+  'hue-rotate': 'deg',
+  invert: '%',
+  opacity: '%',
+  saturate: '%',
+  sepia: '%',
+};
+
 const DEFAULT_FILTERS: FilterStep[] = [
   createFilterStep('blur', 0),
   createFilterStep('brightness', 100),
@@ -91,9 +107,8 @@ export function buildFilterCss(steps: FilterStep[]): string {
       if (s.type === 'url') return `url(#filter-${s.id})`;
 
       const fn = FILTER_CSS_MAP[s.type];
-      if (s.type === 'blur') return `${fn}(${s.value}px)`;
-      if (s.type === 'hue-rotate') return `${fn}(${s.value}deg)`;
-      return `${fn}(${s.value}%)`;
+      const unit = FILTER_UNIT_MAP[s.type];
+      return `${fn}(${s.value}${unit})`;
     })
     .join(' ');
 }
