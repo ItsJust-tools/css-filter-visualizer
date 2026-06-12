@@ -279,7 +279,13 @@ export default function ToolClient() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [tool.handleExport, handleAddFilter, handleRemoveFilter, handleMoveFilter, tool.state.data.steps]);
+  }, [
+    tool.handleExport,
+    handleAddFilter,
+    handleRemoveFilter,
+    handleMoveFilter,
+    tool.state.data.steps,
+  ]);
 
   const toolbarActions = useMemo(
     () => ({

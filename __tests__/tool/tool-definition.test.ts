@@ -5,9 +5,7 @@ import type { FilterStep } from '../../src/tool/types';
 
 describe('buildFilterCss', () => {
   it('returns empty string when no enabled steps exist', () => {
-    const steps: FilterStep[] = [
-      { id: '1', type: 'blur', value: 5, enabled: false },
-    ];
+    const steps: FilterStep[] = [{ id: '1', type: 'blur', value: 5, enabled: false }];
     expect(buildFilterCss(steps)).toBe('');
   });
 
@@ -16,23 +14,17 @@ describe('buildFilterCss', () => {
   });
 
   it('builds a single blur filter', () => {
-    const steps: FilterStep[] = [
-      { id: '1', type: 'blur', value: 5, enabled: true },
-    ];
+    const steps: FilterStep[] = [{ id: '1', type: 'blur', value: 5, enabled: true }];
     expect(buildFilterCss(steps)).toBe('blur(5px)');
   });
 
   it('builds a single percentage-based filter', () => {
-    const steps: FilterStep[] = [
-      { id: '1', type: 'brightness', value: 150, enabled: true },
-    ];
+    const steps: FilterStep[] = [{ id: '1', type: 'brightness', value: 150, enabled: true }];
     expect(buildFilterCss(steps)).toBe('brightness(150%)');
   });
 
   it('builds a hue-rotate filter with deg unit', () => {
-    const steps: FilterStep[] = [
-      { id: '1', type: 'hue-rotate', value: 180, enabled: true },
-    ];
+    const steps: FilterStep[] = [{ id: '1', type: 'hue-rotate', value: 180, enabled: true }];
     expect(buildFilterCss(steps)).toBe('hue-rotate(180deg)');
   });
 
@@ -79,9 +71,7 @@ describe('buildFilterCss', () => {
   });
 
   it('builds url filter reference', () => {
-    const steps: FilterStep[] = [
-      { id: 'abc123', type: 'url', value: undefined, enabled: true },
-    ];
+    const steps: FilterStep[] = [{ id: 'abc123', type: 'url', value: undefined, enabled: true }];
     expect(buildFilterCss(steps)).toBe('url(#filter-abc123)');
   });
 
@@ -103,14 +93,19 @@ describe('buildFilterCss', () => {
 
   it('handles all supported scalar filter types', () => {
     const scalarTypes = [
-      'blur', 'brightness', 'contrast', 'grayscale',
-      'hue-rotate', 'invert', 'opacity', 'saturate', 'sepia',
+      'blur',
+      'brightness',
+      'contrast',
+      'grayscale',
+      'hue-rotate',
+      'invert',
+      'opacity',
+      'saturate',
+      'sepia',
     ] as const;
 
     for (const type of scalarTypes) {
-      const steps: FilterStep[] = [
-        { id: '1', type, value: 50, enabled: true },
-      ];
+      const steps: FilterStep[] = [{ id: '1', type, value: 50, enabled: true }];
       const css = buildFilterCss(steps);
       expect(css).toContain(type);
       expect(css).toContain('50');
@@ -128,7 +123,15 @@ describe('buildFilterCss', () => {
   });
 
   it('uses % for brightness, contrast, grayscale, invert, opacity, saturate, sepia', () => {
-    const percentTypes = ['brightness', 'contrast', 'grayscale', 'invert', 'opacity', 'saturate', 'sepia'] as const;
+    const percentTypes = [
+      'brightness',
+      'contrast',
+      'grayscale',
+      'invert',
+      'opacity',
+      'saturate',
+      'sepia',
+    ] as const;
     for (const type of percentTypes) {
       const steps: FilterStep[] = [{ id: '1', type, value: 75, enabled: true }];
       expect(buildFilterCss(steps)).toContain('%');

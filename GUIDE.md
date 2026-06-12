@@ -39,25 +39,25 @@ src/
 
 ## Filter Types
 
-| Filter        | Range     | Unit  | Default |
-|---------------|-----------|-------|---------|
-| blur          | 0–20      | px    | 5       |
-| brightness    | 0–200     | %     | 150     |
-| contrast      | 0–200     | %     | 150     |
-| grayscale     | 0–100     | %     | 100     |
-| hue-rotate    | 0–360     | deg   | 180     |
-| invert        | 0–100     | %     | 100     |
-| opacity       | 0–100     | %     | 50      |
-| saturate      | 0–300     | %     | 200     |
-| sepia         | 0–100     | %     | 100     |
-| drop-shadow   | —         | —     | —       |
+| Filter      | Range | Unit | Default |
+| ----------- | ----- | ---- | ------- |
+| blur        | 0–20  | px   | 5       |
+| brightness  | 0–200 | %    | 150     |
+| contrast    | 0–200 | %    | 150     |
+| grayscale   | 0–100 | %    | 100     |
+| hue-rotate  | 0–360 | deg  | 180     |
+| invert      | 0–100 | %    | 100     |
+| opacity     | 0–100 | %    | 50      |
+| saturate    | 0–300 | %    | 200     |
+| sepia       | 0–100 | %    | 100     |
+| drop-shadow | —     | —    | —       |
 
 ## Building the Filter CSS
 
 The `buildFilterCss()` function in `tool-definition.ts` converts the filter state into a valid CSS `filter` property value:
 
 ```ts
-buildFilterCss(steps)
+buildFilterCss(steps);
 // Returns: "brightness(120%) contrast(140%) saturate(180%)"
 ```
 
