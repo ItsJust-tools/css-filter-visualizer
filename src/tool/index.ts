@@ -7,5 +7,5 @@ export { ToolToolbar } from './components/tool-toolbar';
 export { ToolSidebar } from './components/tool-sidebar';
 export { hexToRgb, hexLuminance, previewTextColor } from './lib/color-utils';
 export { generateId } from './lib/utils';
-export type { FilterState, FilterStep, FilterType, DropShadowValue, Preset } from './types';
+export type { FilterState, FilterStep, FilterType, DropShadowValue, Preset, FilterTypeConfig } from './types';
 export { FILTER_TYPES, PRESETS } from './types';

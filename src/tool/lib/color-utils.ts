@@ -16,9 +16,18 @@ export function hexToRgb(hex: string): { r: number; g: number; b: number } | nul
 
   let full: string;
   if (clean.length === 3) {
-    full = clean[0]!.repeat(2) + clean[1]!.repeat(2) + clean[2]!.repeat(2);
+    const c0 = clean[0];
+    const c1 = clean[1];
+    const c2 = clean[2];
+    if (c0 === undefined || c1 === undefined || c2 === undefined) return null;
+    full = c0.repeat(2) + c1.repeat(2) + c2.repeat(2);
   } else if (clean.length === 4) {
-    full = clean[0]!.repeat(2) + clean[1]!.repeat(2) + clean[2]!.repeat(2) + clean[3]!.repeat(2);
+    const c0 = clean[0];
+    const c1 = clean[1];
+    const c2 = clean[2];
+    const c3 = clean[3];
+    if (c0 === undefined || c1 === undefined || c2 === undefined || c3 === undefined) return null;
+    full = c0.repeat(2) + c1.repeat(2) + c2.repeat(2) + c3.repeat(2);
   } else if (clean.length === 6 || clean.length === 8) {
     full = clean.slice(0, 6);
   } else {
@@ -80,16 +89,15 @@ const WHITE_LUMINANCE = srgbLuminance(1, 1, 1);
 const BLACK_LUMINANCE = srgbLuminance(0, 0, 0);
 
 /**
- * Determine the optimal text color (black or white) for readability
- * against the given background color using WCAG 2.1 contrast ratio.
- *
- * Evaluates both candidates (white and black) against the background
- * and picks the one with the higher contrast ratio. This is more
- * accurate than a simple luminance threshold when the background
- * is in the "middle" range where both black and white could work.
+ * Determines the optimal text color for readability against a given background.
+ * Evaluates both candidates (a themed white and a themed dark blue-grey) against
+ * the background and picks the one with the higher WCAG 2.1 contrast ratio. This
+ * is more accurate than a simple luminance threshold when the background
+ * is in the "middle" range where both light and dark could work.
  *
  * @param baseColor - Background hex color
- * @returns Black or white hex color string, whichever offers better contrast
+ * @returns `#ffffff` for light text on dark backgrounds, or `#1a1a2e` for dark
+ * text on light backgrounds
  */
 export function previewTextColor(baseColor: string): string {
   const bgLum = hexLuminance(baseColor);

@@ -84,7 +84,7 @@ export interface Preset {
  * For url:
  * - No scalar value; all numeric fields are informational only.
  */
-type FilterTypeConfig = {
+export type FilterTypeConfig = {
   type: FilterType;
   label: string;
   unit: string;
@@ -105,6 +105,11 @@ export const FILTER_TYPES: FilterTypeConfig[] = [
   { type: 'sepia', label: 'Sepia', unit: '%', min: 0, max: 100, default: 100 },
   { type: 'drop-shadow', label: 'Drop Shadow', unit: 'px', min: 0, max: 20, default: 4 },
 ];
+
+/** Narrowed type guard: returns true when the type is a scalar (numeric) filter type. */
+function isScalarType(type: FilterType): type is ScalarFilterType {
+  return type !== 'drop-shadow' && type !== 'url';
+}
 
 /**
  * Create a new filter step with a unique ID and sensible defaults.
@@ -133,6 +138,11 @@ export function createFilterStep(type: FilterType, value?: number): FilterStep {
   if (type === 'url') {
     return { id, type, value: undefined, enabled: true };
   }
+  if (isScalarType(type)) {
+    return { id, type, value: value ?? 50, enabled: true };
+  }
+  // This branch is unreachable via the public API (overloads), but handles
+  // the rare case where a runtime-only FilterType sneaks through.
   return { id, type: type as ScalarFilterType, value: value ?? 50, enabled: true };
 }
 

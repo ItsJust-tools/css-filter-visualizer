@@ -741,6 +741,17 @@ body {
   transition: filter 0.2s ease, background-color 0.2s ease;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .filter-preview-box {
+    transition: filter 0.2s ease, background-color 0.2s ease;
+  }
+}
+
+[data-theme='dark'] .filter-preview-box {
+  border-color: color-mix(in srgb, var(--border) 100%, transparent 0%);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
 .filter-preview-text {
   color: #fff;
   font-size: 1.5rem;
