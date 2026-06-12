@@ -3,6 +3,14 @@ import type { FilterState, FilterStep, ScalarFilterType } from './types';
 import { createFilterStep } from './types';
 import type { ExportFormat } from '@itsjust/core';
 
+/**
+ * Type guard that validates an unknown value as a {@link FilterStep}.
+ * Checks structural typing requirements for all three step variants
+ * (scalar, drop-shadow, and url filter types).
+ *
+ * @param value - The value to validate
+ * @returns True if the value is a structurally valid FilterStep
+ */
 function isFilterStep(value: unknown): value is FilterStep {
   if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
@@ -26,6 +34,14 @@ function isFilterStep(value: unknown): value is FilterStep {
   return typeof v.value === 'number';
 }
 
+/**
+ * Type guard that validates an unknown value as a {@link FilterState}.
+ * Checks that all required properties exist and that the steps array
+ * contains only valid FilterStep objects.
+ *
+ * @param value - The value to validate
+ * @returns True if the value is a structurally valid FilterState
+ */
 function isFilterState(value: unknown): value is FilterState {
   if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
@@ -40,6 +56,8 @@ function isFilterState(value: unknown): value is FilterState {
  * Maps internal filter type names to their CSS function names.
  * All keys are literal `ScalarFilterType` values that produce a
  * one-to-one CSS function (e.g. `blur` → `blur()`, `hue-rotate` → `hue-rotate()`).
+ *
+ * Using `as const` satisfies type narrowing for the record lookup.
  */
 const FILTER_CSS_MAP: Record<ScalarFilterType, string> = {
   blur: 'blur',

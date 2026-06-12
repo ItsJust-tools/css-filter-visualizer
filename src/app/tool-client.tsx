@@ -39,6 +39,17 @@ export default function ToolClient() {
   );
   const [presetsOpen, setPresetsOpen] = useState(true);
 
+  // Close sidebar on narrow viewports
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth <= 768) {
+        setSidebarOpen(false);
+      }
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const title = toolConfig.name;
   const [isEditingBrand, setIsEditingBrand] = useState(false);
   const [editValue, setEditValue] = useState(title);
@@ -283,6 +294,7 @@ export default function ToolClient() {
     tool.handleExport,
     handleAddFilter,
     handleRemoveFilter,
+    handleApplyPreset,
     handleMoveFilter,
     tool.state.data.steps,
   ]);

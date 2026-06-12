@@ -95,13 +95,12 @@ export function ToolCanvas({
         <div className="filter-css-output-row">
           <div className="filter-css-output" aria-label="CSS filter rule">
             <code>filter: {filterCss || 'none'};</code>
-            {/* When all filters are disabled/removed, show "none" — standard CSS value */}
             {!filterCss && (
               <span
                 className="filter-css-hint"
-                aria-label="No active filters. The CSS 'none' value disables the property."
+                aria-label="No active filters. Click a filter type in the sidebar to add one."
               >
-                (no active filters)
+                add a filter to begin
               </span>
             )}
           </div>

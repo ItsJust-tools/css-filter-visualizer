@@ -41,15 +41,23 @@ export function ToolToolbar() {
           </div>
           <div className="shortcut-row">
             <kbd className="shortcut-key">Ctrl+Shift+N</kbd>
-            <span className="shortcut-desc">Add new filter</span>
+            <span className="shortcut-desc">Add new blur filter</span>
           </div>
           <div className="shortcut-row">
             <kbd className="shortcut-key">Ctrl+Shift+P</kbd>
             <span className="shortcut-desc">Cycle through presets</span>
           </div>
           <div className="shortcut-row">
+            <kbd className="shortcut-key">Ctrl+Shift+↑</kbd>
+            <span className="shortcut-desc">Move filter up in chain</span>
+          </div>
+          <div className="shortcut-row">
+            <kbd className="shortcut-key">Ctrl+Shift+↓</kbd>
+            <span className="shortcut-desc">Move filter down in chain</span>
+          </div>
+          <div className="shortcut-row">
             <kbd className="shortcut-key">Delete</kbd>
-            <span className="shortcut-desc">Remove selected filter</span>
+            <span className="shortcut-desc">Remove last filter step</span>
           </div>
         </div>
       )}
