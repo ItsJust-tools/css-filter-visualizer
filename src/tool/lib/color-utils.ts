@@ -43,17 +43,59 @@ export function hexToRgb(hex: string): { r: number; g: number; b: number } | nul
 export function hexLuminance(hex: string): number {
   const rgb = hexToRgb(hex);
   if (!rgb) return 0.5; // fallback for invalid input
-  const linearize = (c: number) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
-  return 0.2126 * linearize(rgb.r) + 0.7152 * linearize(rgb.g) + 0.0722 * linearize(rgb.b);
+  return srgbLuminance(rgb.r, rgb.g, rgb.b);
 }
 
 /**
+ * Compute the WCAG 2.1 contrast ratio between two sRGB luminance values.
+ * Ratio ranges from 1:1 (identical luminance) to 21:1 (black vs white).
+ *
+ * @param l1 - Relative luminance of the lighter color
+ * @param l2 - Relative luminance of the darker color
+ * @returns Contrast ratio (≥ 1)
+ */
+export function contrastRatio(l1: number, l2: number): number {
+  const lighter = Math.max(l1, l2);
+  const darker = Math.min(l1, l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+/**
+ * Compute relative sRGB luminance for a single RGB channel value (0-1).
+ * Uses the linearization formula from WCAG 2.1.
+ */
+function linearize(c: number): number {
+  return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+}
+
+/** Compute relative sRGB luminance from normalized RGB components (0-1 each). */
+function srgbLuminance(r: number, g: number, b: number): number {
+  return 0.2126 * linearize(r) + 0.7152 * linearize(g) + 0.0722 * linearize(b);
+}
+
+/** Luminance of pure white (#ffffff). */
+const WHITE_LUMINANCE = srgbLuminance(1, 1, 1);
+
+/** Luminance of pure black (#000000). */
+const BLACK_LUMINANCE = srgbLuminance(0, 0, 0);
+
+/**
  * Determine the optimal text color (black or white) for readability
- * against the given background color using WCAG-style luminance contrast.
+ * against the given background color using WCAG 2.1 contrast ratio.
+ *
+ * Evaluates both candidates (white and black) against the background
+ * and picks the one with the higher contrast ratio. This is more
+ * accurate than a simple luminance threshold when the background
+ * is in the "middle" range where both black and white could work.
  *
  * @param baseColor - Background hex color
- * @returns Black or white hex color string
+ * @returns Black or white hex color string, whichever offers better contrast
  */
 export function previewTextColor(baseColor: string): string {
-  return hexLuminance(baseColor) > 0.5 ? '#1a1a2e' : '#ffffff';
+  const bgLum = hexLuminance(baseColor);
+
+  const whiteRatio = contrastRatio(WHITE_LUMINANCE, bgLum);
+  const blackRatio = contrastRatio(bgLum, BLACK_LUMINANCE);
+
+  return whiteRatio >= blackRatio ? '#ffffff' : '#1a1a2e';
 }

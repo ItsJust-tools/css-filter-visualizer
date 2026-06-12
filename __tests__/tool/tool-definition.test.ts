@@ -59,11 +59,11 @@ describe('buildFilterCss', () => {
       {
         id: '1',
         type: 'drop-shadow',
-        value: { offsetX: 2, offsetY: 4, blurRadius: 8, color: '#00000066' },
+        value: { offsetX: 2, offsetY: 4, blurRadius: 8, color: '#000000' },
         enabled: true,
       },
     ];
-    expect(buildFilterCss(steps)).toBe('drop-shadow(2px 4px 8px #00000066)');
+    expect(buildFilterCss(steps)).toBe('drop-shadow(2px 4px 8px #000000)');
   });
 
   it('builds drop-shadow with negative offsets', () => {
@@ -177,7 +177,7 @@ describe('createFilterStep', () => {
       offsetX: 2,
       offsetY: 2,
       blurRadius: 4,
-      color: '#00000066',
+      color: '#000000',
     });
     expect(step.enabled).toBe(true);
   });

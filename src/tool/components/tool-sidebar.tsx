@@ -52,8 +52,9 @@ function FilterStepControl({
     return (
       <div className="filter-step-drop-shadow">
         <div className="ds-row">
-          <label className="ds-label">X</label>
+          <label className="ds-label" htmlFor={`ds-x-${step.id}`}>X</label>
           <input
+            id={`ds-x-${step.id}`}
             type="range"
             min={-20}
             max={20}
@@ -61,13 +62,14 @@ function FilterStepControl({
             onChange={(e) => onUpdateFilter(step.id, { ...ds, offsetX: Number(e.target.value) })}
             disabled={!step.enabled}
             className="filter-slider"
-            aria-label={`Drop shadow X offset`}
+            aria-label={`Drop shadow X offset: ${ds.offsetX}px`}
           />
           <span className="filter-step-value">{ds.offsetX}px</span>
         </div>
         <div className="ds-row">
-          <label className="ds-label">Y</label>
+          <label className="ds-label" htmlFor={`ds-y-${step.id}`}>Y</label>
           <input
+            id={`ds-y-${step.id}`}
             type="range"
             min={-20}
             max={20}
@@ -75,13 +77,14 @@ function FilterStepControl({
             onChange={(e) => onUpdateFilter(step.id, { ...ds, offsetY: Number(e.target.value) })}
             disabled={!step.enabled}
             className="filter-slider"
-            aria-label={`Drop shadow Y offset`}
+            aria-label={`Drop shadow Y offset: ${ds.offsetY}px`}
           />
           <span className="filter-step-value">{ds.offsetY}px</span>
         </div>
         <div className="ds-row">
-          <label className="ds-label">Blur</label>
+          <label className="ds-label" htmlFor={`ds-blur-${step.id}`}>Blur</label>
           <input
+            id={`ds-blur-${step.id}`}
             type="range"
             min={0}
             max={40}
@@ -89,7 +92,7 @@ function FilterStepControl({
             onChange={(e) => onUpdateFilter(step.id, { ...ds, blurRadius: Number(e.target.value) })}
             disabled={!step.enabled}
             className="filter-slider"
-            aria-label={`Drop shadow blur radius`}
+            aria-label={`Drop shadow blur radius: ${ds.blurRadius}px`}
           />
           <span className="filter-step-value">{ds.blurRadius}px</span>
         </div>

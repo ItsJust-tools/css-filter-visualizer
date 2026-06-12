@@ -770,6 +770,14 @@ body {
   overflow-wrap: break-word;
 }
 
+.filter-css-hint {
+  font-size: 0.6875rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+
 .filter-css-output code {
   color: var(--accent);
   font-weight: 500;

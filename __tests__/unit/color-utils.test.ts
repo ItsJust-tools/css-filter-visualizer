@@ -119,8 +119,8 @@ describe('color-utils', () => {
       expect(previewTextColor('#333333')).toBe('#ffffff');
     });
 
-    it('returns white text for invalid hex (0.5 luminance not > 0.5 threshold)', () => {
-      expect(previewTextColor('garbage')).toBe('#ffffff');
+    it('returns dark text for invalid hex (0.5 luminance — black has better WCAG contrast)', () => {
+      expect(previewTextColor('garbage')).toBe('#1a1a2e');
     });
   });
 });
@@ -137,18 +137,16 @@ describe('utils', () => {
       expect(ids.size).toBe(100);
     });
 
-    it('contains a timestamp component', () => {
+    it('is a valid UUID v4 prefixed with f-', () => {
       const id = generateId();
-      const timestampPart = id.split('-')[1];
-      expect(timestampPart).toBeDefined();
-      expect(Number(timestampPart)).not.toBeNaN();
+      expect(id).toMatch(/^f-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
     });
 
-    it('contains a random suffix component', () => {
-      const id = generateId();
-      const parts = id.split('-');
-      expect(parts.length).toBe(3);
-      expect(parts[2]!.length).toBeGreaterThanOrEqual(4);
+    it('produces consistent length across calls', () => {
+      const ids = Array.from({ length: 50 }, () => generateId());
+      ids.forEach((id) => {
+        expect(id.length).toBe(38); // "f-" + 36-char UUID
+      });
     });
   });
 });

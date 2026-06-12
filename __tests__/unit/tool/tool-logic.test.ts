@@ -206,7 +206,7 @@ describe('CSS Filter Visualizer logic', () => {
     expect(ds.type).toBe('drop-shadow');
     if (ds.type === 'drop-shadow') {
       expect(ds.value.offsetX).toBe(2);
-      expect(ds.value.color).toBe('#00000066');
+      expect(ds.value.color).toBe('#000000');
     }
 
     const urlStep = createFilterStep('url');

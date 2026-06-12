@@ -126,7 +126,7 @@ export function createFilterStep(type: FilterType, value?: number): FilterStep {
     return {
       id,
       type,
-      value: { offsetX: 2, offsetY: 2, blurRadius: 4, color: '#00000066' },
+      value: { offsetX: 2, offsetY: 2, blurRadius: 4, color: '#000000' },
       enabled: true,
     };
   }
@@ -192,7 +192,7 @@ export const PRESETS: Preset[] = [
       {
         id: 'p19',
         type: 'drop-shadow',
-        value: { offsetX: 0, offsetY: 4, blurRadius: 12, color: '#00000033' },
+        value: { offsetX: 0, offsetY: 4, blurRadius: 12, color: '#000000' },
         enabled: true,
       },
     ],
