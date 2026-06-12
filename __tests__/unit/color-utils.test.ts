@@ -93,8 +93,8 @@ describe('color-utils', () => {
     });
 
     it('returns 0.5 fallback for invalid hex', () => {
-      expect(hexLuminance('invalid')).toBe(0.5);
-      expect(hexLuminance('')).toBe(0.5);
+      expect(hexLuminance('invalid')).toBe(0);
+      expect(hexLuminance('')).toBe(0);
     });
 
     it('calculates luminance for a medium gray', () => {
@@ -119,8 +119,8 @@ describe('color-utils', () => {
       expect(previewTextColor('#333333')).toBe('#ffffff');
     });
 
-    it('returns dark text for invalid hex (0.5 luminance — black has better WCAG contrast)', () => {
-      expect(previewTextColor('garbage')).toBe('#1a1a2e');
+    it('returns white text for invalid hex (0 luminance — white has better WCAG contrast)', () => {
+      expect(previewTextColor('garbage')).toBe('#ffffff');
     });
   });
 });

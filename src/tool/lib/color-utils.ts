@@ -46,12 +46,14 @@ export function hexToRgb(hex: string): { r: number; g: number; b: number } | nul
  * Returns a value between 0 (dark) and 1 (light).
  * Used to determine optimal text contrast color against a given background.
  *
- * @param hex - Hex color string
- * @returns Relative luminance value between 0 and 1, or 0.5 on failure
+ * For 8-digit hex strings, only the first 6 characters are used (alpha is stripped).
+ *
+ * @param hex - Hex color string (3, 4, 6, or 8 digits, with or without #)
+ * @returns Relative luminance value between 0 and 1, or 0 on failure
  */
 export function hexLuminance(hex: string): number {
   const rgb = hexToRgb(hex);
-  if (!rgb) return 0.5; // fallback for invalid input
+  if (!rgb) return 0; // fallback for invalid input — 0 is pure black luminance
   return srgbLuminance(rgb.r, rgb.g, rgb.b);
 }
 

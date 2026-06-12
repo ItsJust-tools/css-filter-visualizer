@@ -53,8 +53,8 @@ describe('hexToRgb', () => {
 });
 
 describe('hexLuminance', () => {
-  it('returns 0.5 for invalid input', () => {
-    expect(hexLuminance('garbage')).toBe(0.5);
+  it('returns 0 for invalid input', () => {
+    expect(hexLuminance('garbage')).toBe(0);
   });
 
   it('returns ~0 for pure black', () => {

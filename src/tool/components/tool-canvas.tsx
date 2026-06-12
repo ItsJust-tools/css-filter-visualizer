@@ -5,6 +5,9 @@ import { buildFilterCss } from '../tool-definition';
 import { previewTextColor } from '../lib/color-utils';
 import type { FilterState } from '../types';
 
+/** Default base color used as the initial state value. */
+const DEFAULT_BASE_COLOR = '#6366f1';
+
 interface ToolCanvasProps {
   state: FilterState;
   canvasRef?: React.RefObject<HTMLDivElement | null>;
@@ -136,6 +139,16 @@ export function ToolCanvas({
               aria-label="Color hex value"
               placeholder="#000000"
             />
+            <button
+              type="button"
+              className="filter-color-reset-btn"
+              onClick={() => onBaseColorChange?.(DEFAULT_BASE_COLOR)}
+              aria-label="Reset background color to default"
+              title={`Reset to ${DEFAULT_BASE_COLOR}`}
+              disabled={state.baseColor === DEFAULT_BASE_COLOR}
+            >
+              ↩
+            </button>
           </div>
         </div>
 

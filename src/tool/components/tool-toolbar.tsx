@@ -58,7 +58,7 @@ export function ToolToolbar() {
         className="toolbar-btn toolbar-help-link"
         onClick={handleHelp}
         aria-label="Open help in new tab"
-        title="Visit css-filter-visualizer.itsjust.tools"
+        title="Open full guide on GitHub"
       >
         Help
       </button>
