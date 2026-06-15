@@ -40,6 +40,14 @@ export function ToolToolbar() {
             <span className="shortcut-desc">Export all formats</span>
           </div>
           <div className="shortcut-row">
+            <kbd className="shortcut-key">Ctrl+Shift+Z</kbd>
+            <span className="shortcut-desc">Redo</span>
+          </div>
+          <div className="shortcut-row">
+            <kbd className="shortcut-key">Ctrl+Z</kbd>
+            <span className="shortcut-desc">Undo</span>
+          </div>
+          <div className="shortcut-row">
             <kbd className="shortcut-key">Ctrl+Shift+N</kbd>
             <span className="shortcut-desc">Add new blur filter</span>
           </div>

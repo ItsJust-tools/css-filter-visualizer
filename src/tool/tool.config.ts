@@ -33,6 +33,8 @@ const toolConfig = {
     {
       title: 'CSS Filter Visualizer',
       shortcuts: [
+        { keys: 'Ctrl+Z', label: 'Undo', description: 'undo the last filter change' },
+        { keys: 'Ctrl+Shift+Z', label: 'Redo', description: 'redo a previously undone change' },
         { keys: 'Ctrl+Shift+E', label: 'Export All', description: 'exports all formats at once' },
         { keys: 'Ctrl+Shift+N', label: 'New Filter', description: 'add a new filter step' },
         {
@@ -40,10 +42,14 @@ const toolConfig = {
           label: 'Cycle Presets',
           description: 'cycle through available presets',
         },
-        { keys: 'Delete', label: 'Remove Filter', description: 'remove selected filter step' },
-        { keys: 'Ctrl+Shift+↑', label: 'Move Up', description: 'move selected filter up in chain' },
+        { keys: 'Delete', label: 'Remove Filter', description: 'remove the last filter step' },
         {
-          keys: 'Ctrl+Shift+↓',
+          keys: 'Ctrl+Shift+\u2191',
+          label: 'Move Up',
+          description: 'move selected filter up in chain',
+        },
+        {
+          keys: 'Ctrl+Shift+\u2193',
           label: 'Move Down',
           description: 'move selected filter down in chain',
         },

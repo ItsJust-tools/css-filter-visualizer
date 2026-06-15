@@ -229,6 +229,20 @@ export default function ToolClient() {
     function handleKeyDown(e: KeyboardEvent) {
       const ctrlOrMeta = e.ctrlKey || e.metaKey;
 
+      // Ctrl+Z / Cmd+Z: Undo
+      if (ctrlOrMeta && !e.shiftKey && e.key === 'z') {
+        e.preventDefault();
+        tool.state.undo();
+        return;
+      }
+
+      // Ctrl+Shift+Z / Cmd+Shift+Z: Redo
+      if (ctrlOrMeta && e.shiftKey && e.key === 'Z') {
+        e.preventDefault();
+        tool.state.redo();
+        return;
+      }
+
       // Ctrl+Shift+E: Export all formats (defaults to PNG)
       if (ctrlOrMeta && e.shiftKey && e.key === 'E') {
         e.preventDefault();

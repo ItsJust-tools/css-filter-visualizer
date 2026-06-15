@@ -4,6 +4,7 @@ import type { FilterStep, FilterType, DropShadowValue } from '../types';
 import { FILTER_TYPES, PRESETS } from '../types';
 import { buildFilterCss } from '../tool-definition';
 import type { ReactNode } from 'react';
+import { useState } from 'react';
 
 interface ToolSidebarProps {
   steps: FilterStep[];
@@ -21,16 +22,15 @@ interface ToolSidebarProps {
 
 /**
  * Returns the human-readable label for a filter step,
- * looking it up from the FILTER_TYPES configuration.
+ * looked up from the FILTER_TYPES configuration.
+ * Falls back to the raw type name if not found.
  *
  * @param step - The filter step to label
  * @returns Display label string
  */
 function stepLabel(step: FilterStep): string {
   const ft = FILTER_TYPES.find((f) => f.type === step.type);
-  if (ft) return ft.label;
-  if (step.type === 'url') return 'SVG Filter';
-  return step.type;
+  return ft?.label ?? (step.type === 'url' ? 'SVG Filter' : step.type);
 }
 
 /**
@@ -179,6 +179,17 @@ export function ToolSidebar({
   onResetDefaults,
 }: ToolSidebarProps) {
   const enabledCount = steps.filter((s) => s.enabled).length;
+  const [confirmClear, setConfirmClear] = useState(false);
+
+  const handleClearAll = () => {
+    if (!confirmClear) {
+      setConfirmClear(true);
+      setTimeout(() => setConfirmClear(false), 3000);
+      return;
+    }
+    setConfirmClear(false);
+    onClearAll();
+  };
 
   return (
     <div className="filter-sidebar">
@@ -301,11 +312,14 @@ export function ToolSidebar({
         {steps.length > 0 && (
           <button
             type="button"
-            className="clear-all-btn"
-            onClick={onClearAll}
-            aria-label="Clear all filter steps"
+            className={`clear-all-btn ${confirmClear ? 'clear-all-btn--confirm' : ''}`}
+            onClick={handleClearAll}
+            aria-label={
+              confirmClear ? 'Click again to confirm clear all filters' : 'Clear all filter steps'
+            }
+            title={confirmClear ? 'Click again to confirm' : 'Clear all filter steps'}
           >
-            Clear All
+            {confirmClear ? 'Confirm?' : 'Clear All'}
           </button>
         )}
         {onResetDefaults && (

@@ -82,6 +82,12 @@ export function ToolCanvas({
       role="application"
       aria-label="CSS Filter Preview"
     >
+      {/* Screen reader status announcement */}
+      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {state.steps.length > 0
+          ? `${state.steps.filter((s) => s.enabled).length} of ${state.steps.length} filters active`
+          : 'No filters active'}
+      </div>
       {/* Preview area */}
       <div className="filter-preview-section">
         <div

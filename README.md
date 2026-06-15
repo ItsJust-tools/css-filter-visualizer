@@ -25,7 +25,7 @@ Build and preview CSS filter chains visually. Combine blur, brightness, contrast
 - **Shareable URLs** — Share your current filter setup via URL (compressed with LZ-String)
 - **Privacy-first** — Everything runs in your browser. No data sent to any server
 - **Dark/Light/High-contrast mode** — System preference detection with manual toggle
-- **Keyboard shortcuts** — `Ctrl+Shift+N` add filter, `Ctrl+Shift+E` export, `Ctrl+Shift+P` cycle presets, `Delete` remove selected
+- **Keyboard shortcuts** — `Ctrl+Shift+N` add filter, `Ctrl+Shift+E` export, `Ctrl+Shift+P` cycle presets, `Delete` remove selected, `Ctrl+Z`/`Ctrl+Shift+Z` undo/redo
 - **Works offline** — PWA-ready for mobile and desktop
 
 ## Changelog & What's New
