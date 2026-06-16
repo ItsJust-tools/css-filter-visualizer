@@ -164,7 +164,7 @@ export default function ToolClient() {
   );
 
   const handleClearAll = useCallback(() => {
-    setToolData((prev) => ({ ...prev, steps: [] }));
+    setToolData((prev) => ({ ...prev, steps: [], presetName: '' }));
     showToast('All filters cleared', 'success');
   }, [setToolData, showToast]);
 
@@ -173,6 +173,7 @@ export default function ToolClient() {
     showToast('Reset to default filters', 'success');
   }, [setToolData, showToast]);
 
+  // Load shared state from URL on mount — runs once after hydration
   useEffect(() => {
     if (hasLoadedSharedState.current) return;
     hasLoadedSharedState.current = true;
@@ -191,12 +192,16 @@ export default function ToolClient() {
       const message = error instanceof Error ? error.message : 'Failed to load shared URL';
       showToast(message, 'error');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setToolData, showToast]);
+
+  const stateDataRef = useRef(tool.state.data);
+  stateDataRef.current = tool.state.data;
 
   const handleShare = useCallback(async () => {
     setIsSharing(true);
     try {
-      const serialized = cssFilterTool.serialize(tool.state.data);
+      const serialized = cssFilterTool.serialize(stateDataRef.current);
       const encodedState = compressToEncodedURIComponent(serialized);
       if (!encodedState) throw new Error('Failed to encode state for URL');
       const url = new URL(window.location.href);
@@ -222,7 +227,7 @@ export default function ToolClient() {
     } finally {
       setIsSharing(false);
     }
-  }, [showToast, tool.state.data, title]);
+  }, [showToast, title]);
 
   // Keyboard shortcut handler
   useEffect(() => {
@@ -304,13 +309,17 @@ export default function ToolClient() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    tool.handleExport,
     handleAddFilter,
     handleRemoveFilter,
     handleApplyPreset,
     handleMoveFilter,
+    tool.state.undo,
+    tool.state.redo,
+    tool.handleExport,
     tool.state.data.steps,
+    tool.state.data.presetName,
   ]);
 
   const toolbarActions = useMemo(
