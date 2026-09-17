@@ -1,10 +1,15 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "noImplicitReturns": true,
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -22,9 +27,15 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@itsjust/core": ["./packages/core/src"],
-      "@itsjust/core/testing": ["./packages/core/src/testing"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@itsjust/core": [
+        "./packages/core/src"
+      ],
+      "@itsjust/core/testing": [
+        "./packages/core/src/testing"
+      ]
     },
     "ignoreDeprecations": "6.0"
   },
@@ -36,5 +47,10 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "playwright.config.ts", "__tests__/e2e", "**/dist/**"]
+  "exclude": [
+    "node_modules",
+    "playwright.config.ts",
+    "__tests__/e2e",
+    "**/dist/**"
+  ]
 }
