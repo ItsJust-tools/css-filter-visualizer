@@ -82,7 +82,10 @@ export function useUrlState(options: UseUrlStateOptions): UseUrlStateReturn {
             await navigator.share({ title, url: shareUrl });
           } catch (error) {
             // AbortError means the user cancelled the share dialog — not an error
-            if (error instanceof Error && error.name !== 'AbortError') throw error;
+            const isAbortError =
+              error instanceof DOMException && error.name === 'AbortError' ||
+              error instanceof Error && error.name === 'AbortError';
+            if (!isAbortError) throw error;
             return shareUrl;
           }
         } else {

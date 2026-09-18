@@ -216,7 +216,10 @@ export default function ToolClient() {
           showToast('Shared URL ready', 'success');
           return;
         } catch (error) {
-          if (error instanceof Error && error.name === 'AbortError') return;
+          const isAbortError =
+            error instanceof DOMException && error.name === 'AbortError' ||
+            error instanceof Error && error.name === 'AbortError';
+          if (isAbortError) return;
         }
       }
       await navigator.clipboard.writeText(shareUrl);
