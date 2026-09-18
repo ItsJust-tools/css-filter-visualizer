@@ -119,7 +119,9 @@ export function useShare() {
         });
         return true;
       }).catch((err) => {
-        if (!(err instanceof Error) || err.name !== 'AbortError') {
+        const isAbortError = err instanceof DOMException && err.name === 'AbortError' ||
+                            err instanceof Error && err.name === 'AbortError';
+        if (!isAbortError) {
           const message = err instanceof Error ? err.message : 'Web share failed';
           setError(message);
         }
