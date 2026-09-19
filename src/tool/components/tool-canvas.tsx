@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { copyToClipboard } from '@itsjust/core';
 import { buildFilterCss } from '../tool-definition';
 import { previewTextColor } from '../lib/color-utils';
 import type { FilterState } from '../types';
@@ -50,22 +51,24 @@ export function ToolCanvas({
     setIsCopying(true);
     const cssText = `filter: ${filterCss || 'none'};`;
     try {
-      await navigator.clipboard.writeText(cssText);
-      startCopyTimer();
-    } catch {
-      // Clipboard API not available — fall back to text selection
-      const el = document.querySelector('.filter-css-output code');
-      if (el) {
-        const range = document.createRange();
-        range.selectNodeContents(el);
-        const selection = window.getSelection();
-        if (selection) {
-          selection.removeAllRanges();
-          selection.addRange(range);
-          startCopyTimer();
-          setTimeout(() => {
+      const copied = await copyToClipboard(cssText);
+      if (copied) {
+        startCopyTimer();
+      } else {
+        // Clipboard write failed — fall back to text selection
+        const el = document.querySelector('.filter-css-output code');
+        if (el) {
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          const selection = window.getSelection();
+          if (selection) {
             selection.removeAllRanges();
-          }, 2000);
+            selection.addRange(range);
+            startCopyTimer();
+            setTimeout(() => {
+              selection.removeAllRanges();
+            }, 2000);
+          }
         }
       }
     } finally {

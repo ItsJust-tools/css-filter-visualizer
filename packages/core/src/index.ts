@@ -88,6 +88,10 @@ export { useUrlState } from './hooks/use-url-state';
 export { useKeyboardShortcuts } from './components/tool-shell/tool-shell-shortcuts';
 /** usePlugins — Organize declarative tool plugins by slot. */
 export { usePlugins } from './hooks/use-plugins';
+/** copyToClipboard — Clipboard write with graceful execCommand fallback for insecure origins / permission rejections. */
+export { copyToClipboard } from './hooks/use-clipboard';
+/** useClipboard — Copy-to-clipboard hook with hasCopied/error state built on copyToClipboard. */
+export { useClipboard } from './hooks/use-clipboard';
 
 // Components
 /** ToolShell — Root layout component for every itsjust tool. */
