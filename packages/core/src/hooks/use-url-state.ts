@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
+import { copyToClipboard } from './use-clipboard';
 import type { DeserializeResult } from '../tool';
 
 interface UseUrlStateOptions {
@@ -89,7 +90,7 @@ export function useUrlState(options: UseUrlStateOptions): UseUrlStateReturn {
             return shareUrl;
           }
         } else {
-          await navigator.clipboard.writeText(shareUrl);
+          await copyToClipboard(shareUrl);
         }
         showToast('Share URL copied to clipboard', 'success');
         return shareUrl;

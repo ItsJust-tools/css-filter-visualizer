@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ToolShell, useTool, ImportExport } from '@itsjust/core';
+import { ToolShell, useTool, ImportExport, copyToClipboard } from '@itsjust/core';
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 import {
   toolConfig,
@@ -222,8 +222,12 @@ export default function ToolClient() {
           if (isAbortError) return;
         }
       }
-      await navigator.clipboard.writeText(shareUrl);
-      showToast('Share URL copied to clipboard', 'success');
+      const copied = await copyToClipboard(shareUrl);
+      if (copied) {
+        showToast('Share URL copied to clipboard', 'success');
+      } else {
+        showToast('Copy failed — copy the URL from the address bar', 'error');
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to create share URL';
       showToast(message, 'error');

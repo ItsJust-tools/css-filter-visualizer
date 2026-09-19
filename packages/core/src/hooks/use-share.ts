@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { copyToClipboard } from './use-clipboard';
 import type { ShareData, ShareResult } from '../types';
 
 export interface ShareFileResult extends ShareResult {
@@ -140,7 +141,7 @@ export function useShare() {
       return withShareOperation(async () => {
         const blob = createShareFile(data);
         const text = await blob.text();
-        await navigator.clipboard.writeText(text);
+        await copyToClipboard(text);
 
         setShareResult({
           id: 'clipboard',
