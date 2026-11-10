@@ -269,3 +269,58 @@ describe('CSS Filter Visualizer logic', () => {
     expect(downIdx).toBe(1); // already at bottom, cannot move down
   });
 });
+
+describe('filter chain reorder (drag-and-drop semantics)', () => {
+  const base: FilterStep[] = [
+    { id: '1', type: 'blur', value: 5, enabled: true },
+    { id: '2', type: 'contrast', value: 150, enabled: true },
+    { id: '3', type: 'sepia', value: 50, enabled: true },
+  ];
+
+  function reorder(steps: FilterStep[], fromId: string, toId: string): FilterStep[] | null {
+    const fromIdx = steps.findIndex((s) => s.id === fromId);
+    const toIdx = steps.findIndex((s) => s.id === toId);
+    if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return null;
+    const next = [...steps];
+    const [moved] = next.splice(fromIdx, 1);
+    next.splice(toIdx, 0, moved!);
+    return next;
+  }
+
+  it('reorders a step dragged onto another position', () => {
+    const next = reorder(base, '1', '3');
+    expect(next?.map((s) => s.id)).toEqual(['2', '3', '1']);
+    expect(buildFilterCss(next!)).toBe('contrast(150%) sepia(50%) blur(5px)');
+  });
+
+  it('reorders moving a later step forward', () => {
+    const next = reorder(base, '3', '1');
+    expect(next?.map((s) => s.id)).toEqual(['3', '1', '2']);
+  });
+
+  it('returns null when dragging onto itself', () => {
+    expect(reorder(base, '2', '2')).toBeNull();
+  });
+
+  it('builds different CSS for reordered chains (order matters in CSS)', () => {
+    const cssA = buildFilterCss([
+      { id: '1', type: 'blur', value: 5, enabled: true },
+      { id: '2', type: 'hue-rotate', value: 90, enabled: true },
+    ]);
+    const cssB = buildFilterCss([
+      { id: '2', type: 'hue-rotate', value: 90, enabled: true },
+      { id: '1', type: 'blur', value: 5, enabled: true },
+    ]);
+    expect(cssA).not.toBe(cssB);
+  });
+
+  it('round-trips reordered steps through serialize/deserialize', () => {
+    const reordered = reorder(base, '1', '3')!;
+    const state: FilterState = { ...initialState, steps: reordered };
+    const deserialized = cssFilterTool.deserialize(JSON.parse(cssFilterTool.serialize(state)));
+    expect(deserialized.success).toBe(true);
+    if (deserialized.success) {
+      expect(deserialized.data.steps.map((s: FilterStep) => s.id)).toEqual(['2', '3', '1']);
+    }
+  });
+});
