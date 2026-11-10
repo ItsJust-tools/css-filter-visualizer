@@ -1094,6 +1094,11 @@ body {
   background: var(--card);
 }
 
+.filter-step-item--drag-over {
+  border-color: var(--primary);
+  box-shadow: inset 0 2px 0 var(--primary);
+}
+
 .filter-step-header {
   display: flex;
   align-items: center;

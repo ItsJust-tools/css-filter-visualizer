@@ -17,6 +17,7 @@ interface ToolSidebarProps {
   onApplyPreset: (steps: FilterStep[], presetName?: string) => void;
   onClearAll: () => void;
   onMoveFilter: (id: string, direction: 'up' | 'down') => void;
+  onReorderFilter?: (fromId: string, toId: string) => void;
   onResetDefaults?: () => void;
 }
 
@@ -176,10 +177,12 @@ export function ToolSidebar({
   onApplyPreset,
   onClearAll,
   onMoveFilter,
+  onReorderFilter,
   onResetDefaults,
 }: ToolSidebarProps) {
   const enabledCount = steps.filter((s) => s.enabled).length;
   const [confirmClear, setConfirmClear] = useState(false);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   const handleClearAll = () => {
     if (!confirmClear) {
@@ -260,7 +263,36 @@ export function ToolSidebar({
         ) : (
           <ul className="filter-steps-list" role="list" aria-label="Active filter steps">
             {steps.map((step, idx) => (
-              <li key={step.id} className="filter-step-item">
+              <li
+                key={step.id}
+                className={`filter-step-item ${onReorderFilter && dragOverId === step.id ? 'filter-step-item--drag-over' : ''}`}
+                draggable={Boolean(onReorderFilter)}
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('text/filter-step-id', step.id);
+                  e.dataTransfer.effectAllowed = 'move';
+                }}
+                onDragOver={
+                  onReorderFilter
+                    ? (e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        if (dragOverId !== step.id) setDragOverId(step.id);
+                      }
+                    : undefined
+                }
+                onDragLeave={() => setDragOverId((cur) => (cur === step.id ? null : cur))}
+                onDrop={
+                  onReorderFilter
+                    ? (e) => {
+                        e.preventDefault();
+                        const fromId = e.dataTransfer.getData('text/filter-step-id');
+                        if (fromId && fromId !== step.id) onReorderFilter(fromId, step.id);
+                        setDragOverId(null);
+                      }
+                    : undefined
+                }
+                onDragEnd={() => setDragOverId(null)}
+              >
                 <div className="filter-step-header">
                   <button
                     type="button"

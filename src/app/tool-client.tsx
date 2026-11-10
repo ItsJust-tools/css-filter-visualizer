@@ -163,6 +163,21 @@ export default function ToolClient() {
     [setToolData]
   );
 
+  const handleReorderFilter = useCallback(
+    (fromId: string, toId: string) => {
+      setToolData((prev) => {
+        const fromIdx = prev.steps.findIndex((s) => s.id === fromId);
+        const toIdx = prev.steps.findIndex((s) => s.id === toId);
+        if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return prev;
+        const steps = [...prev.steps];
+        const [moved] = steps.splice(fromIdx, 1);
+        steps.splice(toIdx, 0, moved!);
+        return { ...prev, steps };
+      });
+    },
+    [setToolData]
+  );
+
   const handleClearAll = useCallback(() => {
     setToolData((prev) => ({ ...prev, steps: [], presetName: '' }));
     showToast('All filters cleared', 'success');
@@ -378,6 +393,7 @@ export default function ToolClient() {
       onApplyPreset={handleApplyPreset}
       onClearAll={handleClearAll}
       onMoveFilter={handleMoveFilter}
+      onReorderFilter={handleReorderFilter}
       onResetDefaults={handleResetDefaults}
     />
   );
