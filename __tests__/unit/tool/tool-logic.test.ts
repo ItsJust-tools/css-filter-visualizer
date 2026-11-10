@@ -178,6 +178,31 @@ describe('CSS Filter Visualizer logic', () => {
     }
   });
 
+  it('never throws on property access that throws (returns failure result)', () => {
+    const throwing = new Proxy(
+      {},
+      {
+        get() {
+          throw new Error('corrupted getter');
+        },
+      },
+    );
+    const result = cssFilterTool.deserialize(throwing);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toContain('Failed to deserialize state');
+    }
+  });
+
+  it('never throws on malformed nested step structure', () => {
+    const result = cssFilterTool.deserialize({
+      steps: 'not-an-array',
+      baseColor: '#fff',
+      previewText: 'x',
+    });
+    expect(result.success).toBe(false);
+  });
+
   it('supports undo/redo via core', () => {
     // This verifies the state shape works with undo/redo pattern
     const state: FilterState = {

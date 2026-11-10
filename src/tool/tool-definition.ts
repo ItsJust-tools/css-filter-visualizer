@@ -139,14 +139,23 @@ export const cssFilterTool = {
   initialState,
   serialize: (state: FilterState) => JSON.stringify(state, null, 2),
   deserialize: (data: unknown) => {
-    if (isFilterState(data)) {
-      return { success: true as const, data };
+    try {
+      if (isFilterState(data)) {
+        return { success: true as const, data };
+      }
+      return {
+        success: false as const,
+        error: 'Invalid data format: expected { steps: FilterStep[], baseColor: string, previewText: string }',
+      };
+    } catch (error) {
+      return {
+        success: false as const,
+        error:
+          error instanceof Error
+            ? `Failed to deserialize state: ${error.message}`
+            : 'Failed to deserialize state: malformed or corrupted data encountered during parsing.',
+      };
     }
-    return {
-      success: false as const,
-      error:
-        'Invalid data format: expected { steps: FilterStep[], baseColor: string, previewText: string }',
-    };
   },
   exporters: [
     { format: 'png' as ExportFormat, loader: () => import('./exporters/png') },
