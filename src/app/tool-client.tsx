@@ -72,6 +72,19 @@ export default function ToolClient() {
     [setToolData]
   );
 
+  const handleCustomImageChange = useCallback(
+    (dataUrl: string | null, name?: string) => {
+      setToolData((prev) =>
+        dataUrl
+          ? { ...prev, customImage: dataUrl, customImageName: name ?? prev.customImageName }
+          : { ...prev, customImage: undefined, customImageName: undefined }
+      );
+      if (dataUrl) showToast('Custom image loaded', 'success');
+      else showToast('Custom image removed', 'success');
+    },
+    [setToolData, showToast]
+  );
+
   const handleAddFilter = useCallback(
     (type: FilterType) => {
       if (type === 'drop-shadow') {
@@ -232,8 +245,8 @@ export default function ToolClient() {
           return;
         } catch (error) {
           const isAbortError =
-            error instanceof DOMException && error.name === 'AbortError' ||
-            error instanceof Error && error.name === 'AbortError';
+            (error instanceof DOMException && error.name === 'AbortError') ||
+            (error instanceof Error && error.name === 'AbortError');
           if (isAbortError) return;
         }
       }
@@ -404,6 +417,7 @@ export default function ToolClient() {
       state={tool.state.data}
       onBaseColorChange={handleBaseColorChange}
       onPreviewTextChange={handlePreviewTextChange}
+      onCustomImageChange={handleCustomImageChange}
     />
   );
 

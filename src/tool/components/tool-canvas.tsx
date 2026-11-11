@@ -14,6 +14,35 @@ interface ToolCanvasProps {
   canvasRef?: React.RefObject<HTMLDivElement | null>;
   onBaseColorChange?: (color: string) => void;
   onPreviewTextChange?: (text: string) => void;
+  onCustomImageChange?: (dataUrl: string | null, name?: string) => void;
+}
+
+/** Allowed image MIME types for custom uploads. */
+const ALLOWED_IMAGE_TYPES = /^image\/(jpeg|png|svg\+xml|webp|gif|avif)$/;
+/** Maximum size for a custom preview image (5 MB). */
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+/**
+ * Reads a File as a data URL, resolving on success and rejecting on failure.
+ * Validates the type and size before reading.
+ */
+export function readImageAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (!ALLOWED_IMAGE_TYPES.test(file.type)) {
+      reject(new Error('Unsupported file type. Use JPEG, PNG, SVG, WebP, GIF, or AVIF.'));
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      reject(
+        new Error(`File is too large (max ${(MAX_IMAGE_BYTES / (1024 * 1024)).toFixed(0)} MB).`)
+      );
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error('Failed to read the file.'));
+    reader.readAsDataURL(file);
+  });
 }
 
 /**
@@ -25,10 +54,14 @@ export function ToolCanvas({
   canvasRef,
   onBaseColorChange,
   onPreviewTextChange,
+  onCustomImageChange,
 }: ToolCanvasProps) {
   const filterCss = buildFilterCss(state.steps);
   const [cssCopied, setCssCopied] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const startCopyTimer = useCallback(() => {
@@ -78,6 +111,46 @@ export function ToolCanvas({
 
   const textColor = previewTextColor(state.baseColor);
 
+  const handleFile = useCallback(
+    async (file: File | undefined | null) => {
+      if (!file) return;
+      setImageError(null);
+      try {
+        const dataUrl = await readImageAsDataUrl(file);
+        onCustomImageChange?.(dataUrl, file.name);
+      } catch (error) {
+        setImageError(error instanceof Error ? error.message : 'Failed to load image.');
+      }
+    },
+    [onCustomImageChange]
+  );
+
+  const handleRemoveImage = useCallback(() => {
+    setImageError(null);
+    onCustomImageChange?.(null);
+  }, [onCustomImageChange]);
+
+  const hasImage = Boolean(state.customImage);
+
+  const onDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setIsDragOver(false);
+      handleFile(e.dataTransfer.files?.[0]);
+    },
+    [handleFile]
+  );
+
+  const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  }, []);
+
+  const onDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  }, []);
+
   return (
     <div
       ref={canvasRef}
@@ -94,12 +167,82 @@ export function ToolCanvas({
       {/* Preview area */}
       <div className="filter-preview-section">
         <div
-          className="filter-preview-box"
-          style={{ backgroundColor: state.baseColor, filter: filterCss }}
+          className={`filter-image-zone ${isDragOver ? 'filter-image-zone--dragover' : ''} ${hasImage ? 'filter-image-zone--active' : ''}`}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onDragLeave={onDragLeave}
+          role="region"
+          aria-label="Custom image: upload or drag and drop to preview"
         >
-          <div className="filter-preview-text" style={{ color: textColor }}>
-            {state.previewText}
+          {state.customImage ? (
+            <div
+              className="filter-preview-box"
+              style={{
+                backgroundImage: `url(${state.customImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                filter: filterCss,
+              }}
+              aria-label={`Preview with custom image${state.customImageName ? ` (${state.customImageName})` : ''}`}
+            >
+              <div
+                className="filter-preview-text filter-preview-text--image"
+                style={{ color: textColor }}
+              >
+                {state.previewText}
+              </div>
+            </div>
+          ) : (
+            <div
+              className="filter-preview-box"
+              style={{ backgroundColor: state.baseColor, filter: filterCss }}
+            >
+              <div className="filter-preview-text" style={{ color: textColor }}>
+                {state.previewText}
+              </div>
+            </div>
+          )}
+          <div className="filter-image-actions">
+            <input
+              ref={fileInputRef}
+              id="custom-image-input"
+              type="file"
+              accept="image/jpeg,image/png,image/svg+xml,image/webp,image/gif,image/avif"
+              onChange={(e) => {
+                handleFile(e.target.files?.[0]);
+                e.target.value = '';
+              }}
+              className="filter-image-input"
+            />
+            <button
+              type="button"
+              className="filter-image-btn"
+              onClick={() => fileInputRef.current?.click()}
+              aria-label={hasImage ? 'Replace custom image' : 'Upload custom image'}
+              title={hasImage ? 'Replace image' : 'Upload image'}
+            >
+              📁 {hasImage ? 'Replace Image' : 'Upload Image'}
+            </button>
+            {hasImage && (
+              <button
+                type="button"
+                className="filter-image-btn filter-image-btn--remove"
+                onClick={handleRemoveImage}
+                aria-label="Remove custom image"
+                title="Remove image"
+              >
+                ✕ Remove
+              </button>
+            )}
+            {!hasImage && (
+              <span className="filter-image-hint">or drag &amp; drop an image here</span>
+            )}
           </div>
+          {imageError && (
+            <div role="alert" className="filter-image-error">
+              {imageError}
+            </div>
+          )}
         </div>
         <div className="filter-css-output-row">
           <div className="filter-css-output" aria-label="CSS filter rule">
