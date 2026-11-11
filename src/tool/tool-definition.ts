@@ -48,7 +48,9 @@ function isFilterState(value: unknown): value is FilterState {
   if (!Array.isArray(v.steps) || !v.steps.every(isFilterStep)) return false;
   if (typeof v.baseColor !== 'string') return false;
   if (typeof v.previewText !== 'string') return false;
-  if (v.presetName !== undefined && typeof v.presetName !== 'string') return false;
+  if (v.customImage !== undefined && typeof v.customImage !== 'string') return false;
+  if (v.customImageName !== undefined && typeof v.customImageName !== 'string') return false;
+  if (typeof v.presetName !== 'string') return false;
   return true;
 }
 
@@ -145,7 +147,8 @@ export const cssFilterTool = {
       }
       return {
         success: false as const,
-        error: 'Invalid data format: expected { steps: FilterStep[], baseColor: string, previewText: string }',
+        error:
+          'Invalid data format: expected { steps: FilterStep[], baseColor: string, previewText: string }',
       };
     } catch (error) {
       return {

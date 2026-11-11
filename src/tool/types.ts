@@ -59,6 +59,10 @@ export interface FilterState {
   baseColor: string;
   previewText: string;
   presetName: string;
+  /** Data URL of a user-provided preview image (local upload, client-side only). */
+  customImage?: string;
+  /** Original filename of the uploaded custom image, if any. */
+  customImageName?: string;
 }
 
 /** A named preset of filter steps for quick application. */
