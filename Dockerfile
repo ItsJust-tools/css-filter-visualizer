@@ -1,4 +1,5 @@
-FROM node:22-alpine AS runner
+FROM node:22-alpine
+RUN npm install -g npm@11.19.1 AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
