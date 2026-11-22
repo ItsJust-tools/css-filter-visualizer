@@ -1,22 +1,46 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
-async function closeBackdropIfOpen(page: import('@playwright/test').Page) {
+/** Click the backdrop via DOM (bypasses pointer interception by the open sidebar). */
+function clickBackdrop(page: Page) {
+  return page.locator('.sidebar-backdrop').evaluate((el) => (el as HTMLElement).click());
+}
+
+/** On mobile the sidebar starts collapsed; open it through the toolbar toggle. */
+async function openSidebarOnMobile(page: Page) {
+  const size = page.viewportSize();
+  if (!size || size.width > 768) return;
+  const sidebar = page.locator('.tool-shell-sidebar');
+  const collapsed = await sidebar
+    .evaluate((el) => el.classList.contains('collapsed'))
+    .catch(() => false);
+  if (!collapsed) return;
+  await page.getByRole('button', { name: 'Show options' }).click();
+  await expect(sidebar).toHaveClass(/open/);
+}
+
+async function closeBackdropIfOpen(page: Page) {
   const backdrop = page.locator('.sidebar-backdrop');
   for (let i = 0; i < 3; i++) {
     const visible = await backdrop.isVisible().catch(() => false);
     if (!visible) return;
-    await backdrop.evaluate((el) => (el as HTMLElement).click());
+    await clickBackdrop(page);
     await page.waitForTimeout(100);
   }
 }
 
-async function ensureToolbarInteractable(page: import('@playwright/test').Page) {
+async function ensureToolbarInteractable(page: Page) {
   await closeBackdropIfOpen(page);
   const backdrop = page.locator('.sidebar-backdrop');
   if (await backdrop.isVisible().catch(() => false)) {
     await page.keyboard.press('Control+b');
     await expect(backdrop).toBeHidden();
   }
+}
+
+// The core ToolShell shortcuts button (aria-label="Keyboard shortcuts") opens the
+// overlay dialog; the app toolbar's help link is "View keyboard shortcuts".
+function shortcutsButton(page: Page) {
+  return page.getByRole('button', { name: 'Keyboard shortcuts', exact: true });
 }
 
 test('tool loads with correct title', async ({ page }) => {
@@ -36,6 +60,7 @@ test('preview area shows filter CSS output', async ({ page }) => {
 test('can add a filter step', async ({ page }) => {
   await page.goto('/');
   await ensureToolbarInteractable(page);
+  await openSidebarOnMobile(page);
 
   const addBtn = page.getByRole('button', { name: /Add Sepia/i });
   await addBtn.click();
@@ -60,19 +85,17 @@ test('can toggle filter steps', async ({ page }) => {
 test('presets section is visible and can be expanded', async ({ page }) => {
   await page.goto('/');
   await ensureToolbarInteractable(page);
+  await openSidebarOnMobile(page);
 
-  const presetsHeader = page.getByRole('button', { name: /Toggle presets/i });
+  const presetsHeader = page.getByRole('button', { name: /presets section/i });
   await expect(presetsHeader).toBeVisible();
+  // Collapse, then expand again
+  await presetsHeader.click();
   await presetsHeader.click();
 
   // Preset buttons should be visible
   const presetBtn = page.getByRole('button', { name: /Apply Vintage preset/i });
-  if (await presetBtn.isVisible().catch(() => false)) {
-    await presetBtn.click();
-    // Verify the filter chain updated
-    const cssOutput = page.locator('.filter-css-output');
-    await expect(cssOutput).toBeVisible();
-  }
+  await expect(presetBtn).toBeVisible();
 });
 
 test('background color picker works', async ({ page }) => {
@@ -128,7 +151,7 @@ test('sidebar toggle button works', async ({ page }) => {
     await sidebarToggle.click();
     await expect(sidebar).toHaveClass(/open/);
     if (mobile) {
-      await page.locator('.sidebar-backdrop').click();
+      await clickBackdrop(page);
     } else {
       await sidebarToggle.click();
     }
@@ -137,7 +160,7 @@ test('sidebar toggle button works', async ({ page }) => {
   }
   await expect(sidebar).toHaveClass(/open/);
   if (mobile) {
-    await page.locator('.sidebar-backdrop').click();
+    await clickBackdrop(page);
   } else {
     await sidebarToggle.click();
   }
@@ -207,10 +230,10 @@ test('keyboard shortcuts overlay opens and closes', async ({ page, browserName }
   await page.goto('/');
   await ensureToolbarInteractable(page);
   if (_testInfo.project.name.includes('Mobile')) {
-    await expect(page.getByRole('button', { name: /keyboard shortcuts/i })).toBeVisible();
+    await expect(shortcutsButton(page)).toBeVisible();
     return;
   }
-  await page.getByRole('button', { name: /keyboard shortcuts/i }).click({ force: true });
+  await shortcutsButton(page).click({ force: true });
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).not.toBeVisible();

@@ -185,7 +185,7 @@ describe('CSS Filter Visualizer logic', () => {
         get() {
           throw new Error('corrupted getter');
         },
-      },
+      }
     );
     const result = cssFilterTool.deserialize(throwing);
     expect(result.success).toBe(false);

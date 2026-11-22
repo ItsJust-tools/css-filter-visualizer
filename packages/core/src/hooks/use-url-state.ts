@@ -84,8 +84,8 @@ export function useUrlState(options: UseUrlStateOptions): UseUrlStateReturn {
           } catch (error) {
             // AbortError means the user cancelled the share dialog — not an error
             const isAbortError =
-              error instanceof DOMException && error.name === 'AbortError' ||
-              error instanceof Error && error.name === 'AbortError';
+              (error instanceof DOMException && error.name === 'AbortError') ||
+              (error instanceof Error && error.name === 'AbortError');
             if (!isAbortError) throw error;
             return shareUrl;
           }

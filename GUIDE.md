@@ -15,7 +15,7 @@ Open [http://localhost:3000](http://localhost:3000) to use the tool.
 
 ## Project Structure
 
-```
+```text
 src/
 ├── app/                    # Next.js App Router
 │   ├── page.tsx            # Tool main page
